@@ -1,8 +1,11 @@
 import React from 'react';
 import logo from './logo.svg';
+import axios from 'axios'
 import './App.css';
 
+
 function App() {
+  axios.get('/stories').then(res => console.log(res))
   return (
     <div className="App">
       <header className="App-header">
