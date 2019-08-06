@@ -3,6 +3,7 @@ exports.index = (req, res) => {
 }
 
 exports.create = (req, res) => {
+   console.log('create')
   res.send('NOT IMPLEMENTED: Story create')
 }
 
