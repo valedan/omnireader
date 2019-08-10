@@ -1,12 +1,18 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Story {
+  constructor(data = {}) {
+    this.title = data.title;
+    this.author = data.author;
+    this.details = data.details;
+    this.canonicalUrl = data.url;
+  }
 
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({type: "text"})
+  @Column({ type: 'text' })
   canonicalUrl: string;
 
   @Column()
@@ -15,6 +21,6 @@ export class Story {
   @Column()
   author: string;
 
-  @Column({type: "json"})
+  @Column({ type: 'json' })
   details: object;
 }
