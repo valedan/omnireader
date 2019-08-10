@@ -5,10 +5,11 @@
    "scripts": {
       "start": "ts-node src/index.ts",
       "test": "jest",
-      "dev": "ts-node-dev --respawn --transpileOnly ./bin/www.ts",
+      "dev": "ts-node-dev --respawn --transpileOnly ./src/index.ts",
       "tsc": "tsc"
    },
    "dependencies": {
+      "@types/cheerio": "^0.22.13",
       "@types/express": "^4.17.0",
       "@types/node": "^12.6.8",
       "axios": "^0.19.0",
