@@ -3,10 +3,10 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class Story {
   constructor(data = {}) {
-    this.title = data.title;
-    this.author = data.author;
-    this.details = data.details;
-    this.canonicalUrl = data.url;
+    this.title = (data as any).title;
+    this.author = (data as any).author;
+    this.details = (data as any).details;
+    this.canonicalUrl = (data as any).url;
   }
 
   @PrimaryGeneratedColumn()

@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { fetchStory } from '../services/storyFetcher';
 import { getConnection } from 'typeorm';
 import { Story } from '../entity/Story';
+import { getStory } from '../services/scraper';
+
 export class StoryController {
   async index(request: Request, response: Response, next: NextFunction) {
     console.log('controller');
@@ -14,19 +15,20 @@ export class StoryController {
   }
 
   async create(request: Request, response: Response, next: NextFunction) {
-    try {
-      const data = await fetchStory(request.body.story_url);
-      const connection = getConnection();
-      console.log(data);
-      let story = new Story(data);
-      await connection.manager.save(story);
-      const loaded = await connection.manager.find(Story);
-      console.log(loaded);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-    return 'CREATE STORY';
+    const foo = 'foobar';
+    [1, 2, 3].map(n => {
+      console.log(n);
+      debugger;
+    });
+    // try {
+    //   const storyData = await getStory(request.body.story_url);
+    //   const connection = getConnection();
+    //   const story = new Story(storyData);
+    //   await connection.manager.save(story);
+    //   return story;
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   async destroy(request: Request, response: Response, next: NextFunction) {
