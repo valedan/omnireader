@@ -40,27 +40,18 @@ const validateUrl = (url: string) => {
 };
 
 function parseChapterList($, url: string) {
-  const uri = url;
-  const a = 10;
-  let b = 2;
-  var c = 3;
-  // function callback(num) {
-  //   console.log(uri);
-  //   console.log(a);
-  // }
-  // [1, 2, 2].forEach(callback);
-  [1, 2, 3].map(num => {
-    console.log(uri);
-  });
   return $('#chap_select')
     .first()
     .find('option')
     .map(option => {
-      console.log('uri');
-      console.log('uri');
-      console.log('uri');
-      console.log('uri');
-      console.log('uri');
+      return {
+        title: $(option).text(),
+        url: url.replace(/\/s\/\d+\/\d+/, idMatch => {
+          const parts = idMatch.split('/');
+          parts[parts.length - 1] = $(option).attr('value');
+          return parts.join('/');
+        }),
+      };
     });
 }
 export { getStory, getChapter, validateUrl };
