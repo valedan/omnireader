@@ -1,23 +1,35 @@
-import {StoryController} from "./controllers/StoryController";
+import { StoryController } from './controllers/StoryController';
+import { ChapterController } from './controllers/ChapterController';
 
-export const Routes = [{
-    method: "get",
-    route: "/stories",
+export const Routes = [
+  {
+    method: 'get',
+    route: '/stories',
     controller: StoryController,
-    action: "index"
-}, {
-    method: "get",
-    route: "/stories/:id",
+    action: 'index',
+  },
+  {
+    method: 'get',
+    route: '/stories/:id',
     controller: StoryController,
-    action: "show"
-}, {
-    method: "post",
-    route: "/stories.json",
+    action: 'show',
+  },
+  {
+    method: 'post',
+    route: '/stories',
     controller: StoryController,
-    action: "create"
-}, {
-    method: "delete",
-    route: "/stories/:id",
+    action: 'create',
+  },
+  {
+    method: 'delete',
+    route: '/stories/:id',
     controller: StoryController,
-    action: "destroy"
-}];
+    action: 'destroy',
+  },
+  {
+    method: 'get',
+    route: '/chapters/:id',
+    controller: ChapterController,
+    action: 'show',
+  },
+];

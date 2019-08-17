@@ -28,6 +28,12 @@ const getStory = async (url: string) => {
   };
 };
 
+const getChapterContent = async chapter => {
+  const page = await Axios.get(chapter.url);
+  const $ = Cheerio.load(page.data);
+  return $('#storytext').text();
+};
+
 const getChapter = async (url: string) => {
   validateUrl(url);
 };
@@ -43,7 +49,7 @@ function parseChapterList($, url: string) {
   return $('#chap_select')
     .first()
     .find('option')
-    .map(option => {
+    .map((index, option) => {
       return {
         title: $(option).text(),
         url: url.replace(/\/s\/\d+\/\d+/, idMatch => {
@@ -51,7 +57,9 @@ function parseChapterList($, url: string) {
           parts[parts.length - 1] = $(option).attr('value');
           return parts.join('/');
         }),
+        number: index + 1,
       };
-    });
+    })
+    .get();
 }
-export { getStory, getChapter, validateUrl };
+export { getStory, getChapter, validateUrl, getChapterContent };

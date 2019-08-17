@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity } from 'typeorm';
+import { Chapter } from './Chapter';
 
 @Entity()
 export class Story {
@@ -11,6 +12,9 @@ export class Story {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  @OneToMany(type => Chapter, chapter => chapter.story)
+  chapters: Chapter[];
 
   @Column({ type: 'text' })
   canonicalUrl: string;
