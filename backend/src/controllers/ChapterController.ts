@@ -1,17 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
-import { getConnection } from 'typeorm';
+import { Client } from 'pg';
 import { Chapter } from '../entity/Chapter';
 import { getChapterContent } from '../services/scraper';
 
 export class ChapterController {
   async show(request: Request, response: Response, next: NextFunction) {
     try {
-      const connection = getConnection();
-      const chapter = await connection
-        .getRepository(Chapter)
-        .findOne(request.params.id, { relations: ['story'] });
+      const client = new Client({
+        user: 'dan',
+        host: 'localhost',
+        port: '5432',
+        database: 'omnireader_dev',
+        password: '',
+      });
+
+      const chapter = await client.query('SELECT * FROM chapter WHERE chapter.id=2620 LIMIT 1;');
+      console.log(chapter);
       const chapterContent = await getChapterContent(chapter);
       return { ...chapter, content: chapterContent };
-    } catch {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

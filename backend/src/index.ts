@@ -19,11 +19,22 @@ createConnection()
       (app as any)[route.method](route.route, (req: Request, res: Response, next: Function) => {
         const result = new (route.controller as any)()[route.action](req, res, next);
         if (result instanceof Promise) {
-          result.then(result =>
-            result !== null && result !== undefined ? res.send(result) : undefined,
-          );
+          console.log('promise!!!');
+          result
+            .then(result => {
+              console.log('result!!!');
+              console.log(result);
+              result !== null && result !== undefined ? res.send(result) : undefined;
+            })
+            .catch(error => {
+              console.log(error);
+            });
         } else if (result !== null && result !== undefined) {
+          console.log(result);
           res.json(result);
+        } else {
+          console.log('else');
+          console.log(result);
         }
       });
     });

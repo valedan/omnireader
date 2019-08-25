@@ -6,7 +6,7 @@
     "start": "ts-node src/index.ts",
     "test": "jest",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn --transpileOnly ./src/index.ts"
+    "dev": "DEBUG=express:* ts-node-dev --respawn --transpileOnly ./src/server.ts"
   },
   "dependencies": {
     "@types/cheerio": "^0.22.13",
@@ -19,6 +19,7 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "^4.15.4",
+    "express-promise-router": "^3.0.3",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "pg": "^7.3.0",
@@ -30,6 +31,7 @@
     "typescript": "^3.5.3"
   },
   "devDependencies": {
+    "@types/express-promise-router": "^2.0.1",
     "@types/node": "^8.0.29",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
