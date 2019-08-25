@@ -3,12 +3,12 @@ import { getConnection } from 'typeorm';
 import { Story } from '../entity/Story';
 import { getStory } from '../services/scraper';
 import { Chapter } from '../entity/Chapter';
+import { query } from '../db';
 
 export class StoryController {
-  index(request: Request, response: Response, next: NextFunction) {
-    // const connection = getConnection();
-    // return connection.getRepository(Story).find({ relations: ['chapters'] });
-    return 'test';
+  async index(request: Request, response: Response, next: NextFunction) {
+    const stories = await query('SELECT * FROM story;');
+    return stories.rows;
   }
 
   // async show(request: Request, response: Response, next: NextFunction) {
