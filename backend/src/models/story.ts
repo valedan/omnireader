@@ -1,6 +1,5 @@
 import { query } from '../db';
 import { Chapter } from '../models/chapter';
-import { BroadcasterResult } from 'typeorm/subscriber/BroadcasterResult';
 
 export class Story {
   static async all() {
@@ -8,7 +7,7 @@ export class Story {
     return result.rows;
   }
 
-  static async findBy(column, value) {
+  static async findBy(column: string, value: string) {
     const result = await query(
       `SELECT * FROM story WHERE story.${column}=$1 LIMIT 1;`,
       [value],
@@ -16,7 +15,7 @@ export class Story {
     return result.rows[0];
   }
 
-  static async find(id) {
+  static async find(id: number) {
     const result = await query(
       'SELECT * FROM story WHERE story.id=$1 LIMIT 1;',
       [id],

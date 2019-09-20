@@ -1,6 +1,7 @@
 import { URL } from 'url';
 import Axios from 'axios';
 import * as Cheerio from 'cheerio';
+import { Chapter } from '../models/chapter';
 
 const getStory = async (url: string) => {
   validateUrl(url);
@@ -28,7 +29,7 @@ const getStory = async (url: string) => {
   };
 };
 
-const getChapterContent = async chapter => {
+const getChapterContent = async (chapter: Chapter) => {
   const page = await Axios.get(chapter.url);
   const $ = Cheerio.load(page.data);
   return $('#storytext').text();
@@ -49,7 +50,7 @@ function parseChapterList($, url: string) {
   return $('#chap_select')
     .first()
     .find('option')
-    .map((index, option) => {
+    .map((index: number, option) => {
       return {
         title: $(option).text(),
         url: url.replace(/\/s\/\d+\/\d+/, idMatch => {

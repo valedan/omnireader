@@ -1,7 +1,16 @@
 import { query } from '../db';
 
 export class Chapter {
-  static async forStoryIds(storyIds) {
+  id?: number;
+  storyId: number;
+  title: string;
+  url: string;
+  number: number;
+  fullText?: string;
+
+  constructor(data?: object) {}
+
+  static async forStoryIds(storyIds: Array<number>) {
     const idString = storyIds.join(', ');
     const result = await query(
       `SELECT * FROM chapter WHERE chapter."storyId" IN (${idString})`,
@@ -9,7 +18,7 @@ export class Chapter {
     return result.rows;
   }
 
-  static async find(id) {
+  static async find(id: number) {
     const result = await query(
       'SELECT * FROM chapter WHERE chapter.id=$1 LIMIT 1;',
       [id],

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Chapter } from '../models/Chapter';
+import { Chapter } from '../models/chapter';
 import { Story } from '../models/story';
 import { getChapterContent } from '../services/scraper';
 import { query } from '../db';

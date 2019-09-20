@@ -8,4 +8,5 @@ const pool = new Pool({
   database: 'omnireader_dev',
 });
 
-export const query = (text, params = undefined) => pool.query(text, params);
+export const query = (text: string, params?: Array<string | number>) =>
+  pool.query(text, params);

@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Story } from '../models/story';
 import { getStory } from '../services/scraper';
-import { Chapter } from '../models/Chapter';
-import { query } from '../db';
+import { Chapter } from '../models/chapter';
 
 export class StoryController {
   async index(request: Request, response: Response, next: NextFunction) {
@@ -21,7 +20,10 @@ export class StoryController {
       const savedStory = await Story.create(storyData.story);
       savedStory.chapters = [];
       for (const chapterData of storyData.chapters) {
-        const savedChapter = Chapter.create({ ...chapterData, storyId: savedStory.id });
+        const savedChapter = Chapter.create({
+          ...chapterData,
+          storyId: savedStory.id,
+        });
         savedStory.chapters.push(savedChapter);
       }
 
