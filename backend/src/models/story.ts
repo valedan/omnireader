@@ -32,6 +32,7 @@ export class Story {
       const storyChapters = chapters.filter(
         chapter => chapter.storyId === story.id,
       );
+      story.details = JSON.stringify(story.details);
       return { ...story, chapters: storyChapters };
     });
   }
