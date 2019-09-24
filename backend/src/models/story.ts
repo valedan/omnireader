@@ -1,7 +1,8 @@
 import { query } from '../db';
 import { Chapter } from '../models/chapter';
+import { DataSource } from 'apollo-datasource';
 
-export class Story {
+export class Story extends DataSource {
   static async all() {
     const result = await query('SELECT * FROM story;');
     return result.rows;
@@ -31,6 +32,7 @@ export class Story {
       const storyChapters = chapters.filter(
         chapter => chapter.storyId === story.id,
       );
+      story.details = JSON.stringify(story.details);
       return { ...story, chapters: storyChapters };
     });
   }

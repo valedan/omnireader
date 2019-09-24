@@ -1,7 +1,30 @@
 import { URL } from 'url';
 import Axios from 'axios';
+import { Story } from '../models/story';
+import { Chapter } from '../models/chapter';
 import * as Cheerio from 'cheerio';
 import { Chapter } from '../models/chapter';
+
+const createStory = async (url: string) => {
+  try {
+    const storyData = await getStory(url);
+    const savedStory = await Story.create(storyData.story);
+    savedStory.details = JSON.stringify(savedStory.details);
+    savedStory.chapters = [];
+    for (const chapterData of storyData.chapters) {
+      console.log('getting chapter');
+      const savedChapter = Chapter.create({
+        ...chapterData,
+        storyId: savedStory.id,
+      });
+      savedStory.chapters.push(savedChapter);
+    }
+
+    return savedStory;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const getStory = async (url: string) => {
   validateUrl(url);
@@ -63,4 +86,4 @@ function parseChapterList($, url: string) {
     })
     .get();
 }
-export { getStory, getChapter, validateUrl, getChapterContent };
+export { getStory, getChapter, validateUrl, getChapterContent, createStory };

@@ -1,22 +1,19 @@
-// import errorHandler from 'errorhandler';
+import { ApolloServer } from 'apollo-server';
+import typeDefs from './api/schema';
+import { Story } from './models/story';
+import { Chapter } from './models/chapter';
+import resolvers from './api/resolvers';
 
-import app from './app';
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({
+    models: { Story, Chapter },
+  }),
+});
 
-/**
- * Error Handler. Provides full stack - remove for production
- */
-// app.use(errorHandler());
-
-/**
- * Start Express server.
- */
-const server = app.listen(app.get('port'), () => {
-  console.log(
-    '  App is running at http://localhost:%d in %s mode',
-    app.get('port'),
-    app.get('env'),
-  );
-  console.log('  Press CTRL-C to stop\n');
+server.listen().then(({ url }) => {
+  console.log(`🚀 Server ready at ${url}`);
 });
 
 export default server;
