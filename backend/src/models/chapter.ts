@@ -4,13 +4,15 @@ import { getChapterContent } from '../services/scraper';
 
 export class Chapter {
   id?: number;
-  storyId: number;
-  title: string;
-  url: string;
-  number: number;
+  storyId?: number;
+  title?: string;
+  url?: string;
+  number?: number;
   fullText?: string;
 
-  constructor(data?: object) {}
+  constructor(init?: Partial<Chapter>) {
+    Object.assign(this, init);
+  }
 
   static async forStoryIds(storyIds: Array<number>) {
     const idString = storyIds.join(', ');
@@ -20,7 +22,7 @@ export class Chapter {
     return result.rows;
   }
 
-  static async chapterWithContent(id) {
+  static async chapterWithContent(id: number) {
     const chapter = await this.find(id);
     const story = await Story.find(chapter.storyId);
     const chapterContent = await getChapterContent(chapter);
@@ -30,7 +32,7 @@ export class Chapter {
       story: story,
     };
   }
-  static async find(id) {
+  static async find(id: number) {
     const result = await query(
       'SELECT * FROM chapter WHERE chapter.id=$1 LIMIT 1;',
       [id],
@@ -38,7 +40,7 @@ export class Chapter {
     return result.rows[0];
   }
 
-  static async create(data) {
+  static async create(data: Chapter) {
     const result = await query(
       `INSERT INTO chapter("storyId", title, url, number, progress) VALUES($1, $2, $3, $4, $5) RETURNING *`,
       [data.storyId, data.title, data.url, data.number, 0],

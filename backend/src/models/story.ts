@@ -1,8 +1,17 @@
 import { query } from '../db';
 import { Chapter } from '../models/chapter';
-import { DataSource } from 'apollo-datasource';
 
-export class Story extends DataSource {
+export class Story {
+  id?: number;
+  title?: string;
+  author?: string;
+  url?: string;
+  details?: object; // make an interface for this
+
+  constructor(init: Story) {
+    Object.assign(this, init);
+  }
+
   static async all() {
     const result = await query('SELECT * FROM story;');
     return result.rows;
@@ -37,7 +46,7 @@ export class Story extends DataSource {
     });
   }
 
-  static async create(data) {
+  static async create(data: Story) {
     const result = await query(
       'INSERT INTO story(title, author, "canonicalUrl", details) VALUES($1, $2, $3, $4) RETURNING *',
       [data.title, data.author, data.url, data.details],

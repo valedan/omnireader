@@ -3,7 +3,6 @@ import Axios from 'axios';
 import { Story } from '../models/story';
 import { Chapter } from '../models/chapter';
 import * as Cheerio from 'cheerio';
-import { Chapter } from '../models/chapter';
 
 const createStory = async (url: string) => {
   try {
