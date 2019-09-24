@@ -1,8 +1,8 @@
 import { query } from '../db';
 import { Chapter } from '../models/chapter';
-import { BroadcasterResult } from 'typeorm/subscriber/BroadcasterResult';
+import { DataSource } from 'apollo-datasource';
 
-export class Story {
+export class Story extends DataSource {
   static async all() {
     const result = await query('SELECT * FROM story;');
     return result.rows;

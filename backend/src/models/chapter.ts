@@ -1,4 +1,6 @@
 import { query } from '../db';
+import { Story } from './story';
+import { getChapterContent } from '../services/scraper';
 
 export class Chapter {
   static async forStoryIds(storyIds) {
@@ -9,6 +11,16 @@ export class Chapter {
     return result.rows;
   }
 
+  static async chapterWithContent(id) {
+    const chapter = await this.find(id);
+    const story = await Story.find(chapter.storyId);
+    const chapterContent = await getChapterContent(chapter);
+    return {
+      ...chapter,
+      content: chapterContent,
+      story: story,
+    };
+  }
   static async find(id) {
     const result = await query(
       'SELECT * FROM chapter WHERE chapter.id=$1 LIMIT 1;',
