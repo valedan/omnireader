@@ -4,7 +4,7 @@ import { Story } from '../models/story';
 import { Chapter } from '../models/chapter';
 import * as Cheerio from 'cheerio';
 
-const createStory = async (url: string) => {
+const createStory = async url => {
   try {
     const storyData = await getStory(url);
     const savedStory = await Story.create(storyData.story);
@@ -25,7 +25,7 @@ const createStory = async (url: string) => {
   }
 };
 
-const getStory = async (url: string) => {
+const getStory = async url => {
   validateUrl(url);
 
   const story = await Axios.get(url);
@@ -57,18 +57,18 @@ const getChapterContent = async chapter => {
   return $('#storytext').text();
 };
 
-const getChapter = async (url: string) => {
+const getChapter = async url => {
   validateUrl(url);
 };
 
-const validateUrl = (url: string) => {
+const validateUrl = url => {
   const uri = new URL(url);
   if (uri.hostname !== 'www.fanfiction.net') {
     throw TypeError('site is not supported!');
   }
 };
 
-function parseChapterList($, url: string) {
+function parseChapterList($, url) {
   return $('#chap_select')
     .first()
     .find('option')

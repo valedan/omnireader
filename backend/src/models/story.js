@@ -1,8 +1,7 @@
 import { query } from '../db';
-import { Chapter } from '../models/chapter';
-import { DataSource } from 'apollo-datasource';
+import { Chapter } from './chapter';
 
-export class Story extends DataSource {
+export class Story {
   static async all() {
     const result = await query('SELECT * FROM story;');
     return result.rows;
