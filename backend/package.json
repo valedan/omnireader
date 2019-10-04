@@ -22,8 +22,10 @@
     "express-promise-router": "^3.0.3",
     "graphql": "^14.5.7",
     "http-errors": "~1.6.3",
+    "knex": "^0.19.4",
     "morgan": "~1.9.1",
     "node-dev": "^4.0.0",
+    "objection": "^1.6.11",
     "pg": "^7.3.0",
     "pug": "2.0.0-beta11",
     "reflect-metadata": "^0.1.10"
@@ -34,7 +36,7 @@
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
-    "jest": "^24.8.0",
+    "jest": "^24.9.0",
     "prettier": "^1.18.2",
     "superagent": "^5.1.0",
     "supertest": "^4.0.2"

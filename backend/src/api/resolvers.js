@@ -1,15 +1,19 @@
-import { createStory } from '../services/scraper';
+import { createStory, getChapterContent } from '../services/scraper';
 
 export default {
   Query: {
-    stories: (_, __, { models }) => models.Story.allWithChapters(),
-    chapter: async (_, { id }, { models }) =>
-      await models.Chapter.chapterWithContent(id),
-  },
-  Mutation: {
-    createStory: async (_, { url }, { models }) => {
-      const story = await createStory(url);
-      return story;
+    stories: async (_, __, { models }) =>
+      await models.Story.query().eager('chapters'),
+
+    chapter: async (_, { id }, { models }) => {
+      const chapter = await models.Chapter.query()
+        .findById(id)
+        .eager('story');
+      return { ...chapter, content: await getChapterContent(chapter) };
     },
+  },
+
+  Mutation: {
+    createStory: async (_, { url }, {}) => await createStory(url),
   },
 };

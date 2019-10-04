@@ -1,24 +1,20 @@
 import { URL } from 'url';
 import Axios from 'axios';
 import { Story } from '../models/story';
-import { Chapter } from '../models/chapter';
 import * as Cheerio from 'cheerio';
 
 const createStory = async url => {
   try {
     const storyData = await getStory(url);
-    const savedStory = await Story.create(storyData.story);
+    const savedStory = await Story.query().insert(storyData.story);
     savedStory.details = JSON.stringify(savedStory.details);
     savedStory.chapters = [];
     for (const chapterData of storyData.chapters) {
-      console.log('getting chapter');
-      const savedChapter = Chapter.create({
-        ...chapterData,
-        storyId: savedStory.id,
-      });
+      const savedChapter = await savedStory
+        .$relatedQuery('chapters')
+        .insert(chapterData);
       savedStory.chapters.push(savedChapter);
     }
-
     return savedStory;
   } catch (error) {
     console.log(error);
@@ -33,7 +29,7 @@ const getStory = async url => {
 
   return {
     story: {
-      url: url,
+      canonicalUrl: url,
       title: $('#profile_top .xcontrast_txt')
         .first()
         .text(),
