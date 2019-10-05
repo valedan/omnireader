@@ -1,4 +1,4 @@
-import { createStory, getChapterContent } from '../services/scraper';
+import { fetchStory, fetchChapter } from '../services/scraper';
 
 export default {
   Query: {
@@ -9,11 +9,24 @@ export default {
       const chapter = await models.Chapter.query()
         .findById(id)
         .eager('story');
-      return { ...chapter, content: await getChapterContent(chapter) };
+      const { content } = await fetchChapter(chapter.url);
+      return { ...chapter, content: content };
     },
   },
 
   Mutation: {
-    createStory: async (_, { url }, {}) => await createStory(url),
+    createStory: async (_, { url }, { models }) => {
+      const { chapters, ...storyData } = await fetchStory(url);
+      const savedStory = await models.Story.query().insert(storyData);
+      savedStory.details = JSON.stringify(savedStory.details);
+      savedStory.chapters = [];
+      for (const chapterData of chapters) {
+        const savedChapter = await savedStory
+          .$relatedQuery('chapters')
+          .insert(chapterData);
+        savedStory.chapters.push(savedChapter);
+      }
+      return savedStory;
+    },
   },
 };
