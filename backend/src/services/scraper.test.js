@@ -1,6 +1,3 @@
-global.context = describe;
-global.it = test;
-
 import {
   UnsupportedSiteError,
   NoStoryError,
@@ -10,6 +7,8 @@ import {
 } from './scraper';
 import axios from 'axios';
 import fs from 'fs';
+import { setupTests } from '../../testHelper';
+setupTests();
 
 const expectedChapterData = {
   title: '1. A Day of Very Low Probability',
