@@ -22,6 +22,7 @@
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "express-promise-router": "^3.0.3",
+    "faker": "^4.1.0",
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "http-errors": "~1.6.3",
