@@ -1,4 +1,10 @@
-import { fetchStory, fetchChapter } from '../services/scraper';
+import {
+  fetchStory,
+  fetchChapter,
+  UnsupportedSiteError,
+  NoStoryError,
+} from '../services/scraper';
+import { UserInputError } from 'apollo-server';
 
 export default {
   Query: {
@@ -16,17 +22,38 @@ export default {
 
   Mutation: {
     createStory: async (_, { url }, { models }) => {
-      const { chapters, ...storyData } = await fetchStory(url);
-      const savedStory = await models.Story.query().insert(storyData);
-      savedStory.details = JSON.stringify(savedStory.details);
-      savedStory.chapters = [];
-      for (const chapterData of chapters) {
-        const savedChapter = await savedStory
-          .$relatedQuery('chapters')
-          .insert(chapterData);
-        savedStory.chapters.push(savedChapter);
+      const existingStory = await models.Story.query().findOne({
+        canonicalUrl: url,
+      });
+      if (existingStory) {
+        throw new UserInputError('Story already exists!', {
+          story: { id: existingStory.id },
+        });
       }
-      return savedStory;
+      try {
+        const { chapters, ...storyData } = await fetchStory(url);
+
+        const savedStory = await models.Story.query().insert(storyData);
+        savedStory.details = JSON.stringify(savedStory.details);
+        savedStory.chapters = [];
+        for (const chapterData of chapters) {
+          const savedChapter = await savedStory
+            .$relatedQuery('chapters')
+            .insert(chapterData);
+          savedStory.chapters.push(savedChapter);
+        }
+        return savedStory;
+      } catch (err) {
+        if (err instanceof UnsupportedSiteError) {
+          throw new UserInputError('Site not supported!');
+        }
+
+        if (err instanceof NoStoryError) {
+          throw new UserInputError('Story not found!');
+        }
+
+        throw err;
+      }
     },
   },
 };

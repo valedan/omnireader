@@ -6,12 +6,15 @@ import { ApolloServer } from 'apollo-server';
 import typeDefs from './src/api/schema';
 import resolvers from './src/api/resolvers';
 import { Model } from 'objection';
+import nock from 'nock';
 
 const { createTestClient } = require('apollo-server-testing');
 
 export const setupTests = ({ database, api } = {}) => {
   global.context = describe;
   global.it = test;
+
+  nock.disableNetConnect();
 
   if (database === true) {
     const dbManager = require('knex-db-manager').databaseManagerFactory({
@@ -57,8 +60,9 @@ export const setupTests = ({ database, api } = {}) => {
       resolvers,
       context: () => ({ models: api.models }),
     });
-    const { query } = createTestClient(server);
+    const { query, mutate } = createTestClient(server);
     global.query = query;
+    global.mutate = mutate;
     global.gql = gql;
   }
 };
