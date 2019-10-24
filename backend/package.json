@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node -r esm ./src/server.js",
-    "test": "jest",
+    "test": "jest --runInBand",
     "dev": "DEBUG=express:* node-dev --respawn -r esm ./src/server.js",
     "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
   },

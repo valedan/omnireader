@@ -15,6 +15,7 @@ export default {
       const chapter = await models.Chapter.query()
         .findById(id)
         .eager('story');
+      if (!chapter) throw new UserInputError('Chapter not found!');
       const { content } = await fetchChapter(chapter.url);
       return { ...chapter, content: content };
     },
