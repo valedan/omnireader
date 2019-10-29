@@ -1,29 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import axios from 'axios'
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Library } from "./components/Library/Library";
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "@apollo/react-hooks";
 
+const apollo = new ApolloClient({
+  uri: "http://localhost:4000"
+});
 
-function App() {
-  axios.get('/stories').then(res => console.log(res))
+export const App = () => {
+  // axios.get("/stories").then(res => console.log(res));
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={apollo}>
+      <Router>
+        <Switch>
+          <Route path="/">
+            <Library></Library>
+          </Route>
+        </Switch>
+      </Router>
+    </ApolloProvider>
   );
-}
+};
 
 export default App;
