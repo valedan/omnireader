@@ -1,44 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import TextField from "@material-ui/core/TextField";
 import { useQuery } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-
-const storiesQuery = gql`
-  {
-    stories {
-      id
-      title
-      author
-      canonicalUrl
-      chapters {
-        id
-        title
-        number
-        progress
-        url
-        content
-      }
-    }
-  }
-`;
+import { StoryListItem } from "./StoryListItem";
+import { AddStory } from "./AddStory";
+import { GET_STORIES } from "../../queries/story";
 
 export const Library = () => {
-  const { loading, error, data } = useQuery(storiesQuery);
+  const { loading, error, data, refetch } = useQuery(GET_STORIES);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
+
   return (
     <Wrapper>
-      <TextField
-        label="Add Story"
-        placeholder="Enter URL..."
-        fullWidth
-      ></TextField>
+      <AddStory onSuccess={() => refetch()} />
       <List>
         {data.stories.map(story => {
-          return <ListItem>{story.title}</ListItem>;
+          return <StoryListItem story={story}></StoryListItem>;
         })}
       </List>
     </Wrapper>
@@ -48,6 +27,6 @@ export const Library = () => {
 const Wrapper = styled.div`
   padding-top: 5%;
   margin: auto;
-  width: 60%;
+  width: 80%;
   text-align: center;
 `;
