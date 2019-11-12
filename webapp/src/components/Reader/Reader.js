@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { GET_CHAPTER } from "../../queries/chapter";
 import { Link } from "react-router-dom";
+import { ReaderContent } from "./Content";
 
 export const Reader = () => {
   const { id } = useParams();
@@ -18,7 +19,7 @@ export const Reader = () => {
       {data && (
         <>
           <Title>{data.chapter.title}</Title>
-          <div dangerouslySetInnerHTML={{ __html: data.chapter.content }}></div>
+          <ReaderContent content={data.chapter.content}></ReaderContent>
         </>
       )}
     </Wrapper>
