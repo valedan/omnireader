@@ -12,3 +12,11 @@ export const GET_CHAPTER = gql`
     }
   }
 `;
+
+export const UPDATE_CHAPTER = gql`
+  mutation UpdateChapter($id: ID!, $progress: Float!) {
+    updateChapter(id: $id, progress: $progress) {
+      id
+    }
+  }
+`;

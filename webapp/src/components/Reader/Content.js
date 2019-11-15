@@ -1,62 +1,50 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import { UPDATE_CHAPTER } from "../../queries/chapter";
+import { useMutation } from "@apollo/react-hooks";
+import _ from "lodash";
 
-export const ReaderContent = ({ content }) => {
+export const ReaderContent = ({ chapter }) => {
   const ref = useRef(null);
-  const [progress, setProgress] = useState(0);
-  const pageBack = () => {
-    const scrollTarget = ref.current.scrollTop - ref.current.clientHeight;
-    if (scrollTarget > 0) {
-      ref.current.scrollTo(0, scrollTarget);
-      setProgress((scrollTarget / ref.current.originalHeight) * 100);
-    } else {
-      ref.current.scrollTo(0, 0);
-      setProgress(0);
-    }
-  };
+  const [progress, setProgress] = useState(chapter.progress);
+  const [displayProgress, setDisplayProgress] = useState(0);
 
-  const pageForward = () => {
-    const scrollTarget = ref.current.scrollTop + ref.current.clientHeight;
-    if (scrollTarget <= ref.current.originalHeight - ref.current.clientHeight) {
-      ref.current.scrollTo(0, scrollTarget);
-      setProgress((scrollTarget / ref.current.originalHeight) * 100);
-    } else {
-      ref.current.scrollTo(0, ref.current.scrollHeight);
-      setProgress(100);
-    }
-  };
+  const [updateChapter] = useMutation(UPDATE_CHAPTER);
 
-  // TODO: send progress to backend. Just store it as-is right now, as a float.
-  // TODO: on future loads, scrollTo the position that is progress% between 0 and end
+  const updateProgress = _.debounce(() => {
+    console.log("updating");
+    updateChapter({ variables: { id: chapter.id, progress: progress } });
+  }, 2000);
 
   useEffect(() => {
-    console.log(progress);
+    setDisplayProgress(progress * 100);
+    updateProgress();
   }, [progress]);
+
+  const scroll = e =>
+    setProgress(ref.current.scrollTop / ref.current.scrollHeight);
+
   useEffect(() => {
-    ref.current.originalHeight = ref.current.scrollHeight;
-    const paddingSize =
-      ref.current.clientHeight -
-      (ref.current.scrollHeight % ref.current.clientHeight);
-    const padding = document.createElement("div");
-    padding.setAttribute("style", `height: ${paddingSize}px`);
-    ref.current.append(padding);
+    ref.current.scrollTo(0, progress * ref.current.scrollHeight);
+    ref.current.onscroll = scroll;
   }, []);
 
   return (
     <Wrapper>
-      <Content ref={ref} dangerouslySetInnerHTML={{ __html: content }} />
-      <Nav onClick={pageBack}>{"<"}</Nav>
-      <Nav onClick={pageForward}>{">"}</Nav>
+      <Content
+        ref={ref}
+        dangerouslySetInnerHTML={{ __html: chapter.content }}
+      />
+      <LinearProgress variant="determinate" value={displayProgress} />
     </Wrapper>
   );
 };
 
-const Nav = styled.button``;
-
 const Content = styled.div`
   max-height: 80vh;
-  overflow: hidden;
-  /* overflow: hidden; */
+  overflow: auto;
+  margin-bottom: 80px;
 `;
 
 const Wrapper = styled.div``;

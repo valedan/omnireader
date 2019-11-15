@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@apollo/react-hooks";
-import { GET_CHAPTER } from "../../queries/chapter";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { GET_CHAPTER, UPDATE_CHAPTER } from "../../queries/chapter";
 import { Link } from "react-router-dom";
 import { ReaderContent } from "./Content";
 
@@ -19,7 +19,7 @@ export const Reader = () => {
       {data && (
         <>
           <Title>{data.chapter.title}</Title>
-          <ReaderContent content={data.chapter.content}></ReaderContent>
+          <ReaderContent chapter={data.chapter}></ReaderContent>
         </>
       )}
     </Wrapper>
