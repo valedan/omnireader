@@ -23,11 +23,17 @@ export default {
 
   Mutation: {
     updateProgress: async (_, { chapterId, progress }, { models }) => {
-      return await models.Chapter.query().patchAndFetchById(chapterId, {
-        progress: progress,
-        progressUpdatedAt: Date.now,
-      });
+      if (progress < 0) throw new UserInputError('Invalid progress value!');
+
+      const chapter = await models.Chapter.query()
+        .patchAndFetchById(chapterId, {
+          progress: progress,
+          progressUpdatedAt: new Date().toISOString(),
+        })
+        .throwIfNotFound();
+      return chapter;
     },
+
     createStory: async (_, { url }, { models }) => {
       const existingStory = await models.Story.query().findOne({
         canonicalUrl: url,
