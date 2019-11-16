@@ -13,10 +13,11 @@ export const GET_CHAPTER = gql`
   }
 `;
 
-export const UPDATE_CHAPTER = gql`
-  mutation UpdateChapter($id: ID!, $progress: Float!) {
-    updateChapter(id: $id, progress: $progress) {
+export const UPDATE_PROGRESS = gql`
+  mutation UpdateProgress($chapterId: ID!, $progress: Float!) {
+    updateProgress(chapterId: $chapterId, progress: $progress) {
       id
+      progress
     }
   }
 `;

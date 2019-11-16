@@ -1,34 +1,37 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { UPDATE_CHAPTER } from "../../queries/chapter";
+import { UPDATE_PROGRESS } from "../../queries/chapter";
 import { useMutation } from "@apollo/react-hooks";
-import _ from "lodash";
+import { useInterval } from "../../hooks/useInterval";
 
 export const ReaderContent = ({ chapter }) => {
   const ref = useRef(null);
   const [progress, setProgress] = useState(chapter.progress);
   const [displayProgress, setDisplayProgress] = useState(0);
 
-  const [updateChapter] = useMutation(UPDATE_CHAPTER);
-
-  const updateProgress = _.debounce(() => {
-    console.log("updating");
-    updateChapter({ variables: { id: chapter.id, progress: progress } });
-  }, 2000);
+  const [updateProgress] = useMutation(UPDATE_PROGRESS);
 
   useEffect(() => {
     setDisplayProgress(progress * 100);
-    updateProgress();
   }, [progress]);
 
-  const scroll = e =>
-    setProgress(
+  const scroll = e => {
+    const newProgress =
       ref.current.scrollTop /
-        (ref.current.scrollHeight - ref.current.clientHeight)
-    );
+      (ref.current.scrollHeight - ref.current.clientHeight);
+    setProgress(Number.parseFloat(newProgress.toPrecision(6)));
+  };
+
+  useInterval(() => {
+    if (progress === chapter.progress) return;
+    updateProgress({
+      variables: { chapterId: chapter.id, progress: progress }
+    });
+  }, 1000);
 
   useEffect(() => {
+    console.log("rendering");
     ref.current.scrollTo(
       0,
       progress * (ref.current.scrollHeight - ref.current.clientHeight)

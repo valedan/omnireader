@@ -8,7 +8,7 @@ const typeDefs = gql`
 
   type Mutation {
     createStory(url: String): Story
-    updateChapter(id: ID!, progress: Float!): Chapter
+    updateProgress(chapterId: ID!, progress: Float!): Chapter
   }
 
   type Story {

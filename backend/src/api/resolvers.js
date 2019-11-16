@@ -22,8 +22,8 @@ export default {
   },
 
   Mutation: {
-    updateChapter: async (_, { id, progress }, { models }) => {
-      return await models.Chapter.query().patchAndFetchById(id, {
+    updateProgress: async (_, { chapterId, progress }, { models }) => {
+      return await models.Chapter.query().patchAndFetchById(chapterId, {
         progress: progress,
         progressUpdatedAt: Date.now,
       });
