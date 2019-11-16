@@ -22,6 +22,12 @@ export default {
   },
 
   Mutation: {
+    updateChapter: async (_, { id, progress }, { models }) => {
+      return await models.Chapter.query().patchAndFetchById(id, {
+        progress: progress,
+        progressUpdatedAt: Date.now,
+      });
+    },
     createStory: async (_, { url }, { models }) => {
       const existingStory = await models.Story.query().findOne({
         canonicalUrl: url,

@@ -23,10 +23,16 @@ export const ReaderContent = ({ chapter }) => {
   }, [progress]);
 
   const scroll = e =>
-    setProgress(ref.current.scrollTop / ref.current.scrollHeight);
+    setProgress(
+      ref.current.scrollTop /
+        (ref.current.scrollHeight - ref.current.clientHeight)
+    );
 
   useEffect(() => {
-    ref.current.scrollTo(0, progress * ref.current.scrollHeight);
+    ref.current.scrollTo(
+      0,
+      progress * (ref.current.scrollHeight - ref.current.clientHeight)
+    );
     ref.current.onscroll = scroll;
   }, []);
 
@@ -44,7 +50,7 @@ export const ReaderContent = ({ chapter }) => {
 const Content = styled.div`
   max-height: 80vh;
   overflow: auto;
-  margin-bottom: 80px;
+  margin-bottom: 20px;
 `;
 
 const Wrapper = styled.div``;

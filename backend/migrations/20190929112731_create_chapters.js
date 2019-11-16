@@ -4,12 +4,13 @@ exports.up = knex => {
     table.timestamps();
     table.string('title');
     table.string('url', 2000);
+    table.timestamp('progressUpdatedAt');
     table
       .integer('number')
       .notNullable()
       .unsigned();
     table
-      .integer('progress')
+      .float('progress')
       .default(0)
       .notNullable()
       .unsigned();
