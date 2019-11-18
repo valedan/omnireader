@@ -11,6 +11,8 @@ export const GET_STORIES = gql`
         id
         title
         number
+        progress
+        progressUpdatedAt
         url
       }
     }

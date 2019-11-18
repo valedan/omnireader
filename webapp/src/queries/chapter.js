@@ -7,6 +7,7 @@ export const GET_CHAPTER = gql`
       title
       number
       progress
+      progressUpdatedAt
       url
       content
     }

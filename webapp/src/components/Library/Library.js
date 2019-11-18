@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useQuery } from "@apollo/react-hooks";
 import List from "@material-ui/core/List";
@@ -15,9 +15,16 @@ export const Library = () => {
   return (
     <Wrapper>
       <AddStory onSuccess={() => refetch()} />
+      <Header>Your Library</Header>
       <List>
-        {data.stories.map(story => {
-          return <StoryListItem story={story}></StoryListItem>;
+        {data.stories.map((story, index) => {
+          return (
+            <StoryListItem
+              first={index === 0}
+              key={story.id}
+              story={story}
+            ></StoryListItem>
+          );
         })}
       </List>
     </Wrapper>
@@ -25,8 +32,13 @@ export const Library = () => {
 };
 
 const Wrapper = styled.div`
-  padding-top: 5%;
+  padding-top: 2%;
   margin: auto;
   width: 80%;
   text-align: center;
+`;
+
+const Header = styled.h1`
+  margin-top: 10%;
+  font-family: cursive;
 `;
