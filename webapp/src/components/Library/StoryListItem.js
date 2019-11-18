@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import List from "@material-ui/core/List";
 
-import ListItem from "@material-ui/core/ListItem";
-import { Link } from "react-router-dom";
+import { StoryContents } from "./StoryContents";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
@@ -29,17 +27,7 @@ export const StoryListItem = ({ story, first }) => {
         </StorySummary>
         <ReadButton>{storyProgress === 0 ? "Start" : "Continue"}</ReadButton>
       </Story>
-      {open && (
-        <List>
-          {story.chapters.map(chapter => {
-            return (
-              <Chapter key={chapter.id}>
-                <Link to={`/chapter/${chapter.id}`}>{chapter.title}</Link>
-              </Chapter>
-            );
-          })}
-        </List>
-      )}
+      {open && <StoryContents story={story} />}
     </Wrapper>
   );
 };
@@ -49,8 +37,8 @@ const Story = styled.div`
   height: 7rem;
   display: flex;
   justify-content: space-between;
-  border-top: ${props => props.first && "1px solid grey"};
-  border-bottom: 1px solid grey;
+  /* border-top: ${props => props.first && "1px solid grey"}; */
+  /* border-bottom: 1px solid grey; */
 `;
 
 const StoryTitle = styled.h2`
@@ -99,5 +87,3 @@ const Wrapper = styled.div`
 
   text-align: center;
 `;
-
-const Chapter = styled(ListItem)``;
