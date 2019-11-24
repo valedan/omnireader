@@ -11,7 +11,7 @@ import { GET_STORIES } from "../../queries/story";
 
 export const Library = () => {
   const { loading, error, data, refetch } = useQuery(GET_STORIES);
-  const [open, setOpen] = useState(0);
+  const [open, setOpen] = useState(null);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;

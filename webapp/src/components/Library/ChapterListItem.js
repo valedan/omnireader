@@ -7,7 +7,7 @@ import { Button } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 
 export const ChapterListItem = ({ chapter, first }) => {
-  const chapterProgress = 0;
+  const chapterProgress = chapter.progress * 100;
   return (
     <Wrapper key={chapter.id}>
       <ChapterLink to={`/chapter/${chapter.id}`}>
@@ -33,6 +33,7 @@ const Wrapper = styled(Button)`
   padding-left: 5%;
   padding-right: 5%;
   &&{
+    text-transform: none;
     padding-top: 0;
     padding-bottom: 0;
     text-align: left;

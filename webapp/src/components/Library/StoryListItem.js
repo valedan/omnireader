@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import { StoryContents } from "./StoryContents";
@@ -14,9 +14,27 @@ import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ChevronRight from "@material-ui/icons/ChevronRight";
+import _ from "lodash";
+import { Link } from "react-router-dom";
 
 export const StoryListItem = ({ story, first, open, handleChange }) => {
-  const storyProgress = 0;
+  const currentChapter =
+    _.maxBy(story.chapters, chapter => chapter.progressUpdatedAt) ||
+    story.chapters[0];
+
+  const calculateStoryProgress = () => {
+    if (story.chapters.length === 0) return 0;
+    if (!currentChapter) return 0;
+
+    const totalChapters = story.chapters.length;
+    const completedChapters = currentChapter.number - 1;
+    return (
+      ((completedChapters + 1 * currentChapter.progress) / totalChapters) * 100
+    );
+  };
+
+  const storyProgress = calculateStoryProgress();
+
   return (
     <Wrapper expanded={open} onChange={handleChange} elevation={2}>
       <Story first={first} expandIcon={<ExpandMore />}>
@@ -38,8 +56,12 @@ export const StoryListItem = ({ story, first, open, handleChange }) => {
           </StorySummary>
           <Divider orientation="vertical" />
           <ReadButton color="secondary">
-            {storyProgress === 0 ? "Start" : "Continue"}
-            <ChevronRight />
+            {currentChapter && (
+              <StoryLink to={`/chapter/${currentChapter.id}`}>
+                {storyProgress === 0 ? "Start" : "Continue"}
+                <ChevronRight />
+              </StoryLink>
+            )}
           </ReadButton>
         </StoryInside>
       </Story>
@@ -55,6 +77,17 @@ const StoryInside = styled.div`
   justify-content: space-between;
   background-color: white;
   cursor: default;
+`;
+
+const StoryLink = styled(Link)`
+  height: 7rem;
+  width: 100%;
+  color: ${grey[900]};
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
 `;
 
 const Story = styled(ExpansionPanelSummary)`
@@ -95,12 +128,13 @@ const StoryEssentialInfo = styled.div`
 `;
 const StoryProgress = styled(LinearProgress)``;
 const ReadButton = styled(Button)`
-  width: 10%;
+  width: 7rem;
   && {
     color: ${grey[900]};
     font-weight: bold;
     font-family: "Merriweather Sans", sans-serif;
     border-radius: 0;
+    padding: 0;
     :hover {
       background: ${lightBlue[100]};
     }

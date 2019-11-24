@@ -45,7 +45,11 @@ export const ReaderContent = ({ chapter }) => {
         ref={ref}
         dangerouslySetInnerHTML={{ __html: chapter.content }}
       />
-      <LinearProgress variant="determinate" value={displayProgress} />
+      <LinearProgress
+        variant="determinate"
+        value={displayProgress}
+        color="secondary"
+      />
     </Wrapper>
   );
 };
