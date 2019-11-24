@@ -3,6 +3,8 @@ import styled from "styled-components";
 import TextField from "@material-ui/core/TextField";
 import { useMutation } from "@apollo/react-hooks";
 import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+
 import { CREATE_STORY } from "../../queries/story";
 
 export const AddStory = ({ onSuccess }) => {
@@ -10,7 +12,7 @@ export const AddStory = ({ onSuccess }) => {
   const [createStory, { error }] = useMutation(CREATE_STORY);
   return (
     <Wrapper>
-      <form
+      <Form
         onSubmit={async e => {
           e.preventDefault();
           await createStory({ variables: { url: input } });
@@ -19,28 +21,43 @@ export const AddStory = ({ onSuccess }) => {
         }}
       >
         <StyledTextField
+          color="secondary"
           label="Add Story"
           placeholder="Enter URL..."
           value={input}
           onChange={e => setInput(e.target.value)}
         ></StyledTextField>
-        <StyledButton type="submit" variant="contained" color="primary">
+        <StyledButton type="submit" variant="contained" color="secondary">
           Add Story
         </StyledButton>
-      </form>
+      </Form>
       {error && <p>{error.message.split(":")[1]}</p>}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled(Paper)`
   width: 100%;
+  padding: 16px 0;
 `;
 
 const StyledTextField = styled(TextField)`
-  width: 60%;
+  && {
+    width: 70%;
+    margin-right: 16px;
+  }
+`;
+
+const Form = styled.form`
+  display: flex;
+  justify-content: center;
+  width: 100%;
 `;
 
 const StyledButton = styled(Button)`
-  margin-bottom: -20px;
+  && {
+    font-family: "Merriweather Sans", sans-serif;
+    color: white;
+    font-weight: bold;
+  }
 `;

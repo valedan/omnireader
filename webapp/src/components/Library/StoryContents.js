@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import List from "@material-ui/core/List";
 import { ChapterListItem } from "./ChapterListItem";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+
 export const StoryContents = ({ story }) => {
   return (
     <Wrapper>
@@ -21,7 +23,7 @@ export const StoryContents = ({ story }) => {
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled(ExpansionPanelDetails)`
   max-height: 50vh;
   overflow-y: scroll;
   padding-left: 5%;

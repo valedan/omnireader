@@ -4,6 +4,8 @@ import { Library } from "./components/Library/Library";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { Reader } from "./components/Reader/Reader";
+import { theme } from "./theme";
+import { ThemeProvider } from "@material-ui/styles";
 
 const apollo = new ApolloClient({
   uri: "http://localhost:4000"
@@ -13,14 +15,16 @@ export const App = () => {
   return (
     <ApolloProvider client={apollo}>
       <Router>
-        <Switch>
-          <Route path="/chapter/:id">
-            <Reader />
-          </Route>
-          <Route path="/">
-            <Library></Library>
-          </Route>
-        </Switch>
+        <ThemeProvider theme={theme}>
+          <Switch>
+            <Route path="/chapter/:id">
+              <Reader />
+            </Route>
+            <Route path="/">
+              <Library></Library>
+            </Route>
+          </Switch>
+        </ThemeProvider>
       </Router>
     </ApolloProvider>
   );
