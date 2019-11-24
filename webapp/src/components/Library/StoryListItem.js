@@ -18,7 +18,7 @@ import ChevronRight from "@material-ui/icons/ChevronRight";
 export const StoryListItem = ({ story, first, open, handleChange }) => {
   const storyProgress = 0;
   return (
-    <Wrapper expanded={open} onChange={handleChange} elevation={4}>
+    <Wrapper expanded={open} onChange={handleChange} elevation={2}>
       <Story first={first} expandIcon={<ExpandMore />}>
         <StoryInside onClick={e => e.stopPropagation()}>
           <StoryImage src="/ffn_logo.jpg" />
@@ -30,7 +30,11 @@ export const StoryListItem = ({ story, first, open, handleChange }) => {
               <span>Updated Today</span>
             </StoryEssentialInfo>
 
-            <StoryProgress variant="determinate" value={storyProgress} />
+            <StoryProgress
+              variant="determinate"
+              value={storyProgress}
+              color="secondary"
+            />
           </StorySummary>
           <Divider orientation="vertical" />
           <ReadButton color="secondary">
@@ -77,6 +81,9 @@ const StoryTitle = styled.h2`
 `;
 const StoryAuthor = styled.span`
   font-style: italic;
+  margin-top: 4px;
+  display: inline-flex;
+  align-self: center;
 `;
 const StoryEssentialInfo = styled.div`
   display: flex;
