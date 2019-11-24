@@ -9,7 +9,11 @@ import { UserInputError } from 'apollo-server';
 export default {
   Query: {
     stories: async (_, __, { models }) =>
-      await models.Story.query().eager('chapters'),
+      await models.Story.query()
+        .eager('chapters')
+        .modifyEager('chapters', builder => {
+          builder.orderBy('id');
+        }),
 
     chapter: async (_, { id }, { models }) => {
       const chapter = await models.Chapter.query()

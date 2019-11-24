@@ -26,6 +26,7 @@ const typeDefs = gql`
     url: String
     number: Int
     progress: Float
+    progressUpdatedAt: String
     storyId: Int
     content: String
   }
