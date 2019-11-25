@@ -21,7 +21,20 @@ export default {
         .eager('story');
       if (!chapter) throw new UserInputError('Chapter not found!');
       const { content } = await fetchChapter(chapter.url);
-      return { ...chapter, content: content };
+      const nextChapter = await models.Chapter.query().findOne({
+        storyId: chapter.storyId,
+        number: chapter.number + 1,
+      });
+      const prevChapter = await models.Chapter.query().findOne({
+        storyId: chapter.storyId,
+        number: chapter.number - 1,
+      });
+      return {
+        ...chapter,
+        content: content,
+        nextId: nextChapter && nextChapter.id,
+        prevId: prevChapter && prevChapter.id,
+      };
     },
   },
 

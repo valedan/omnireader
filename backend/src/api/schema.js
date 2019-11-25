@@ -29,6 +29,8 @@ const typeDefs = gql`
     progressUpdatedAt: String
     storyId: Int
     content: String
+    nextId: Int
+    prevId: Int
   }
 `;
 
