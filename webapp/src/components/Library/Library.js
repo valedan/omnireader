@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Paper from "@material-ui/core/Paper";
-import grey from "@material-ui/core/colors/grey";
 
 import { useQuery } from "@apollo/react-hooks";
 import List from "@material-ui/core/List";
@@ -29,7 +28,6 @@ export const Library = () => {
           {data.stories.map((story, index) => {
             return (
               <StoryListItem
-                first={index === 0}
                 open={open === index}
                 handleChange={handleChange(index)}
                 key={story.id}
@@ -57,8 +55,6 @@ const ListWrapper = styled(Paper)`
 
 const Header = styled.h1`
   font-family: cursive;
-  /* padding-top: 2%; */
-
   overflow: hidden;
   text-align: center;
 

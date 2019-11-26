@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import List from "@material-ui/core/List";
 import { ChapterListItem } from "./ChapterListItem";
@@ -8,18 +8,12 @@ import { Divider } from "@material-ui/core";
 export const StoryContents = ({ story }) => {
   return (
     <Wrapper>
-      {/* <Divider /> */}
-      {/* <Heading>Contents</Heading> */}
       <StyledList>
-        {story.chapters.map((chapter, index) => {
+        {story.chapters.map(chapter => {
           return (
             <>
               <Divider />
-              <ChapterListItem
-                first={index === 0}
-                key={chapter.id}
-                chapter={chapter}
-              />
+              <ChapterListItem key={chapter.id} chapter={chapter} />
             </>
           );
         })}
@@ -51,8 +45,4 @@ const Wrapper = styled(ExpansionPanelDetails)`
   && {
     padding: 0;
   }
-`;
-
-const Heading = styled.h2`
-  font-family: cursive;
 `;

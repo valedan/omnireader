@@ -10,16 +10,17 @@ import { CREATE_STORY } from "../../queries/story";
 export const AddStory = ({ onSuccess }) => {
   const [input, setInput] = useState("");
   const [createStory, { error }] = useMutation(CREATE_STORY);
+
+  const submitForm = async e => {
+    e.preventDefault();
+    await createStory({ variables: { url: input } });
+    onSuccess();
+    setInput("");
+  };
+
   return (
     <Wrapper>
-      <Form
-        onSubmit={async e => {
-          e.preventDefault();
-          await createStory({ variables: { url: input } });
-          onSuccess();
-          setInput("");
-        }}
-      >
+      <Form onSubmit={submitForm}>
         <StyledTextField
           color="secondary"
           label="Add Story"

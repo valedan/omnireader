@@ -9,18 +9,12 @@ import Paper from "@material-ui/core/Paper";
 export const ReaderContent = ({ chapter, content }) => {
   const ref = useRef(null);
   const [progress, setProgress] = useState(chapter.progress);
-  const [displayProgress, setDisplayProgress] = useState(0);
-
   const [updateProgress] = useMutation(UPDATE_PROGRESS);
-
-  useEffect(() => {
-    setDisplayProgress(progress * 100);
-  }, [progress]);
+  const scrollableHeight = () =>
+    ref.current.scrollHeight - ref.current.clientHeight;
 
   const scroll = e => {
-    const newProgress =
-      ref.current.scrollTop /
-      (ref.current.scrollHeight - ref.current.clientHeight);
+    const newProgress = ref.current.scrollTop / scrollableHeight();
     setProgress(Number.parseFloat(newProgress.toPrecision(6)));
   };
 
@@ -32,12 +26,9 @@ export const ReaderContent = ({ chapter, content }) => {
   }, 1000);
 
   useEffect(() => {
-    console.log("rendering");
-    ref.current.scrollTo(
-      0,
-      progress * (ref.current.scrollHeight - ref.current.clientHeight)
-    );
+    ref.current.scrollTo(0, progress * scrollableHeight());
     ref.current.onscroll = scroll;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -45,12 +36,19 @@ export const ReaderContent = ({ chapter, content }) => {
       <Content ref={ref} dangerouslySetInnerHTML={{ __html: content }} />
       <LinearProgress
         variant="determinate"
-        value={displayProgress}
+        value={progress * 100}
         color="secondary"
       />
     </Wrapper>
   );
 };
+
+const Wrapper = styled(Paper)`
+  max-width: 900px;
+  box-sizing: border-box;
+  align-self: center;
+  margin-top: 40px;
+`;
 
 const Content = styled.div`
   max-height: 80vh;
@@ -59,11 +57,4 @@ const Content = styled.div`
   line-height: 1.7;
   font-size: 1.05em;
   padding: 2rem 5rem;
-`;
-
-const Wrapper = styled(Paper)`
-  max-width: 900px;
-  box-sizing: border-box;
-  align-self: center;
-  margin-top: 40px;
 `;
