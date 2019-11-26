@@ -7,6 +7,10 @@ export const GET_STORIES = gql`
       title
       author
       canonicalUrl
+      details {
+        description
+        information
+      }
       chapters {
         id
         title

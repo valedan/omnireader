@@ -16,7 +16,7 @@ const typeDefs = gql`
     canonicalUrl: String
     title: String
     author: String
-    details: String
+    details: StoryDetails
     chapters: [Chapter]
   }
 
@@ -31,6 +31,11 @@ const typeDefs = gql`
     content: String
     nextId: Int
     prevId: Int
+  }
+
+  type StoryDetails {
+    description: String
+    information: String
   }
 `;
 

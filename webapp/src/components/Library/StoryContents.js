@@ -2,12 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import List from "@material-ui/core/List";
 import { ChapterListItem } from "./ChapterListItem";
+import { StoryDescription } from "./StoryDescription";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import { Divider } from "@material-ui/core";
 
 export const StoryContents = ({ story }) => {
   return (
     <Wrapper>
+      <Divider />
+      <StoryDescription story={story} />
       <StyledList>
         {story.chapters.map(chapter => {
           return (
