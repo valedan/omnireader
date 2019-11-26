@@ -10,6 +10,8 @@ export const GET_CHAPTER = gql`
       progressUpdatedAt
       url
       content
+      nextId
+      prevId
     }
   }
 `;

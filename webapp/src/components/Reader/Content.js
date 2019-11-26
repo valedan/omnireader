@@ -4,8 +4,9 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { UPDATE_PROGRESS } from "../../queries/chapter";
 import { useMutation } from "@apollo/react-hooks";
 import { useInterval } from "../../hooks/useInterval";
+import Paper from "@material-ui/core/Paper";
 
-export const ReaderContent = ({ chapter }) => {
+export const ReaderContent = ({ chapter, content }) => {
   const ref = useRef(null);
   const [progress, setProgress] = useState(chapter.progress);
   const [displayProgress, setDisplayProgress] = useState(0);
@@ -41,10 +42,7 @@ export const ReaderContent = ({ chapter }) => {
 
   return (
     <Wrapper>
-      <Content
-        ref={ref}
-        dangerouslySetInnerHTML={{ __html: chapter.content }}
-      />
+      <Content ref={ref} dangerouslySetInnerHTML={{ __html: content }} />
       <LinearProgress
         variant="determinate"
         value={displayProgress}
@@ -58,6 +56,14 @@ const Content = styled.div`
   max-height: 80vh;
   overflow: auto;
   margin-bottom: 20px;
+  line-height: 1.7;
+  font-size: 1.05em;
+  padding: 2rem 5rem;
 `;
 
-const Wrapper = styled.div``;
+const Wrapper = styled(Paper)`
+  max-width: 900px;
+  box-sizing: border-box;
+  align-self: center;
+  margin-top: 40px;
+`;
