@@ -6,6 +6,7 @@ export const GET_STORIES = gql`
       id
       title
       author
+      avatar
       canonicalUrl
       details {
         description

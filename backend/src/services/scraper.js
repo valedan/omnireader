@@ -67,6 +67,7 @@ const extractStoryInfo = ($, url) => {
     author: $('#profile_top .xcontrast_txt')
       .eq(2)
       .text(),
+    avatar: extractAvatar($),
     details: {
       description: $('#profile_top div.xcontrast_txt').text(),
       information: $('#profile_top span.xgray.xcontrast_txt')
@@ -75,6 +76,13 @@ const extractStoryInfo = ($, url) => {
         .trim(),
     },
   };
+};
+
+const extractAvatar = $ => {
+  let url = $('#profile_top img').attr('src');
+  if (!url) return null;
+  if (!url.startsWith('http')) url = 'https:' + url;
+  return url;
 };
 
 const validateUrl = url => {

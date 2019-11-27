@@ -5,6 +5,7 @@ exports.up = knex => {
     table.string('canonicalUrl', 2000).notNullable();
     table.string('title').notNullable();
     table.string('author').notNullable();
+    table.string('avatar');
     table.json('details');
   });
 };

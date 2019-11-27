@@ -39,17 +39,18 @@ export const StoryListItem = ({ story, first, open, handleChange }) => {
 
   const storyProgress = calculateStoryProgress();
 
-  const timeKey =
-    story.information && story.information.includes("Updated")
-      ? "Updated"
-      : "Published";
+  const timeKey = story.details.information.includes("Updated")
+    ? "Updated"
+    : "Published";
   const updated = getValueFromInfo(story.details.information, timeKey);
 
   return (
     <Wrapper expanded={open} onChange={handleChange} elevation={2}>
       <SummaryWrapper first={first} expandIcon={<ExpandMore />}>
         <Summary onClick={e => e.stopPropagation()}>
-          <Image src="/ffn_logo.jpg" />
+          <ImageContainer>
+            <Image src={story.avatar || "/ffn_anon.webp"} />
+          </ImageContainer>
 
           <Info>
             <Title>{story.title}</Title>
@@ -107,9 +108,19 @@ const Summary = styled.div`
   cursor: default;
 `;
 
+const ImageContainer = styled.div`
+  display: flex;
+  width: 6rem;
+  height: 6rem;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+`;
+
 const Image = styled.img`
-  padding: 0.5rem;
+  object-fit: contain;
   max-width: 6rem;
+  max-height: 6rem;
 `;
 
 const Info = styled.div`

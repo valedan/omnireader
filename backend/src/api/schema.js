@@ -16,6 +16,7 @@ const typeDefs = gql`
     canonicalUrl: String
     title: String
     author: String
+    avatar: String
     details: StoryDetails
     chapters: [Chapter]
   }

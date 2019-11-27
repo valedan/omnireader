@@ -23,6 +23,7 @@ const expectedStoryData = {
     'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
   title: 'Harry Potter and the Methods of Rationality',
   author: 'Less Wrong',
+  avatar: 'https://ff74.b-cdn.net/image/80871/75/',
   details: {
     description:
       'Petunia married a biochemist, and Harry grew up reading science and science fiction. Then came the Hogwarts letter, and a world of intriguing new possibilities to exploit. And new friends, like Hermione Granger, and Professor McGonagall, and Professor Quirrell... COMPLETE.',
