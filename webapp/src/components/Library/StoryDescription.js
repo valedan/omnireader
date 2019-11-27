@@ -10,7 +10,6 @@ export const StoryDescription = ({ story }) => {
     "Reviews",
     "Favs",
     "Follows",
-    "Updated",
     "Published",
     "Status"
   ];

@@ -31,7 +31,19 @@ export const StoryListItem = ({ story, first, open, handleChange }) => {
     );
   };
 
+  const getValueFromInfo = (info, key) =>
+    info
+      .split(" - ")
+      .find(item => item.includes(key))
+      .split(": ")[1];
+
   const storyProgress = calculateStoryProgress();
+
+  const timeKey =
+    story.information && story.information.includes("Updated")
+      ? "Updated"
+      : "Published";
+  const updated = getValueFromInfo(story.details.information, timeKey);
 
   return (
     <Wrapper expanded={open} onChange={handleChange} elevation={2}>
@@ -44,7 +56,7 @@ export const StoryListItem = ({ story, first, open, handleChange }) => {
             <Author>{story.author}</Author>
             <EssentialInfo>
               <span>{story.chapters.length} chapters</span>
-              <span>Updated Today</span>
+              <span>Updated {updated}</span>
             </EssentialInfo>
 
             <Progress
@@ -55,7 +67,7 @@ export const StoryListItem = ({ story, first, open, handleChange }) => {
           </Info>
 
           <Divider orientation="vertical" />
-          
+
           <ReadButton color="secondary">
             {currentChapter && (
               <ReadLink to={`/chapter/${currentChapter.id}`}>
@@ -64,7 +76,6 @@ export const StoryListItem = ({ story, first, open, handleChange }) => {
               </ReadLink>
             )}
           </ReadButton>
-
         </Summary>
       </SummaryWrapper>
       <StoryContents story={story} />
