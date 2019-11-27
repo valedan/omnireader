@@ -5,14 +5,7 @@ import LaunchIcon from "@material-ui/icons/Launch";
 
 export const StoryDescription = ({ story }) => {
   const infoItems = story.details.information.split(" - ");
-  const infoWhitelist = [
-    "Words",
-    "Reviews",
-    "Favs",
-    "Follows",
-    "Published",
-    "Status"
-  ];
+  const infoWhitelist = ["Words", "Published", "Status"];
 
   const itemElements = infoItems
     .filter(item => infoWhitelist.includes(item.split(": ")[0]))
@@ -47,11 +40,11 @@ export const StoryDescription = ({ story }) => {
 };
 
 const Wrapper = styled.div`
-  padding: 5%;
+  padding: 3%;
 `;
 
 const Description = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   font-style: italic;
 `;
 
