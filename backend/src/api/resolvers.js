@@ -51,6 +51,11 @@ export default {
       return chapter;
     },
 
+    deleteStory: async (_, { id }, { models }) => {
+      await models.Story.query().deleteById(id);
+      return true;
+    },
+
     createStory: async (_, { url }, { models }) => {
       const existingStory = await models.Story.query().findOne({
         canonicalUrl: url,

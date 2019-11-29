@@ -14,7 +14,13 @@ import ChevronRight from "@material-ui/icons/ChevronRight";
 import _ from "lodash";
 import { Link } from "react-router-dom";
 
-export const StoryListItem = ({ story, first, open, handleChange }) => {
+export const StoryListItem = ({
+  refetch,
+  story,
+  first,
+  open,
+  handleChange
+}) => {
   // TODO: these functions should be put in a shared story_utils file
   const currentChapter =
     _.maxBy(story.chapters, chapter => chapter.progressUpdatedAt) ||
@@ -79,7 +85,7 @@ export const StoryListItem = ({ story, first, open, handleChange }) => {
           </ReadButton>
         </Summary>
       </SummaryWrapper>
-      <StoryContents story={story} />
+      <StoryContents refetch={refetch} story={story} />
     </Wrapper>
   );
 };

@@ -28,6 +28,7 @@ export const Library = () => {
           {data.stories.map((story, index) => {
             return (
               <StoryListItem
+                refetch={refetch}
                 open={open === index}
                 handleChange={handleChange(index)}
                 key={story.id}

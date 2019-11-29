@@ -147,3 +147,7 @@ describe('Mutation: createStory', () => {
     });
   });
 });
+
+describe('Mutation: deleteStory', () => {
+  //TODO
+});

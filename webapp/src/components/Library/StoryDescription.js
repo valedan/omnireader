@@ -2,8 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import _ from "lodash";
 import LaunchIcon from "@material-ui/icons/Launch";
+import { Button } from "@material-ui/core";
+import { DELETE_STORY } from "../../queries/story";
+import { useMutation } from "@apollo/react-hooks";
+import { red } from "@material-ui/core/colors";
+import { withStyles } from "@material-ui/styles";
 
-export const StoryDescription = ({ story }) => {
+export const StoryDescription = ({ refetch, story }) => {
   const infoItems = story.details.information.split(" - ");
   const infoWhitelist = ["Words", "Published", "Status"];
 
@@ -18,12 +23,24 @@ export const StoryDescription = ({ story }) => {
       );
     });
 
-  itemElements.push(
+  const [deleteStoryMutation, { error }] = useMutation(DELETE_STORY);
+  const deleteStory = async () => {
+    await deleteStoryMutation({ variables: { id: story.id } });
+    refetch();
+  };
+
+  itemElements.unshift(
     <InfoItem>
       <a href={story.canonicalUrl}>
         Source <LaunchIcon fontSize="inherit" />
       </a>
     </InfoItem>
+  );
+
+  itemElements.push(
+    <DeleteButton color="inherit" variant="outlined" onClick={deleteStory}>
+      Delete
+    </DeleteButton>
   );
   return (
     <Wrapper>
@@ -35,6 +52,7 @@ export const StoryDescription = ({ story }) => {
           )
         )}
       </Information>
+      {error && <p>{error.message.split(":")[1]}</p>}
     </Wrapper>
   );
 };
@@ -64,3 +82,15 @@ const InfoItem = styled.span`
     margin-bottom: -4px;
   }
 `;
+
+const DeleteButton = withStyles(theme => ({
+  root: {
+    fontFamily: "Merriweather Sans",
+    fontWeight: "bold",
+    color: theme.palette.getContrastText(red[500]),
+    backgroundColor: red[500],
+    "&:hover": {
+      backgroundColor: red[700]
+    }
+  }
+}))(Button);

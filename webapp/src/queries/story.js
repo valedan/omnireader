@@ -40,3 +40,9 @@ export const CREATE_STORY = gql`
     }
   }
 `;
+
+export const DELETE_STORY = gql`
+  mutation DeleteStory($id: ID!) {
+    deleteStory(id: $id)
+  }
+`;

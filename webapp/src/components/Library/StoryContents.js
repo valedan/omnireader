@@ -6,11 +6,11 @@ import { StoryDescription } from "./StoryDescription";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import { Divider } from "@material-ui/core";
 
-export const StoryContents = ({ story }) => {
+export const StoryContents = ({ refetch, story }) => {
   return (
     <Wrapper>
       <Divider />
-      <StoryDescription story={story} />
+      <StoryDescription refetch={refetch} story={story} />
       <StyledList>
         {story.chapters.map(chapter => {
           return (
