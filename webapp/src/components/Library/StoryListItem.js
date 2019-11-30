@@ -62,7 +62,10 @@ export const StoryListItem = ({
             <Title>{story.title}</Title>
             <Author>{story.author}</Author>
             <EssentialInfo>
-              <span>{story.chapters.length} chapters</span>
+              <span>
+                {story.chapters.length}{" "}
+                {story.chapters.length === 1 ? "chapter" : "chapters"}
+              </span>
               <span>Updated {updated}</span>
             </EssentialInfo>
 

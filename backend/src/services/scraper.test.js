@@ -80,6 +80,22 @@ describe('.fetchStory', () => {
     });
   });
 
+  context('When the story only has 1 chapter', () => {
+    it('returns the parsed story data', async () => {
+      const single = fs.readFileSync(
+        `${__dirname}/../../tests/fixtures/ffn_single_chapter.html`,
+      );
+      //TODO: mockResolved helper
+      axios.get.mockImplementationOnce(() =>
+        Promise.resolve({
+          data: single,
+        }),
+      );
+      const storyData = await fetchStory('https://www.fanfiction.net/s/123/1');
+      expect(storyData.chapters[0].title).toEqual('Instruments of Destruction');
+    });
+  });
+
   it('returns the parsed story data', async () => {
     const hpmor = fs.readFileSync(
       `${__dirname}/../../tests/fixtures/ffn_hpmor_chapter_1.html`,

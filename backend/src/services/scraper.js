@@ -14,7 +14,8 @@ export const fetchStory = async url => {
 
   return {
     ...extractStoryInfo(nodeSet, url),
-    chapters: extractChapterList(nodeSet, url),
+    chapters:
+      extractChapterList(nodeSet, url) || extractSingleChapter(nodeSet, url),
   };
 };
 
@@ -61,9 +62,7 @@ const extractStoryInfo = ($, url) => {
   validateStoryPresence($);
   return {
     canonicalUrl: url,
-    title: $('#profile_top .xcontrast_txt')
-      .first()
-      .text(),
+    title: extractTitle($),
     author: $('#profile_top .xcontrast_txt')
       .eq(2)
       .text(),
@@ -92,7 +91,25 @@ const validateUrl = url => {
   }
 };
 
+const extractTitle = $ => {
+  return $('#profile_top .xcontrast_txt')
+    .first()
+    .text();
+};
+
+const extractSingleChapter = ($, url) => {
+  console.log('single chapter');
+  return [
+    {
+      title: extractTitle($),
+      url: url,
+      number: 1,
+    },
+  ];
+};
+
 const extractChapterList = ($, url) => {
+  if ($('#chap_select').length === 0) return null;
   return $('#chap_select')
     .first()
     .find('option')
