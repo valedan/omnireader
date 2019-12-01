@@ -1,20 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { Button } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
+import { ProgressBar } from "../shared/ProgressBar";
 
 export const ChapterListItem = ({ chapter }) => {
   return (
     <Wrapper>
       <ChapterLink to={`/chapter/${chapter.id}`}>
         <ChapterTitle>{chapter.title}</ChapterTitle>
-        <LinearProgress
-          variant="determinate"
-          color="secondary"
-          value={chapter.progress * 100}
-        />
+        {chapter.progress > 0 && (
+          <ProgressBar value={chapter.progress * 100} showPercent />
+        )}
       </ChapterLink>
     </Wrapper>
   );
@@ -36,6 +34,11 @@ const Wrapper = styled(Button)`
     align-items: stretch;
     padding-left: 2%;
     .MuiButton-label {
+      a {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+      }
       height: 100%;
       :hover {
         text-decoration: underline;
@@ -44,7 +47,9 @@ const Wrapper = styled(Button)`
   }
 `;
 
-const ChapterTitle = styled.h3``;
+const ChapterTitle = styled.h3`
+  margin: 0;
+`;
 
 const ChapterLink = styled(Link)`
   height: 100%;

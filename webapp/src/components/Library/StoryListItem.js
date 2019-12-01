@@ -7,12 +7,13 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { lighten } from "polished";
 import grey from "@material-ui/core/colors/grey";
 import lightBlue from "@material-ui/core/colors/lightBlue";
-import { Button, Divider } from "@material-ui/core";
+import { Button, Divider, Slider } from "@material-ui/core";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import _ from "lodash";
 import { Link } from "react-router-dom";
+import { ProgressBar } from "../shared/ProgressBar";
 
 export const StoryListItem = ({
   refetch,
@@ -69,11 +70,9 @@ export const StoryListItem = ({
               <span>Updated {updated}</span>
             </EssentialInfo>
 
-            <Progress
-              variant="determinate"
-              value={storyProgress}
-              color="secondary"
-            />
+            {storyProgress > 0 && (
+              <ProgressBar value={storyProgress} showPercent />
+            )}
           </Info>
 
           <Divider orientation="vertical" />
@@ -133,21 +132,22 @@ const Image = styled.img`
 `;
 
 const Info = styled.div`
-  display: "flex";
-  flex-direction: "column";
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
   padding-right: 4%;
   padding-left: 4%;
+  justify-content: space-around;
 `;
 
 const Title = styled.h2`
   margin: 0;
-  margin-top: 0.5rem;
+  /* margin-top: 0.5rem; */
 `;
 
 const Author = styled.span`
   font-style: italic;
-  margin-top: 4px;
+  /* margin-top: 4px; */
   display: inline-flex;
   align-self: center;
 `;
@@ -155,13 +155,11 @@ const Author = styled.span`
 const EssentialInfo = styled.div`
   display: flex;
   justify-content: space-around;
-  margin-top: 8px;
-  margin-bottom: 12px;
+  /* margin-top: 8px; */
+  /* margin-bottom: 4px; */
   font-family: "Merriweather Sans", sans-serif;
   color: ${lighten(0.3, grey[900])};
 `;
-
-const Progress = styled(LinearProgress)``;
 
 const ReadButton = styled(Button)`
   width: 7rem;
