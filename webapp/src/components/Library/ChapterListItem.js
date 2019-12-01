@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import { ProgressBar } from "../shared/ProgressBar";
-
 export const ChapterListItem = ({ chapter }) => {
   return (
     <Wrapper>

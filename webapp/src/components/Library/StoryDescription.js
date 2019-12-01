@@ -1,17 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import _ from "lodash";
 import LaunchIcon from "@material-ui/icons/Launch";
-import { Button } from "@material-ui/core";
+import { Button, Menu, MenuItem } from "@material-ui/core";
 import { DELETE_STORY } from "../../queries/story";
 import { useMutation } from "@apollo/react-hooks";
 import { red } from "@material-ui/core/colors";
 import { withStyles } from "@material-ui/styles";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 export const StoryDescription = ({ refetch, story }) => {
   const infoItems = story.details.information.split(" - ");
   const infoWhitelist = ["Words", "Published", "Status"];
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const openMenu = event => {
+    setMenuAnchor(event.currentTarget);
+  };
 
+  const closeMenu = () => {
+    setMenuAnchor(null);
+  };
   const itemElements = infoItems
     .filter(item => infoWhitelist.includes(item.split(": ")[0]))
     .map(item => {
@@ -29,7 +37,7 @@ export const StoryDescription = ({ refetch, story }) => {
     refetch();
   };
 
-  itemElements.unshift(
+  itemElements.push(
     <InfoItem>
       <a href={story.canonicalUrl}>
         Source <LaunchIcon fontSize="inherit" />
@@ -37,28 +45,64 @@ export const StoryDescription = ({ refetch, story }) => {
     </InfoItem>
   );
 
-  itemElements.push(
-    <DeleteButton color="inherit" variant="outlined" onClick={deleteStory}>
-      Delete
-    </DeleteButton>
-  );
   return (
     <Wrapper>
-      <Description>{story.details.description}</Description>
-      <Information>
-        {_.chunk(itemElements, Math.ceil(itemElements.length / 4)).map(
-          chunk => (
-            <div>{chunk}</div>
-          )
-        )}
-      </Information>
-      {error && <p>{error.message.split(":")[1]}</p>}
+      <MainContent>
+        <Description>{story.details.description}</Description>
+        <Information>
+          {_.chunk(itemElements, Math.ceil(itemElements.length / 4)).map(
+            chunk => (
+              <div>{chunk}</div>
+            )
+          )}
+        </Information>
+        {error && <p>{error.message.split(":")[1]}</p>}
+      </MainContent>
+      <MenuWrapper>
+        <MenuButton onClick={openMenu}>
+          <MoreVertIcon />
+        </MenuButton>
+        <StyledMenu
+          transformOrigin={{ horizontal: 70, vertical: -20 }}
+          anchorEl={menuAnchor}
+          open={Boolean(menuAnchor)}
+          onClose={closeMenu}
+        >
+          <DeleteButton onClick={deleteStory}>Delete</DeleteButton>
+        </StyledMenu>
+      </MenuWrapper>
     </Wrapper>
   );
 };
 
+const MenuButton = styled(Button)`
+  && {
+    position: absolute;
+    top: -25px;
+    right: -30px;
+    min-width: 32px;
+  }
+`;
+
 const Wrapper = styled.div`
   padding: 3%;
+  display: flex;
+  flex-direction: row;
+`;
+
+const MenuWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+`;
+
+const MainContent = styled.div`
+  margin-right: 2%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-around;
 `;
 
 const Description = styled.div`
@@ -83,14 +127,16 @@ const InfoItem = styled.span`
   }
 `;
 
-const DeleteButton = withStyles(theme => ({
-  root: {
-    fontFamily: "Merriweather Sans",
-    fontWeight: "bold",
-    color: theme.palette.getContrastText(red[500]),
-    backgroundColor: red[500],
-    "&:hover": {
-      backgroundColor: red[700]
+const DeleteButton = styled(MenuItem)`
+  && {
+    font-family: "Merriweather Sans";
+    color: ${red[500]};
+  }
+`;
+
+const StyledMenu = styled(Menu)`
+  && {
+    .MuiMenu-paper {
     }
   }
-}))(Button);
+`;
