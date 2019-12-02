@@ -78,8 +78,8 @@ export const StoryDescription = ({ refetch, story }) => {
 const MenuButton = styled(Button)`
   && {
     position: absolute;
-    top: -25px;
-    right: -30px;
+    top: -20px;
+    right: -25px;
     min-width: 32px;
   }
 `;

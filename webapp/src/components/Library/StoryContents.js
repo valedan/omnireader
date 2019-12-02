@@ -34,6 +34,7 @@ const StyledList = styled(List)`
 const Wrapper = styled(ExpansionPanelDetails)`
   max-height: 50vh;
   flex-direction: column;
+  overflow-x: hidden;
   overflow-y: scroll;
   ::-webkit-scrollbar {
     -webkit-appearance: none;

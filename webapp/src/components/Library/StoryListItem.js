@@ -118,7 +118,7 @@ const Summary = styled.div`
 
 const ImageContainer = styled.div`
   display: flex;
-  width: 6rem;
+  min-width: 6rem;
   height: 6rem;
   align-self: center;
   align-items: center;
@@ -135,14 +135,15 @@ const Info = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding-right: 4%;
-  padding-left: 4%;
+  padding-right: 2%;
+  padding-left: 2%;
   justify-content: space-around;
 `;
 
 const Title = styled.h2`
   margin: 0;
-  /* margin-top: 0.5rem; */
+  overflow: hidden;
+  font-size: 1.4em;
 `;
 
 const Author = styled.span`
@@ -162,8 +163,8 @@ const EssentialInfo = styled.div`
 `;
 
 const ReadButton = styled(Button)`
-  width: 7rem;
   && {
+    min-width: 7rem;
     color: ${grey[900]};
     font-weight: bold;
     font-family: "Merriweather Sans", sans-serif;

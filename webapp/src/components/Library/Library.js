@@ -45,6 +45,7 @@ export const Library = () => {
 const Wrapper = styled.div`
   padding-top: 2%;
   margin: auto;
+  min-width: 600px;
   width: 80%;
   text-align: center;
 `;
