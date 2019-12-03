@@ -45,14 +45,24 @@ export const Library = () => {
 const Wrapper = styled.div`
   padding-top: 2%;
   margin: auto;
-  min-width: 600px;
+  min-width: 700px;
   width: 80%;
   text-align: center;
 `;
 
 const ListWrapper = styled(Paper)`
   margin-top: 2%;
-  padding: 2%;
+
+  /* This is roughly 45 em/rem. Should tho units be used instead of px? */
+  @media (max-width: 700px) {
+    ul {
+      padding: 0;
+    }
+  }
+  @media (min-width: 700px) {
+    padding: 2%;
+  }
+  padding-top: 1%;
 `;
 
 const Header = styled.h1`

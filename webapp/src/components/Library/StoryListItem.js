@@ -98,12 +98,15 @@ const SummaryWrapper = styled(ExpansionPanelSummary)`
   && {
     .MuiExpansionPanelSummary-content {
       margin: 0;
+      max-width: calc(100% - 5rem);
+      min-width: calc(100% - 5rem);
     }
     .MuiExpansionPanelSummary-expandIcon {
       margin: 0 16px;
     }
     padding: 0;
     flex-direction: row-reverse;
+    justify-content: space-between;
   }
 `;
 
@@ -134,6 +137,7 @@ const Image = styled.img`
 const Info = styled.div`
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   flex-grow: 1;
   padding-right: 2%;
   padding-left: 2%;
@@ -144,6 +148,10 @@ const Title = styled.h2`
   margin: 0;
   overflow: hidden;
   font-size: 1.4em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+  /* max-width: 20rem; */
 `;
 
 const Author = styled.span`
@@ -170,6 +178,7 @@ const ReadButton = styled(Button)`
     font-family: "Merriweather Sans", sans-serif;
     border-radius: 0;
     padding: 0;
+    padding-left: 8px;
     :hover {
       background: ${lightBlue[100]};
     }
