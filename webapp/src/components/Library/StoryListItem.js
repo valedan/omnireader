@@ -3,17 +3,15 @@ import styled from "styled-components";
 
 import { StoryContents } from "./StoryContents";
 import ExpandMore from "@material-ui/icons/ExpandMore";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import { lighten } from "polished";
 import grey from "@material-ui/core/colors/grey";
 import lightBlue from "@material-ui/core/colors/lightBlue";
-import { Button, Divider, Slider } from "@material-ui/core";
+import { Button, Divider, Slider, useMediaQuery } from "@material-ui/core";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import _ from "lodash";
 import { Link } from "react-router-dom";
-import { ProgressBar } from "../shared/ProgressBar";
+import { StoryInfo } from "./StoryInfo";
 
 export const StoryListItem = ({
   refetch,
@@ -37,57 +35,38 @@ export const StoryListItem = ({
       ((completedChapters + 1 * currentChapter.progress) / totalChapters) * 100
     );
   };
-
-  const getValueFromInfo = (info, key) =>
-    info
-      .split(" - ")
-      .find(item => item.includes(key))
-      .split(": ")[1];
+  const bigScreen = useMediaQuery("(min-width:700px)");
 
   const storyProgress = calculateStoryProgress();
 
-  const timeKey = story.details.information.includes("Updated")
-    ? "Updated"
-    : "Published";
-  const updated = getValueFromInfo(story.details.information, timeKey);
-
   return (
     <Wrapper expanded={open} onChange={handleChange} elevation={2}>
-      <SummaryWrapper first={first} expandIcon={<ExpandMore />}>
+      <SummaryWrapper first={first} expandIcon={bigScreen && <ExpandMore />}>
         <Summary onClick={e => e.stopPropagation()}>
           <ImageContainer>
-            <Image src={story.avatar || "/ffn_anon.webp"} />
+            <ImageReadLink to={`/chapter/${currentChapter.id}`}>
+              <Image src={story.avatar || "/ffn_anon.webp"} />
+            </ImageReadLink>
           </ImageContainer>
 
-          <Info>
-            <Title>{story.title}</Title>
-            <Author>{story.author}</Author>
-            <EssentialInfo>
-              <span>
-                {story.chapters.length}{" "}
-                {story.chapters.length === 1 ? "chapter" : "chapters"}
-              </span>
-              <span>Updated {updated}</span>
-            </EssentialInfo>
+          <StoryInfo story={story} />
 
-            {storyProgress > 0 && (
-              <ProgressBar value={storyProgress} showPercent />
-            )}
-          </Info>
-
-          <Divider orientation="vertical" />
-
-          <ReadButton color="secondary">
-            {currentChapter && (
-              <ReadLink to={`/chapter/${currentChapter.id}`}>
-                {storyProgress === 0 ? "Start" : "Continue"}
-                <ChevronRight />
-              </ReadLink>
-            )}
-          </ReadButton>
+          {bigScreen && (
+            <>
+              <Divider orientation="vertical" />
+              <ReadButton color="secondary">
+                {currentChapter && (
+                  <ReadLink to={`/chapter/${currentChapter.id}`}>
+                    {storyProgress === 0 ? "Start" : "Continue"}
+                    <ChevronRight />
+                  </ReadLink>
+                )}
+              </ReadButton>
+            </>
+          )}
         </Summary>
       </SummaryWrapper>
-      <StoryContents refetch={refetch} story={story} />
+      {bigScreen && <StoryContents refetch={refetch} story={story} />}
     </Wrapper>
   );
 };
@@ -100,6 +79,10 @@ const SummaryWrapper = styled(ExpansionPanelSummary)`
       margin: 0;
       max-width: calc(100% - 5rem);
       min-width: calc(100% - 5rem);
+      @media (max-width: 700px) {
+        max-width: 100%;
+        min-width: 100%;
+      }
     }
     .MuiExpansionPanelSummary-expandIcon {
       margin: 0 16px;
@@ -112,7 +95,17 @@ const SummaryWrapper = styled(ExpansionPanelSummary)`
 
 const Summary = styled.div`
   width: 100%;
-  height: 7rem;
+  @media (min-width: 700px) {
+    height: 7rem;
+  }
+  @media (max-width: 700px) {
+    height: 11rem;
+    text-align: left;
+    cursor: pointer;
+    :hover {
+      background-color: ${grey[50]};
+    }
+  }
   display: flex;
   justify-content: space-between;
   background-color: white;
@@ -122,7 +115,7 @@ const Summary = styled.div`
 const ImageContainer = styled.div`
   display: flex;
   min-width: 6rem;
-  height: 6rem;
+  height: 100%;
   align-self: center;
   align-items: center;
   justify-content: center;
@@ -134,42 +127,13 @@ const Image = styled.img`
   max-height: 6rem;
 `;
 
-const Info = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  flex-grow: 1;
-  padding-right: 2%;
-  padding-left: 2%;
-  justify-content: space-around;
-`;
-
-const Title = styled.h2`
-  margin: 0;
-  overflow: hidden;
-  font-size: 1.4em;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+const ImageReadLink = styled(Link)`
+  height: 100%;
   width: 100%;
-  /* max-width: 20rem; */
-`;
-
-const Author = styled.span`
-  font-style: italic;
-  /* margin-top: 4px; */
-  display: inline-flex;
-  align-self: center;
-`;
-
-const EssentialInfo = styled.div`
   display: flex;
-  justify-content: space-around;
-  /* margin-top: 8px; */
-  /* margin-bottom: 4px; */
-  font-family: "Merriweather Sans", sans-serif;
-  color: ${lighten(0.3, grey[900])};
+  align-items: center;
+  justify-content: center;
 `;
-
 const ReadButton = styled(Button)`
   && {
     min-width: 7rem;

@@ -27,7 +27,7 @@ const Percent = styled.span`
 
 const Bar = styled(Slider)`
   && {
-    cursor: default;
+    cursor: inherit;
     .MuiSlider-rail {
       background-color: ${grey[400]};
     }

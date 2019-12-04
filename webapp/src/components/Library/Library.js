@@ -7,10 +7,12 @@ import List from "@material-ui/core/List";
 import { StoryListItem } from "./StoryListItem";
 import { AddStory } from "./AddStory";
 import { GET_STORIES } from "../../queries/story";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 export const Library = () => {
   const { loading, error, data, refetch } = useQuery(GET_STORIES);
   const [open, setOpen] = useState(null);
+  const bigScreen = useMediaQuery("(min-width:700px)");
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -21,7 +23,7 @@ export const Library = () => {
 
   return (
     <Wrapper>
-      <AddStory onSuccess={() => refetch()} />
+      {bigScreen && <AddStory onSuccess={() => refetch()} />}
       <ListWrapper>
         <Header>Your Library</Header>
         <List>
@@ -43,16 +45,19 @@ export const Library = () => {
 };
 
 const Wrapper = styled.div`
-  padding-top: 2%;
+  @media (min-width: 700px) {
+    padding: 2%;
+    min-width: 700px;
+    width: 80%;
+  }
+  @media (max-width: 700px) {
+    width: 100%;
+  }
   margin: auto;
-  min-width: 700px;
-  width: 80%;
   text-align: center;
 `;
 
 const ListWrapper = styled(Paper)`
-  margin-top: 2%;
-
   /* This is roughly 45 em/rem. Should tho units be used instead of px? */
   @media (max-width: 700px) {
     ul {
@@ -60,6 +65,7 @@ const ListWrapper = styled(Paper)`
     }
   }
   @media (min-width: 700px) {
+    margin-top: 2%;
     padding: 2%;
   }
   padding-top: 1%;
