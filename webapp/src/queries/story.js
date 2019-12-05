@@ -24,6 +24,30 @@ export const GET_STORIES = gql`
   }
 `;
 
+export const GET_STORY = gql`
+  query GetStory($id: ID!) {
+    story(id: $id) {
+      id
+      title
+      author
+      avatar
+      canonicalUrl
+      details {
+        description
+        information
+      }
+      chapters {
+        id
+        title
+        number
+        progress
+        progressUpdatedAt
+        url
+      }
+    }
+  }
+`;
+
 export const CREATE_STORY = gql`
   mutation CreateStory($url: String!) {
     createStory(url: $url) {

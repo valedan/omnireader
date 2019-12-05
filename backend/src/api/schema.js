@@ -3,6 +3,7 @@ import { gql } from 'apollo-server';
 const typeDefs = gql`
   type Query {
     stories: [Story]!
+    story(id: ID!): Story
     chapter(id: ID!): Chapter
   }
 
