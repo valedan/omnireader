@@ -6,6 +6,7 @@ import { GET_STORY } from "../../queries/story";
 import { ApolloConsumer } from "react-apollo";
 import { StorySummary } from "./StorySummary";
 import { StoryContents } from "./StoryContents";
+import Paper from "@material-ui/core/Paper";
 
 export const Story = () => {
   const { id } = useParams();
@@ -20,8 +21,20 @@ export const Story = () => {
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled(Paper)`
   background-color: white;
-  padding: 2%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+
+  margin-right: auto;
+  align-self: center;
+
+  @media (max-width: 700px) {
+    padding-top: 1em;
+  }
+  @media (min-width: 700px) {
+    margin-top: 2%;
+    width: 80%;
+  }
 `;

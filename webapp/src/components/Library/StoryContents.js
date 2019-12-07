@@ -66,7 +66,7 @@ const Header = styled.h1`
 
 const Wrapper = styled(ExpansionPanelDetails)`
   @media (min-width: 700px) {
-    max-height: 50vh;
+    /* max-height: 50vh; */
   }
   flex-direction: column;
   overflow-x: hidden;
