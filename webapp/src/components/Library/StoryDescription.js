@@ -78,14 +78,13 @@ export const StoryDescription = ({ refetch, story }) => {
 const MenuButton = styled(Button)`
   && {
     position: absolute;
-    top: -20px;
-    right: -25px;
+    top: 0px;
+    right: 0px;
     min-width: 32px;
   }
 `;
 
 const Wrapper = styled.div`
-  padding: 3%;
   display: flex;
   flex-direction: row;
 `;
@@ -98,7 +97,9 @@ const MenuWrapper = styled.div`
 `;
 
 const MainContent = styled.div`
-  margin-right: 2%;
+  padding: 3%;
+
+  margin-right: 32px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;

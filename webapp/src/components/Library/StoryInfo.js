@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import _ from "lodash";
 import { useMediaQuery } from "@material-ui/core";
 
-export const StoryInfo = ({ story }) => {
+export const StoryInfo = ({ story, noLink }) => {
   const bigScreen = useMediaQuery("(min-width:700px)");
 
   const getValueFromInfo = (info, key) =>
@@ -38,8 +38,7 @@ export const StoryInfo = ({ story }) => {
   };
 
   const storyProgress = calculateStoryProgress();
-
-  const Wrapper = bigScreen ? DivWrapper : LinkWrapper;
+  const Wrapper = bigScreen || noLink ? DivWrapper : LinkWrapper;
 
   return (
     <Wrapper to={`/story/${story.id}`}>
