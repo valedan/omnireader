@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ProgressBar } from "../shared/ProgressBar";
+import ProgressBar from "../shared/ProgressBar";
 import { lighten } from "polished";
 import grey from "@material-ui/core/colors/grey";
 import { Link } from "react-router-dom";

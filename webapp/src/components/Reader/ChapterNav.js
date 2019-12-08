@@ -29,13 +29,14 @@ const NavBase = `
   color: ${grey[900]};
   font-size: 10rem;
   opacity: 0.85;
-  height: 40vh;
+  height: 20vh;
+  // border: 1px solid black;
 `;
 
 const Nav = styled(Link)`
   ${NavBase}
   :hover {
-    background: rgba(0, 0, 0, 0.15);
+    color: ${grey[800]};
   }
 `;
 

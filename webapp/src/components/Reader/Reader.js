@@ -7,11 +7,13 @@ import { Link } from "react-router-dom";
 import { ReaderContent } from "./ReaderContent";
 import { grey } from "@material-ui/core/colors";
 import { ChapterNav } from "./ChapterNav";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 export const Reader = () => {
   const { id } = useParams();
-  const { loading, error, data } = useQuery(GET_CHAPTER, { variables: { id } });
+  const bigScreen = useMediaQuery("(min-width:1200px)");
 
+  const { loading, error, data } = useQuery(GET_CHAPTER, { variables: { id } });
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
@@ -19,12 +21,16 @@ export const Reader = () => {
 
   return (
     <Wrapper>
-      <StyledLink to="/">{"<"} Library</StyledLink>
+      {/* {bigScreen && <StyledLink to="/">{"<"} Library</StyledLink>} */}
       {data && (
         <Inner>
-          <ChapterNav type="left" chapterId={data.chapter.prevId} />
+          {/* {bigScreen && (
+            <ChapterNav type="left" chapterId={data.chapter.prevId} />
+          )} */}
           <ReaderContent chapter={data.chapter} content={content} />
-          <ChapterNav type="right" chapterId={data.chapter.nextId} />
+          {/* {bigScreen && (
+            <ChapterNav type="right" chapterId={data.chapter.nextId} />
+          )} */}
         </Inner>
       )}
     </Wrapper>
@@ -33,7 +39,8 @@ export const Reader = () => {
 
 const Wrapper = styled.div`
   margin: auto;
-  padding-top: 20px;
+  @media (min-width: 1200px) {
+  }
   display: flex;
   flex-direction: column;
 `;
