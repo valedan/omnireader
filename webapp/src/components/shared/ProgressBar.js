@@ -22,6 +22,7 @@ const Wrapper = styled.div`
 
 const Percent = styled.span`
   font-size: 0.8em;
+  width: 32px;
   margin-right: 8px;
   color: ${grey[800]};
   font-family: "Merriweather Sans";
