@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import { grey } from "@material-ui/core/colors";
 import { Divider } from "@material-ui/core";
 import { ReadButton } from "./ReadButton";
-import _ from "lodash";
 import { medScreen } from "../shared/breakpoints";
 import storyUtils from "../shared/storyUtils";
 

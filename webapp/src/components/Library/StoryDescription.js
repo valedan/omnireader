@@ -6,7 +6,6 @@ import { Button, Menu, MenuItem } from "@material-ui/core";
 import { DELETE_STORY } from "../../queries/story";
 import { useMutation } from "@apollo/react-hooks";
 import { red } from "@material-ui/core/colors";
-import { withStyles } from "@material-ui/styles";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 export const StoryDescription = ({ refetch, story }) => {

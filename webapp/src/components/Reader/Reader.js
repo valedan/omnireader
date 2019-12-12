@@ -3,11 +3,7 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { GET_CHAPTER } from "../../queries/chapter";
-import { Link } from "react-router-dom";
 import { ReaderContent } from "./ReaderContent";
-import { grey } from "@material-ui/core/colors";
-import { ChapterNav } from "./ChapterNav";
-import { bigScreen } from "../shared/breakpoints";
 
 export const Reader = () => {
   const { id } = useParams();
@@ -20,16 +16,9 @@ export const Reader = () => {
 
   return (
     <Wrapper>
-      {/* {bigScreen && <StyledLink to="/">{"<"} Library</StyledLink>} */}
       {data && (
         <Inner>
-          {/* {bigScreen && (
-            <ChapterNav type="left" chapterId={data.chapter.prevId} />
-          )} */}
           <ReaderContent chapter={data.chapter} content={content} />
-          {/* {bigScreen && (
-            <ChapterNav type="right" chapterId={data.chapter.nextId} />
-          )} */}
         </Inner>
       )}
     </Wrapper>
@@ -42,16 +31,6 @@ const Wrapper = styled.div`
   }
   display: flex;
   flex-direction: column;
-`;
-
-const StyledLink = styled(Link)`
-  color: ${grey[900]};
-  font-size: 1.4em;
-  margin-left: 20px;
-  text-decoration: none;
-  :hover {
-    text-decoration: underline;
-  }
 `;
 
 const Inner = styled.div`

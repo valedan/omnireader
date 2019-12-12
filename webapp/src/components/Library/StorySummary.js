@@ -3,7 +3,6 @@ import styled from "styled-components";
 import grey from "@material-ui/core/colors/grey";
 import { Divider } from "@material-ui/core";
 import { StoryInfo } from "./StoryInfo";
-import _ from "lodash";
 import { Link } from "react-router-dom";
 import { ReadButton } from "./ReadButton";
 import { medScreen } from "../shared/breakpoints";

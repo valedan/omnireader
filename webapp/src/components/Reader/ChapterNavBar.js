@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Button from "@material-ui/core/Button";
 import { ChevronLeft, ChevronRight } from "@material-ui/icons";
-import { Divider } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { grey } from "@material-ui/core/colors";
 

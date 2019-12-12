@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { UPDATE_PROGRESS } from "../../queries/chapter";
 import { useMutation } from "@apollo/react-hooks";
 import { useInterval } from "../../hooks/useInterval";
@@ -8,7 +7,6 @@ import Paper from "@material-ui/core/Paper";
 import ProgressBar from "../shared/ProgressBar";
 import { Divider } from "@material-ui/core";
 import { ChapterNavBar } from "./ChapterNavBar";
-import { bigScreen } from "../shared/breakpoints";
 
 export const ReaderContent = ({ chapter, content }) => {
   const ref = useRef(null);
@@ -59,7 +57,6 @@ const Wrapper = styled(Paper)`
 
     max-height: 100vh;
   }
-  /* max-width: 900px; */
   align-self: center;
   display: flex;
   flex-direction: column;
