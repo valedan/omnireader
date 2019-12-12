@@ -1,14 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-
 import { StoryContents } from "./StoryContents";
 import ExpandMore from "@material-ui/icons/ExpandMore";
-import grey from "@material-ui/core/colors/grey";
-import lightBlue from "@material-ui/core/colors/lightBlue";
-import { Button, Divider, Slider } from "@material-ui/core";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import _ from "lodash";
 import { StorySummary } from "./StorySummary";
 import { medScreen } from "../shared/breakpoints";
 

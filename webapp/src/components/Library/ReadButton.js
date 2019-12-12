@@ -2,11 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import { Link } from "react-router-dom";
-import { Button, Divider, Slider } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import lightBlue from "@material-ui/core/colors/lightBlue";
 import grey from "@material-ui/core/colors/grey";
+import storyUtils from "../shared/storyUtils";
 
-export const ReadButton = ({ currentChapter, storyProgress }) => {
+export const ReadButton = ({ story }) => {
+  const storyProgress = storyUtils.calculateStoryProgress(story);
+  const currentChapter = storyUtils.findCurrentChapter(story);
+
   return (
     <StyledButton color="secondary">
       {currentChapter && (

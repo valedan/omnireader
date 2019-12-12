@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/react-hooks";
 import { GET_STORY } from "../../queries/story";
-import { ApolloConsumer } from "react-apollo";
 import { StorySummary } from "./StorySummary";
 import { StoryContents } from "./StoryContents";
 import Paper from "@material-ui/core/Paper";
@@ -13,27 +12,18 @@ import { Divider } from "@material-ui/core";
 import { ReadButton } from "./ReadButton";
 import _ from "lodash";
 import { medScreen } from "../shared/breakpoints";
+import storyUtils from "../shared/storyUtils";
 
 export const Story = () => {
   const { id } = useParams();
   const { loading, error, data } = useQuery(GET_STORY, { variables: { id } });
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
-  const story = data.story;
-  const currentChapter =
-    _.maxBy(story.chapters, chapter => chapter.progressUpdatedAt) ||
-    story.chapters[0];
-  const calculateStoryProgress = () => {
-    if (story.chapters.length === 0) return 0;
-    if (!currentChapter) return 0;
 
-    const totalChapters = story.chapters.length;
-    const completedChapters = currentChapter.number - 1;
-    return (
-      ((completedChapters + 1 * currentChapter.progress) / totalChapters) * 100
-    );
-  };
-  const storyProgress = calculateStoryProgress();
+  const story = data.story;
+
+  const currentChapter = storyUtils.findCurrentChapter(story);
+  const storyProgress = storyUtils.calculateStoryProgress(story);
 
   return (
     <div>

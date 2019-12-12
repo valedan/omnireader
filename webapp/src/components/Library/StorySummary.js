@@ -1,29 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import grey from "@material-ui/core/colors/grey";
-import { Button, Divider, Slider } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
 import { StoryInfo } from "./StoryInfo";
 import _ from "lodash";
 import { Link } from "react-router-dom";
 import { ReadButton } from "./ReadButton";
 import { medScreen } from "../shared/breakpoints";
+import storyUtils from "../shared/storyUtils";
 
 export const StorySummary = ({ story, noLink }) => {
-  // TODO: these functions should be put in a shared story_utils file
-  const currentChapter =
-    _.maxBy(story.chapters, chapter => chapter.progressUpdatedAt) ||
-    story.chapters[0];
-  const calculateStoryProgress = () => {
-    if (story.chapters.length === 0) return 0;
-    if (!currentChapter) return 0;
-
-    const totalChapters = story.chapters.length;
-    const completedChapters = currentChapter.number - 1;
-    return (
-      ((completedChapters + 1 * currentChapter.progress) / totalChapters) * 100
-    );
-  };
-  const storyProgress = calculateStoryProgress();
+  const currentChapter = storyUtils.findCurrentChapter(story);
 
   let image = null;
   if (medScreen || noLink) {
@@ -45,10 +32,7 @@ export const StorySummary = ({ story, noLink }) => {
       {medScreen && (
         <>
           <Divider orientation="vertical" />
-          <ReadButton
-            storyProgress={storyProgress}
-            currentChapter={currentChapter}
-          />
+          <ReadButton story={story} />
         </>
       )}
     </Summary>

@@ -5,8 +5,8 @@ import { lighten } from "polished";
 import grey from "@material-ui/core/colors/grey";
 import { Link } from "react-router-dom";
 
-import _ from "lodash";
 import { medScreen } from "../shared/breakpoints";
+import storyUtils from "../shared/storyUtils";
 
 export const StoryInfo = ({ story, noLink }) => {
   const getValueFromInfo = (info, key) =>
@@ -20,22 +20,7 @@ export const StoryInfo = ({ story, noLink }) => {
     : "Published";
   const updated = getValueFromInfo(story.details.information, timeKey);
 
-  const currentChapter =
-    _.maxBy(story.chapters, chapter => chapter.progressUpdatedAt) ||
-    story.chapters[0];
-
-  const calculateStoryProgress = () => {
-    if (story.chapters.length === 0) return 0;
-    if (!currentChapter) return 0;
-
-    const totalChapters = story.chapters.length;
-    const completedChapters = currentChapter.number - 1;
-    return (
-      ((completedChapters + 1 * currentChapter.progress) / totalChapters) * 100
-    );
-  };
-
-  const storyProgress = calculateStoryProgress();
+  const storyProgress = storyUtils.calculateStoryProgress(story);
   const Wrapper = medScreen || noLink ? DivWrapper : LinkWrapper;
 
   return (
