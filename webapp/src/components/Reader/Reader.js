@@ -7,11 +7,10 @@ import { Link } from "react-router-dom";
 import { ReaderContent } from "./ReaderContent";
 import { grey } from "@material-ui/core/colors";
 import { ChapterNav } from "./ChapterNav";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { bigScreen } from "../shared/breakpoints";
 
 export const Reader = () => {
   const { id } = useParams();
-  const bigScreen = useMediaQuery("(min-width:1200px)");
 
   const { loading, error, data } = useQuery(GET_CHAPTER, { variables: { id } });
   if (loading) return <p>Loading...</p>;

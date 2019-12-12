@@ -7,12 +7,11 @@ import List from "@material-ui/core/List";
 import { StoryListItem } from "./StoryListItem";
 import { AddStory } from "./AddStory";
 import { GET_STORIES } from "../../queries/story";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { medScreen } from "../shared/breakpoints";
 
 export const Library = () => {
   const { loading, error, data, refetch } = useQuery(GET_STORIES);
   const [open, setOpen] = useState(null);
-  const bigScreen = useMediaQuery("(min-width:700px)");
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
@@ -23,7 +22,7 @@ export const Library = () => {
 
   return (
     <Wrapper>
-      {bigScreen && <AddStory onSuccess={() => refetch()} />}
+      {medScreen && <AddStory onSuccess={() => refetch()} />}
       <ListWrapper>
         <Header>Your Library</Header>
         <List>

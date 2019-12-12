@@ -6,11 +6,9 @@ import grey from "@material-ui/core/colors/grey";
 import { Link } from "react-router-dom";
 
 import _ from "lodash";
-import { useMediaQuery } from "@material-ui/core";
+import { medScreen } from "../shared/breakpoints";
 
 export const StoryInfo = ({ story, noLink }) => {
-  const bigScreen = useMediaQuery("(min-width:700px)");
-
   const getValueFromInfo = (info, key) =>
     info
       .split(" - ")
@@ -38,7 +36,7 @@ export const StoryInfo = ({ story, noLink }) => {
   };
 
   const storyProgress = calculateStoryProgress();
-  const Wrapper = bigScreen || noLink ? DivWrapper : LinkWrapper;
+  const Wrapper = medScreen || noLink ? DivWrapper : LinkWrapper;
 
   return (
     <Wrapper to={`/story/${story.id}`}>

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import { Link } from "react-router-dom";
-import { Button, Divider, Slider, useMediaQuery } from "@material-ui/core";
+import { Button, Divider, Slider } from "@material-ui/core";
 import lightBlue from "@material-ui/core/colors/lightBlue";
 import grey from "@material-ui/core/colors/grey";
 

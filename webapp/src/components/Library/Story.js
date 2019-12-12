@@ -9,12 +9,12 @@ import { StoryContents } from "./StoryContents";
 import Paper from "@material-ui/core/Paper";
 import { Link } from "react-router-dom";
 import { grey } from "@material-ui/core/colors";
-import { Divider, useMediaQuery } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
 import { ReadButton } from "./ReadButton";
 import _ from "lodash";
+import { medScreen } from "../shared/breakpoints";
 
 export const Story = () => {
-  const bigScreen = useMediaQuery("(min-width:700px)");
   const { id } = useParams();
   const { loading, error, data } = useQuery(GET_STORY, { variables: { id } });
   if (loading) return <p>Loading...</p>;
@@ -37,9 +37,9 @@ export const Story = () => {
 
   return (
     <div>
-      {bigScreen && <StyledLink to="/">{"<"} Library</StyledLink>}
+      {medScreen && <StyledLink to="/">{"<"} Library</StyledLink>}
       <Wrapper>
-        {!bigScreen && (
+        {!medScreen && (
           <>
             <StyledLink to="/">{"<"} Library</StyledLink>
             <Divider />
@@ -47,7 +47,7 @@ export const Story = () => {
         )}
 
         <StorySummary story={data.story} noLink />
-        {!bigScreen && (
+        {!medScreen && (
           <>
             <Divider />
             <ReadButton

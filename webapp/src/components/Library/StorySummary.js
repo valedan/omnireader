@@ -1,15 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import grey from "@material-ui/core/colors/grey";
-import { Button, Divider, Slider, useMediaQuery } from "@material-ui/core";
+import { Button, Divider, Slider } from "@material-ui/core";
 import { StoryInfo } from "./StoryInfo";
 import _ from "lodash";
 import { Link } from "react-router-dom";
 import { ReadButton } from "./ReadButton";
+import { medScreen } from "../shared/breakpoints";
 
 export const StorySummary = ({ story, noLink }) => {
   // TODO: these functions should be put in a shared story_utils file
-  const bigScreen = useMediaQuery("(min-width:700px)");
   const currentChapter =
     _.maxBy(story.chapters, chapter => chapter.progressUpdatedAt) ||
     story.chapters[0];
@@ -26,7 +26,7 @@ export const StorySummary = ({ story, noLink }) => {
   const storyProgress = calculateStoryProgress();
 
   let image = null;
-  if (bigScreen || noLink) {
+  if (medScreen || noLink) {
     image = <Image src={story.avatar || "/ffn_anon.webp"} />;
   } else {
     image = (
@@ -42,7 +42,7 @@ export const StorySummary = ({ story, noLink }) => {
 
       <StoryInfo story={story} noLink={noLink} />
 
-      {bigScreen && (
+      {medScreen && (
         <>
           <Divider orientation="vertical" />
           <ReadButton

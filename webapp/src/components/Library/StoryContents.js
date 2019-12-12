@@ -4,16 +4,15 @@ import List from "@material-ui/core/List";
 import { ChapterListItem } from "./ChapterListItem";
 import { StoryDescription } from "./StoryDescription";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import { Divider, useMediaQuery } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
+import { medScreen } from "../shared/breakpoints";
 
 export const StoryContents = ({ refetch, story }) => {
-  const bigScreen = useMediaQuery("(min-width:700px)");
-
   return (
     <Wrapper>
       <Divider />
       <StoryDescription refetch={refetch} story={story} />
-      {!bigScreen && <Header>Chapters</Header>}
+      {!medScreen && <Header>Chapters</Header>}
 
       <StyledList>
         {story.chapters.map(chapter => {

@@ -5,11 +5,13 @@ import { StoryContents } from "./StoryContents";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import grey from "@material-ui/core/colors/grey";
 import lightBlue from "@material-ui/core/colors/lightBlue";
-import { Button, Divider, Slider, useMediaQuery } from "@material-ui/core";
+import { Button, Divider, Slider } from "@material-ui/core";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import _ from "lodash";
 import { StorySummary } from "./StorySummary";
+import { medScreen } from "../shared/breakpoints";
+
 export const StoryListItem = ({
   refetch,
   story,
@@ -17,14 +19,12 @@ export const StoryListItem = ({
   open,
   handleChange
 }) => {
-  const bigScreen = useMediaQuery("(min-width:700px)");
-
   return (
     <Wrapper expanded={open} onChange={handleChange} elevation={2}>
-      <SummaryWrapper first={first} expandIcon={bigScreen && <ExpandMore />}>
+      <SummaryWrapper first={first} expandIcon={medScreen && <ExpandMore />}>
         <StorySummary story={story} />
       </SummaryWrapper>
-      {bigScreen && <StoryContents refetch={refetch} story={story} />}
+      {medScreen && <StoryContents refetch={refetch} story={story} />}
     </Wrapper>
   );
 };

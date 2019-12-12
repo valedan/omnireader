@@ -7,12 +7,10 @@ import { useInterval } from "../../hooks/useInterval";
 import Paper from "@material-ui/core/Paper";
 import ProgressBar from "../shared/ProgressBar";
 import { Divider } from "@material-ui/core";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { ChapterNavBar } from "./ChapterNavBar";
+import { bigScreen } from "../shared/breakpoints";
 
 export const ReaderContent = ({ chapter, content }) => {
-  const bigScreen = useMediaQuery("(min-width:1200px)");
-
   const ref = useRef(null);
   const [progress, setProgress] = useState(chapter.progress);
   const [updateProgress] = useMutation(UPDATE_PROGRESS);
