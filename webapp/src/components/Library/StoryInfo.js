@@ -5,10 +5,11 @@ import { lighten } from "polished";
 import grey from "@material-ui/core/colors/grey";
 import { Link } from "react-router-dom";
 
-import { medScreen } from "../shared/breakpoints";
+import { useMedScreen } from "../shared/breakpoints";
 import storyUtils from "../shared/storyUtils";
 
 export const StoryInfo = ({ story, noLink }) => {
+  const medScreen = useMedScreen();
   const getValueFromInfo = (info, key) =>
     info
       .split(" - ")

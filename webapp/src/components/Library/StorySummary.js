@@ -5,12 +5,12 @@ import { Divider } from "@material-ui/core";
 import { StoryInfo } from "./StoryInfo";
 import { Link } from "react-router-dom";
 import { ReadButton } from "./ReadButton";
-import { medScreen } from "../shared/breakpoints";
+import { useMedScreen } from "../shared/breakpoints";
 import storyUtils from "../shared/storyUtils";
 
 export const StorySummary = ({ story, noLink }) => {
   const currentChapter = storyUtils.findCurrentChapter(story);
-
+  const medScreen = useMedScreen();
   let image = null;
   if (medScreen || noLink) {
     image = <Image src={story.avatar || "/ffn_anon.webp"} />;

@@ -49,6 +49,7 @@ const Wrapper = styled(Button)`
 
 const ChapterTitle = styled.h3`
   margin: 0;
+  font-family: "Merriweather", serif;
 `;
 
 const ChapterLink = styled(Link)`

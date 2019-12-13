@@ -5,7 +5,7 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import { StorySummary } from "./StorySummary";
-import { medScreen } from "../shared/breakpoints";
+import { useMedScreen } from "../shared/breakpoints";
 
 export const StoryListItem = ({
   refetch,
@@ -14,6 +14,7 @@ export const StoryListItem = ({
   open,
   handleChange
 }) => {
+  const medScreen = useMedScreen();
   return (
     <Wrapper expanded={open} onChange={handleChange} elevation={2}>
       <SummaryWrapper first={first} expandIcon={medScreen && <ExpandMore />}>

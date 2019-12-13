@@ -129,7 +129,6 @@ const InfoItem = styled.span`
 
 const DeleteButton = styled(MenuItem)`
   && {
-    font-family: "Merriweather Sans";
     color: ${red[500]};
   }
 `;

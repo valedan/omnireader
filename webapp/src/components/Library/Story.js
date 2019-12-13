@@ -10,20 +10,16 @@ import { Link } from "react-router-dom";
 import { grey } from "@material-ui/core/colors";
 import { Divider } from "@material-ui/core";
 import { ReadButton } from "./ReadButton";
-import { medScreen } from "../shared/breakpoints";
-import storyUtils from "../shared/storyUtils";
+import { useMedScreen } from "../shared/breakpoints";
 
 export const Story = () => {
+  const medScreen = useMedScreen();
   const { id } = useParams();
   const { loading, error, data } = useQuery(GET_STORY, { variables: { id } });
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 
   const story = data.story;
-
-  const currentChapter = storyUtils.findCurrentChapter(story);
-  const storyProgress = storyUtils.calculateStoryProgress(story);
-
   return (
     <div>
       {medScreen && <StyledLink to="/">{"<"} Library</StyledLink>}
@@ -39,10 +35,7 @@ export const Story = () => {
         {!medScreen && (
           <>
             <Divider />
-            <ReadButton
-              storyProgress={storyProgress}
-              currentChapter={currentChapter}
-            />
+            <ReadButton story={story} />
           </>
         )}
         <StoryContents story={data.story} />

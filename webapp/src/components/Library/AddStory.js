@@ -57,8 +57,6 @@ const Form = styled.form`
 
 const StyledButton = styled(Button)`
   && {
-    font-family: "Merriweather Sans", sans-serif;
     color: white;
-    font-weight: bold;
   }
 `;

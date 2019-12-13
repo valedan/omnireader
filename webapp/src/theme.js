@@ -36,7 +36,11 @@ export const theme = createMuiTheme({
     // }
   },
   typography: {
-    fontFamily: "Merriweather"
+    fontFamily: ["Merriweather", "serif"],
+    button: {
+      fontFamily: ["Merriweather Sans", "sans-serif"],
+      fontWeight: "bold"
+    }
   }
 });
 

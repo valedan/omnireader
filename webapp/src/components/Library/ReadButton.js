@@ -13,12 +13,10 @@ export const ReadButton = ({ story }) => {
 
   return (
     <StyledButton color="secondary">
-      {currentChapter && (
-        <ReadLink to={`/chapter/${currentChapter.id}`}>
-          {storyProgress === 0 ? "Start" : "Continue"}
-          <ChevronRight />
-        </ReadLink>
-      )}
+      <ReadLink to={`/chapter/${currentChapter.id}`}>
+        {storyProgress === 0 ? "Start" : "Continue"}
+        <ChevronRight />
+      </ReadLink>
     </StyledButton>
   );
 };
@@ -27,8 +25,6 @@ const StyledButton = styled(Button)`
   && {
     min-width: 7rem;
     color: ${grey[900]};
-    font-weight: bold;
-    font-family: "Merriweather Sans", sans-serif;
     border-radius: 0;
     padding: 0;
     padding-left: 8px;

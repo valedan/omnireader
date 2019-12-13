@@ -5,14 +5,16 @@ import { ChapterListItem } from "./ChapterListItem";
 import { StoryDescription } from "./StoryDescription";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import { Divider } from "@material-ui/core";
-import { medScreen } from "../shared/breakpoints";
+import { useMedScreen } from "../shared/breakpoints";
+import { SectionHeader } from "../shared/SectionHeader";
 
 export const StoryContents = ({ refetch, story }) => {
+  const medScreen = useMedScreen();
   return (
     <Wrapper>
       <Divider />
       <StoryDescription refetch={refetch} story={story} />
-      {!medScreen && <Header>Chapters</Header>}
+      {!medScreen && <SectionHeader>Chapters</SectionHeader>}
 
       <StyledList>
         {story.chapters.map(chapter => {
@@ -31,35 +33,6 @@ export const StoryContents = ({ refetch, story }) => {
 const StyledList = styled(List)`
   && {
     padding-top: 0;
-  }
-`;
-
-const Header = styled.h1`
-  font-family: cursive;
-  overflow: hidden;
-  text-align: center;
-  margin-top: 40px;
-  margin-bottom: 40px;
-
-  :before,
-  :after {
-    background-color: #000;
-    content: "";
-    display: inline-block;
-    height: 2px;
-    position: relative;
-    vertical-align: middle;
-    width: 30%;
-  }
-
-  :before {
-    right: 0.5em;
-    margin-left: -25%;
-  }
-
-  :after {
-    left: 0.5em;
-    margin-right: -25%;
   }
 `;
 
