@@ -4,7 +4,6 @@ import grey from "@material-ui/core/colors/grey";
 import { Slider } from "@material-ui/core";
 
 const ProgressBar = ({ value, showPercent }) => {
-  console.log(value);
   return (
     <Wrapper>
       {showPercent && <Percent>{Math.round(value)}%</Percent>}

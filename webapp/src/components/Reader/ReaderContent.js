@@ -28,10 +28,12 @@ export const ReaderContent = ({ chapter, content }) => {
   }, 1000);
 
   useEffect(() => {
-    ref.current.scrollTo(0, progress * scrollableHeight());
-    ref.current.onscroll = scroll;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setProgress(chapter.progress);
+    const current = ref.current;
+    current.scrollTo(0, chapter.progress * scrollableHeight());
+    current.onscroll = scroll;
+    return () => (current.onscroll = null);
+  }, [chapter.id]);
 
   return (
     // TODO: The page should scroll with a sticky footer, instead of just the content scrolling.
