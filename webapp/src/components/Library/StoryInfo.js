@@ -4,7 +4,6 @@ import ProgressBar from "../shared/ProgressBar";
 import { lighten } from "polished";
 import grey from "@material-ui/core/colors/grey";
 import { Link } from "react-router-dom";
-
 import { useMedScreen } from "../shared/breakpoints";
 import storyUtils from "../shared/storyUtils";
 
@@ -16,6 +15,7 @@ export const StoryInfo = ({ story, noLink }) => {
       .find(item => item.includes(key))
       .split(": ")[1];
 
+  // Use the updated info if it's there, otherwise use published. We're calling it updated in our view anyway.
   const timeKey = story.details.information.includes("Updated")
     ? "Updated"
     : "Published";
@@ -76,13 +76,10 @@ const Title = styled.h2`
   }
   margin: 0;
   width: 100%;
-  /* max-width: 20rem; */
 `;
 
 const Author = styled.span`
   font-style: italic;
-  /* margin-left: 16px; */
-  /* margin-top: 4px; */
   display: inline-flex;
   align-self: left;
   @media (min-width: 700px) {
@@ -104,8 +101,6 @@ const ExtraInfo = styled.div`
     margin-top: 4px;
   }
   justify-content: space-around;
-  /* margin-top: 8px; */
-  /* margin-bottom: 4px; */
   font-family: "Merriweather Sans", sans-serif;
   color: ${lighten(0.3, grey[900])};
 `;

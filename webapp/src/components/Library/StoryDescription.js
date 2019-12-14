@@ -8,19 +8,11 @@ import { useMutation } from "@apollo/react-hooks";
 import { red } from "@material-ui/core/colors";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
-export const StoryDescription = ({ refetch, story }) => {
-  const infoItems = story.details.information.split(" - ");
-  const infoWhitelist = ["Words", "Published", "Status"];
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const openMenu = event => {
-    setMenuAnchor(event.currentTarget);
-  };
-
-  const closeMenu = () => {
-    setMenuAnchor(null);
-  };
-  const itemElements = infoItems
-    .filter(item => infoWhitelist.includes(item.split(": ")[0]))
+const createInfoChunks = story => {
+  const whitelist = ["Words", "Published", "Status"];
+  const items = story.details.information.split(" - ");
+  const elements = items
+    .filter(item => whitelist.includes(item.split(": ")[0]))
     .map(item => {
       return (
         <InfoItem>
@@ -29,6 +21,26 @@ export const StoryDescription = ({ refetch, story }) => {
         </InfoItem>
       );
     });
+  elements.push(
+    <InfoItem>
+      <a href={story.canonicalUrl}>
+        Source <LaunchIcon fontSize="inherit" />
+      </a>
+    </InfoItem>
+  );
+  return elements;
+};
+
+export const StoryDescription = ({ refetch, story }) => {
+  const infoChunks = createInfoChunks(story);
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const openMenu = event => {
+    setMenuAnchor(event.currentTarget);
+  };
+
+  const closeMenu = () => {
+    setMenuAnchor(null);
+  };
 
   const [deleteStoryMutation, { error }] = useMutation(DELETE_STORY);
   const deleteStory = async () => {
@@ -36,24 +48,14 @@ export const StoryDescription = ({ refetch, story }) => {
     refetch();
   };
 
-  itemElements.push(
-    <InfoItem>
-      <a href={story.canonicalUrl}>
-        Source <LaunchIcon fontSize="inherit" />
-      </a>
-    </InfoItem>
-  );
-
   return (
     <Wrapper>
       <MainContent>
         <Description>{story.details.description}</Description>
         <Information>
-          {_.chunk(itemElements, Math.ceil(itemElements.length / 4)).map(
-            chunk => (
-              <div>{chunk}</div>
-            )
-          )}
+          {_.chunk(infoChunks, Math.ceil(infoChunks.length / 4)).map(chunk => (
+            <div>{chunk}</div>
+          ))}
         </Information>
         {error && <p>{error.message.split(":")[1]}</p>}
       </MainContent>
@@ -74,6 +76,7 @@ export const StoryDescription = ({ refetch, story }) => {
   );
 };
 
+// TODO: Handle menus better - positioning is currently messed up and this should be a shared component
 const MenuButton = styled(Button)`
   && {
     position: absolute;

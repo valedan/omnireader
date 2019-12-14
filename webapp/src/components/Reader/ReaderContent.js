@@ -32,11 +32,13 @@ export const ReaderContent = ({ chapter, content }) => {
     ref.current.onscroll = scroll;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     // TODO: The page should scroll with a sticky footer, instead of just the content scrolling.
     <Wrapper elevation={4}>
       <TopNav>{<ChapterNavBar chapter={chapter} />}</TopNav>
       <Divider style={{ alignSelf: "stretch" }} />
+      {/* TODO: Security */}
       <Content ref={ref} dangerouslySetInnerHTML={{ __html: content }} />
       <ProgressWrapper>
         {/* TODO: For some reason, can't style ProgressBar directly */}

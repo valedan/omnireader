@@ -4,30 +4,34 @@ import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { grey } from "@material-ui/core/colors";
 
+const ChapterNav = ({ target, children }) => {
+  return (
+    <Nav
+      disabled={!target}
+      onClick={e => !target && e.preventDefault()}
+      to={`/chapter/${target}`}
+    >
+      {children}
+    </Nav>
+  );
+};
+
 export const ChapterNavBar = ({ chapter }) => {
   return (
     <Wrapper>
-      <Nav
-        disabled={!chapter.prevId}
-        onClick={e => !chapter.prevId && e.preventDefault()}
-        to={`/chapter/${chapter.prevId}`}
-      >
+      <ChapterNav target={chapter.prevId}>
         <>
           <ChevronLeft />
           {"Prev"}
         </>
-      </Nav>
+      </ChapterNav>
       <Nav to="/">Library</Nav>
-      <Nav
-        disabled={!chapter.nextId}
-        onClick={e => !chapter.nextId && e.preventDefault()}
-        to={`/chapter/${chapter.nextId}`}
-      >
+      <ChapterNav target={chapter.nextId}>
         <>
           {"Next"}
           <ChevronRight />
         </>
-      </Nav>
+      </ChapterNav>
     </Wrapper>
   );
 };

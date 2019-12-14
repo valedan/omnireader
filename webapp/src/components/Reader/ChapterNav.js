@@ -30,7 +30,6 @@ const NavBase = `
   font-size: 10rem;
   opacity: 0.85;
   height: 20vh;
-  // border: 1px solid black;
 `;
 
 const Nav = styled(Link)`

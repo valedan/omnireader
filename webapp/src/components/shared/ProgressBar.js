@@ -14,6 +14,7 @@ const ProgressBar = ({ value, showPercent }) => {
 };
 
 export default ProgressBar;
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
