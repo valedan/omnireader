@@ -8,6 +8,9 @@ export const GET_STORIES = gql`
       author
       avatar
       canonicalUrl
+      tocLastChecked
+      updated_at
+      created_at
       details {
         description
         information
@@ -19,6 +22,8 @@ export const GET_STORIES = gql`
         progress
         progressUpdatedAt
         url
+        updated_at
+        created_at
       }
     }
   }
@@ -32,6 +37,9 @@ export const GET_STORY = gql`
       author
       avatar
       canonicalUrl
+      tocLastChecked
+      updated_at
+      created_at
       details {
         description
         information
@@ -43,6 +51,8 @@ export const GET_STORY = gql`
         progress
         progressUpdatedAt
         url
+        updated_at
+        created_at
       }
     }
   }
@@ -68,5 +78,11 @@ export const CREATE_STORY = gql`
 export const DELETE_STORY = gql`
   mutation DeleteStory($id: ID!) {
     deleteStory(id: $id)
+  }
+`;
+
+export const TOC_CHECKED = gql`
+  mutation TOCChecked($storyId: ID!) {
+    tocChecked(storyId: $storyId)
   }
 `;

@@ -4,12 +4,18 @@ import { Link } from "react-router-dom";
 import { Button } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 import ProgressBar from "../shared/ProgressBar";
+import { OmniChip } from "../shared/OmniChip";
 
 export const ChapterListItem = ({ chapter }) => {
   return (
     <Wrapper>
       <ChapterLink to={`/chapter/${chapter.id}`}>
-        <ChapterTitle>{chapter.title}</ChapterTitle>
+        <TitleRow>
+          <ChapterTitle>{chapter.title}</ChapterTitle>
+          {chapter.new && (
+            <OmniChip label="New" color="secondary" size="small" />
+          )}
+        </TitleRow>
         {chapter.progress > 0 && (
           <ProgressBar value={chapter.progress * 100} showPercent />
         )}
@@ -41,10 +47,18 @@ const Wrapper = styled(Button)`
       }
       height: 100%;
       :hover {
-        text-decoration: underline;
+        h3 {
+          text-decoration: underline;
+        }
       }
     }
   }
+`;
+
+const TitleRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const ChapterTitle = styled.h3`

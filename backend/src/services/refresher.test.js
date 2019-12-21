@@ -24,6 +24,10 @@ describe('.refreshStory', () => {
     expect(fetchStory).toBeCalledWith(story.canonicalUrl);
   });
 
+  context('description or title or information has changed', () => {
+    it('updates story');
+  });
+
   context('when there are no new chapters', () => {
     it('does nothing', async () => {
       fetchStory.mockImplementationOnce(() => {

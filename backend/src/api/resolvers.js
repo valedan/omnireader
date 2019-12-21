@@ -4,16 +4,23 @@ import {
   UnsupportedSiteError,
   NoStoryError,
 } from '../services/scraper';
+import { refreshStory } from '../services/refresher';
 import { UserInputError } from 'apollo-server';
 
 export default {
   Query: {
     stories: async (_, __, { models }) => {
-      return await models.Story.query()
+      const stories = await models.Story.query()
         .eager('chapters')
         .modifyEager('chapters', builder => {
           builder.orderBy('id');
         });
+      // TODO: This won't scale. Need to do this in a cron job.
+      for (const story of stories) {
+        await refreshStory(story);
+      }
+      console.log('returning from resovler');
+      return stories;
     },
 
     story: async (_, { id }, { models }) => {
@@ -59,6 +66,14 @@ export default {
         })
         .throwIfNotFound();
       return chapter;
+    },
+
+    tocChecked: async (_, { storyId }, { models }) => {
+      console.log('toc checked');
+      await models.Story.query().patchAndFetchById(storyId, {
+        tocLastChecked: new Date(),
+      });
+      return true;
     },
 
     deleteStory: async (_, { id }, { models }) => {

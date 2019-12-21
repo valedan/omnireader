@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { StoryContents } from "./StoryContents";
 import ExpandMore from "@material-ui/icons/ExpandMore";
@@ -15,14 +15,30 @@ export const StoryListItem = ({
   handleChange
 }) => {
   const medScreen = useMedScreen();
+  const processedStory = processStory(story);
+
+  if (!processedStory) return <h1> Loading </h1>;
   return (
     <Wrapper expanded={open} onChange={handleChange} elevation={2}>
       <SummaryWrapper first={first} expandIcon={medScreen && <ExpandMore />}>
-        <StorySummary story={story} />
+        <StorySummary story={processedStory} />
       </SummaryWrapper>
-      {medScreen && <StoryContents refetch={refetch} story={story} />}
+      {medScreen && <StoryContents refetch={refetch} story={processedStory} />}
     </Wrapper>
   );
+};
+
+const processStory = story => {
+  story.newChapters = false;
+  story.chapters.forEach(chapter => {
+    if (!story.tocLastChecked || chapter.created_at > story.tocLastChecked) {
+      chapter.new = true;
+      story.newChapters = true;
+    } else {
+      chapter.new = false;
+    }
+  });
+  return story;
 };
 
 const Wrapper = styled(ExpansionPanel)``;

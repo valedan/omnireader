@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Paper from "@material-ui/core/Paper";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import List from "@material-ui/core/List";
 import { StoryListItem } from "./StoryListItem";
 import { AddStory } from "./AddStory";
-import { GET_STORIES } from "../../queries/story";
+import { GET_STORIES, TOC_CHECKED } from "../../queries/story";
 import { useMedScreen } from "../shared/breakpoints";
 import { SectionHeader } from "../shared/SectionHeader";
 
@@ -14,11 +14,17 @@ export const Library = () => {
   const [open, setOpen] = useState(null);
   const medScreen = useMedScreen();
 
+  const [sendTOCChecked] = useMutation(TOC_CHECKED);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
-
-  const handleChange = index => (event, isOpen) => {
-    setOpen(isOpen ? index : false);
+  const handleChange = id => (event, isOpen) => {
+    setOpen(isOpen ? id : false);
+    if (isOpen) {
+      sendTOCChecked({
+        variables: { storyId: id }
+      });
+    }
   };
 
   return (
@@ -32,8 +38,8 @@ export const Library = () => {
               <StoryListItem
                 // TODO: passing refetch down here seems like a code smell
                 refetch={refetch}
-                open={open === index}
-                handleChange={handleChange(index)}
+                open={open === story.id}
+                handleChange={handleChange(story.id)}
                 key={story.id}
                 story={story}
               />

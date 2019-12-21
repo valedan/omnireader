@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import List from "@material-ui/core/List";
 import { ChapterListItem } from "./ChapterListItem";
@@ -10,6 +10,7 @@ import { SectionHeader } from "../shared/SectionHeader";
 
 export const StoryContents = ({ refetch, story }) => {
   const medScreen = useMedScreen();
+  useEffect(() => {});
   return (
     <Wrapper>
       <Divider />

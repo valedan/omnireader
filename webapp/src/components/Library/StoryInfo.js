@@ -6,6 +6,7 @@ import grey from "@material-ui/core/colors/grey";
 import { Link } from "react-router-dom";
 import { useMedScreen } from "../shared/breakpoints";
 import storyUtils from "../shared/storyUtils";
+import { OmniChip } from "../shared/OmniChip";
 
 export const StoryInfo = ({ story, noLink }) => {
   const medScreen = useMedScreen();
@@ -34,6 +35,9 @@ export const StoryInfo = ({ story, noLink }) => {
         <span>
           {story.chapters.length}{" "}
           {story.chapters.length === 1 ? "chapter" : "chapters"}
+          {story.newChapters && (
+            <OmniChip label="New" color="secondary" size="small" />
+          )}
         </span>
         <span>Updated {updated}</span>
       </ExtraInfo>

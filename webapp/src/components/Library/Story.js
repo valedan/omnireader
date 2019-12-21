@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@apollo/react-hooks";
-import { GET_STORY } from "../../queries/story";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { GET_STORY, TOC_CHECKED } from "../../queries/story";
 import { StorySummary } from "./StorySummary";
 import { StoryContents } from "./StoryContents";
 import Paper from "@material-ui/core/Paper";
@@ -16,6 +16,14 @@ export const Story = () => {
   const medScreen = useMedScreen();
   const { id } = useParams();
   const { loading, error, data } = useQuery(GET_STORY, { variables: { id } });
+  const [sendTOCChecked] = useMutation(TOC_CHECKED);
+
+  useEffect(() => {
+    sendTOCChecked({
+      variables: { storyId: id }
+    });
+  }, []);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
 

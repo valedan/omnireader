@@ -1,7 +1,7 @@
 exports.up = knex => {
   return knex.schema.createTable('chapters', table => {
     table.increments('id').primary();
-    table.timestamps();
+    table.timestamps(null, true);
     table.string('title');
     table.string('url', 2000);
     table.timestamp('progressUpdatedAt');

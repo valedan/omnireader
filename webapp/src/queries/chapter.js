@@ -12,6 +12,8 @@ export const GET_CHAPTER = gql`
       content
       nextId
       prevId
+      updated_at
+      created_at
     }
   }
 `;

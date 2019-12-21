@@ -98,7 +98,6 @@ const extractTitle = $ => {
 };
 
 const extractSingleChapter = ($, url) => {
-  console.log('single chapter');
   return [
     {
       title: extractTitle($),
