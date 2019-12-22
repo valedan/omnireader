@@ -3,7 +3,6 @@
 .idea
 .vscode
 node_modules
-build/
 tmp/
 temp/
 
@@ -16,7 +15,6 @@ temp/
 /*/coverage
 
 # production
-/*/build
 
 # misc
 .DS_Store

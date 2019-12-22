@@ -10,8 +10,7 @@
     "start": "node -r ./node_modules/esm/index.js ./src/server.js",
     "test": "jest --runInBand",
     "dev": "DEBUG=express:* node-dev --respawn -r esm ./src/server.js",
-    "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "heroku-postbuild": "cd webapp && node run build"
+    "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "apollo-datasource": "^0.6.3",
