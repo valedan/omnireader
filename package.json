@@ -3,8 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
-    "start": "node -r esm ./src/server.js",
+    "start": "node -r ./node_modules/esm/index.js ./src/server.js",
     "test": "jest --runInBand",
     "dev": "DEBUG=express:* node-dev --respawn -r esm ./src/server.js",
     "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
