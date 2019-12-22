@@ -1,4 +1,4 @@
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
 import typeDefs from './api/schema';
 import resolvers from './api/resolvers';
 import Knex from 'knex';
@@ -8,20 +8,10 @@ import { Story } from './models/story';
 import { Chapter } from './models/chapter';
 import express from 'express';
 import path from 'path';
+import query from 'qs-middleware';
 
 const knex = Knex(knexConfig.development);
 Model.knex(knex);
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: ({ req }) => ({
-    models: { Story, Chapter },
-  }),
-});
-server.listen(4000).then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`);
-});
 
 const app = express();
 
@@ -33,6 +23,23 @@ app.use(express.static(path.join(__dirname, '../webapp/build')));
 app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname, '../webapp/build', 'index.html'));
 });
-app.listen(port);
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({
+    models: { Story, Chapter },
+  }),
+});
+const path = '/graphql';
+app.use(query());
+
+server.applyMiddleware({ app, path });
+
+app.listen({ port: port }, () => {
+  console.log(
+    `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`,
+  );
+});
 
 export default server;

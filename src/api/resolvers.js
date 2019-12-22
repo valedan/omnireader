@@ -5,7 +5,7 @@ import {
   NoStoryError,
 } from '../services/scraper';
 import { refreshStory } from '../services/refresher';
-import { UserInputError } from 'apollo-server';
+import { UserInputError } from 'apollo-server-express';
 
 export default {
   Query: {

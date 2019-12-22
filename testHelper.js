@@ -2,7 +2,7 @@ import Knex from 'knex';
 import knexConfig from './knexfile';
 import knexCleaner from 'knex-cleaner';
 import gql from 'graphql-tag';
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
 import typeDefs from './src/api/schema';
 import resolvers from './src/api/resolvers';
 import { Model } from 'objection';
