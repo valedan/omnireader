@@ -31,10 +31,10 @@ const server = new ApolloServer({
     models: { Story, Chapter },
   }),
 });
-const path = '/graphql';
+const apiPath = '/graphql';
 app.use(query());
 
-server.applyMiddleware({ app, path });
+server.applyMiddleware({ app, apiPath });
 
 app.listen({ port: port }, () => {
   console.log(
