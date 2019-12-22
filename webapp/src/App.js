@@ -1,16 +1,14 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Library } from "./components/Library/Library";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "@apollo/react-hooks";
-import { Reader } from "./components/Reader/Reader";
-import { Story } from "./components/Library/Story";
-import { theme } from "./theme";
-import { ThemeProvider } from "@material-ui/styles";
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Library } from './components/Library/Library';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { Reader } from './components/Reader/Reader';
+import { Story } from './components/Library/Story';
+import { theme } from './theme';
+import { ThemeProvider } from '@material-ui/styles';
 
-const apollo = new ApolloClient({
-  uri: "http://localhost:4000"
-});
+const apollo = new ApolloClient();
 
 export const App = () => {
   return (
