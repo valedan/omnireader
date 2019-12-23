@@ -8,8 +8,9 @@ export class NoChapterError extends Error {}
 
 export const fetchStory = async url => {
   validateUrl(url);
-
+  console.log('before axios get');
   const story = await axios.get(url);
+  console.log('after axios get');
   const nodeSet = Cheerio.load(story.data);
 
   return {
