@@ -10,7 +10,11 @@ import express from 'express';
 import path from 'path';
 import query from 'qs-middleware';
 
-const knex = Knex(knexConfig.development);
+const knex =
+  process.env.NODE_ENV === 'production'
+    ? Knex(knexConfig.production)
+    : Knex(knexConfig.development);
+
 Model.knex(knex);
 
 const app = express();
