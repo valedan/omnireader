@@ -6,7 +6,7 @@ export class Chapter extends Model {
   static relationMappings = {
     story: {
       relation: Model.BelongsToOneRelation,
-      modelClass: `${__dirname}/Story`,
+      modelClass: `${__dirname}/story`,
       join: {
         from: 'stories.id',
         to: 'chapters.storyId',
