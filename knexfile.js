@@ -21,10 +21,6 @@ module.exports = {
   },
   production: {
     client: 'pg',
-    connection: {
-      host: process.env.DATABASE_URL,
-      port: 5432,
-      database: 'omnireader_prod',
-    },
+    connection: process.env.DATABASE_URL,
   },
 };
