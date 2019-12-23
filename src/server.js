@@ -27,6 +27,12 @@ app.get('/*', function(req, res) {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  engine: {
+    rewriteError(err) {
+      console.log(err);
+      return err;
+    },
+  },
   context: ({ req }) => ({
     models: { Story, Chapter },
   }),
