@@ -1,1 +1,1 @@
-web: node -r ./node_modules/esm/index.js ./src/server.js
+web: knex migrate:latest && node -r ./node_modules/esm/index.js ./src/server.js
