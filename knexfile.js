@@ -3,7 +3,7 @@ module.exports = {
     client: 'pg',
     connection: {
       host: 'localhost',
-      port: 5432,
+      port: 5431,
       user: 'dan',
       password: '',
       database: 'omnireader_dev',
@@ -13,7 +13,7 @@ module.exports = {
     client: 'pg',
     connection: {
       host: 'localhost',
-      port: 5432,
+      port: 5431,
       user: 'dan',
       password: '',
       database: 'omnireader_test',
