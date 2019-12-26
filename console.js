@@ -6,7 +6,11 @@ import { Story } from './src/models/story';
 import { Chapter } from './src/models/chapter';
 import { HttpProxy } from './src/models/http_proxy';
 
-const knex = Knex(knexConfig.development);
+const knex =
+  process.env.NODE_ENV === 'production'
+    ? Knex(knexConfig.production)
+    : Knex(knexConfig.development);
+
 Model.knex(knex);
 
 const replServer = repl.start('>');
