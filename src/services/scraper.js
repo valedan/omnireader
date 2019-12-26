@@ -27,9 +27,9 @@ export const fetchChapter = async url => {
   return extractChapter(nodeSet, url);
 };
 
-const getWithProxy = url => {
+const getWithProxy = async url => {
   if (HttpProxy.query().count() > 0) {
-    const proxy = HttpProxy.query().first();
+    const proxy = await HttpProxy.query().first();
     return axios.get({
       url,
       proxy: {
