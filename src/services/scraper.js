@@ -1,4 +1,5 @@
 import { URL } from 'url';
+import { HttpProxy } from '../models/http_proxy';
 import axios from 'axios';
 import * as Cheerio from 'cheerio';
 
@@ -8,9 +9,7 @@ export class NoChapterError extends Error {}
 
 export const fetchStory = async url => {
   validateUrl(url);
-  console.log('before axios get');
-  const story = await axios.get(url);
-  console.log('after axios get');
+  const story = await getWithProxy(url);
   const nodeSet = Cheerio.load(story.data);
 
   return {
@@ -22,10 +21,29 @@ export const fetchStory = async url => {
 
 export const fetchChapter = async url => {
   validateUrl(url);
-  const chapter = await axios.get(url);
+  const chapter = await getWithProxy(url);
   const nodeSet = Cheerio.load(chapter.data);
 
   return extractChapter(nodeSet, url);
+};
+
+const getWithProxy = url => {
+  if (HttpProxy.query().count() > 0) {
+    const proxy = HttpProxy.query().first();
+    return axios.get({
+      url,
+      proxy: {
+        host: proxy.ip,
+        port: proxy.port,
+        auth: {
+          username: proxy.username,
+          password: proxy.password,
+        },
+      },
+    });
+  } else {
+    return axios.get(url);
+  }
 };
 
 const extractChapter = ($, url) => {

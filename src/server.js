@@ -6,6 +6,7 @@ import knexConfig from '../knexfile';
 import { Model } from 'objection';
 import { Story } from './models/story';
 import { Chapter } from './models/chapter';
+import { HttpProxy } from './models/http_proxy';
 import express from 'express';
 import path from 'path';
 import query from 'qs-middleware';
@@ -38,7 +39,7 @@ const server = new ApolloServer({
     },
   },
   context: ({ req }) => ({
-    models: { Story, Chapter },
+    models: { Story, Chapter, HttpProxy },
   }),
 });
 const apiPath = '/graphql';
