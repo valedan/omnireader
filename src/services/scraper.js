@@ -28,10 +28,10 @@ export const fetchChapter = async url => {
 };
 
 const getWithProxy = async url => {
-  if (HttpProxy.query().count() > 0) {
+  const count = await HttpProxy.query().count();
+  if (count[0].count > 0) {
     const proxy = await HttpProxy.query().first();
-    return axios.get({
-      url,
+    return axios.get(url, {
       proxy: {
         host: proxy.ip,
         port: proxy.port,
