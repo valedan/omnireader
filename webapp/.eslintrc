@@ -1,12 +1,17 @@
 {
   "parserOptions": {
     "ecmaVersion": 2020,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
-  "plugins": ["jest"],
+  "plugins": ["jest", "react"],
+  "root": true,
   "extends": [
     "plugin:import/errors",
     "plugin:import/warnings",
+    "plugin:react/recommended",
     "airbnb",
     "plugin:jest/all",
     "prettier"
@@ -16,7 +21,7 @@
     "context": "readonly"
   },
   "env": {
-    "node": true,
+    "browser": true,
     "jest/globals": true
   }
 }

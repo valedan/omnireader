@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import styled from "styled-components";
+import React, { useEffect, useState, useRef } from 'react';
+import styled from 'styled-components';
 
 export const ReaderContent = ({ chapter, content, updateProgress }) => {
   const ref = useRef(null);
