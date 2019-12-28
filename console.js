@@ -1,7 +1,7 @@
 import repl from 'repl';
 import Knex from 'knex';
-import knexConfig from './knexfile';
 import { Model } from 'objection';
+import knexConfig from './knexfile';
 import { Story } from './src/models/story';
 import { Chapter } from './src/models/chapter';
 import { HttpProxy } from './src/models/http_proxy';

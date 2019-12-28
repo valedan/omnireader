@@ -1,0 +1,15 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module"
+  },
+  "plugins": ["jest"],
+  "extends": ["airbnb", "plugin:jest/all", "prettier"],
+  "rules": {},
+  "globals": {
+    "context": "readonly"
+  },
+  "env": {
+    "jest/globals": true
+  }
+}

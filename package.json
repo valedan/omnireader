@@ -11,7 +11,8 @@
     "test": "jest --runInBand",
     "dev": "DEBUG=express:* node-dev --respawn -r esm ./src/server.js",
     "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "console": "node -r esm --experimental-repl-await console"
+    "console": "node -r esm --experimental-repl-await console",
+    "lint": "eslint  ."
   },
   "dependencies": {
     "apollo-datasource": "^0.6.3",
@@ -50,12 +51,18 @@
     "babel-cli": "^6.26.0",
     "babel-jest": "^24.9.0",
     "babel-preset-env": "^1.7.0",
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jest": "^23.1.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^24.9.0",
     "nock": "^11.4.0",
-    "prettier": "^1.18.2",
+    "prettier": "^1.19.1",
     "superagent": "^5.1.0",
     "supertest": "^4.0.2"
   }
