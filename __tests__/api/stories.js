@@ -1,10 +1,12 @@
+import fs from 'fs';
+import nock from 'nock';
 import { setupTests } from '../../testHelper';
 import { Story } from '../../src/models/story';
 import { Chapter } from '../../src/models/chapter';
 import { generateStory } from '../factories/story';
 import { generateChapter } from '../factories/chapter';
-import fs from 'fs';
-import nock from 'nock';
+
+jest.mock('../../src/services/refresher');
 
 setupTests({ database: true, api: { models: { Story, Chapter } } });
 
@@ -23,26 +25,24 @@ describe('Query: stories', () => {
   context('When there are no stories', () => {
     it('returns empty results', async () => {
       const res = await query({ query: GET_STORIES });
-      expect(res.data.stories.length).toEqual(0);
+      expect(res.data.stories).toHaveLength(0);
     });
   });
 
   context('When there are stories', () => {
-    const storyWithChapters = generateStory();
-    const storyWithoutChapters = generateStory();
-    const chapters = [generateChapter(), generateChapter()];
-
-    beforeEach(async () => {
+    it('returns all stories with associated chapters', async () => {
+      const storyWithChapters = generateStory();
+      const storyWithoutChapters = generateStory();
+      const chapters = [generateChapter(), generateChapter()];
       const savedStory = await Story.query().insert(storyWithChapters);
       await Story.query().insert(storyWithoutChapters);
       await savedStory.$relatedQuery('chapters').insert(chapters);
-    });
-
-    it('returns all stories with associated chapters', async () => {
       const res = await query({ query: GET_STORIES });
-      expect(res.data.stories.length).toEqual(2);
-      expect(res.data.stories[0].chapters.length).toEqual(2);
-      expect(res.data.stories[0].chapters[0].title).toEqual(chapters[0].title);
+      expect(res.data.stories).toHaveLength(2);
+      expect(res.data.stories[0].chapters).toHaveLength(2);
+      expect(res.data.stories[0].chapters[0].title).toStrictEqual(
+        chapters[0].title,
+      );
     });
   });
 });
@@ -62,23 +62,20 @@ describe('Mutation: createStory', () => {
   `;
 
   context('When a story exists with the same canonicalUrl', () => {
-    let existingStory;
-    let res;
-    beforeEach(async () => {
-      existingStory = await Story.query().insert(
+    it("returns an error including the existing story's id", async () => {
+      const existingStory = await Story.query().insert(
         generateStory({ canonicalUrl: storyUrl }),
       );
-      res = await mutate({
+      const res = await mutate({
         mutation: CREATE_STORY,
         variables: { url: storyUrl },
       });
-    });
-
-    it("returns an error including the existing story's id", async () => {
       const error = res.errors[0];
-      expect(error.extensions.exception.story.id).toEqual(existingStory.id);
-      expect(error.extensions.code).toEqual('BAD_USER_INPUT');
-      expect(error.message).toEqual('Story already exists!');
+      expect(error.extensions.exception.story.id).toStrictEqual(
+        existingStory.id,
+      );
+      expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
+      expect(error.message).toStrictEqual('Story already exists!');
     });
   });
 
@@ -90,58 +87,48 @@ describe('Mutation: createStory', () => {
       });
 
       const error = res.errors[0];
-      expect(error.extensions.code).toEqual('BAD_USER_INPUT');
-      expect(error.message).toEqual('Site not supported!');
+      expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
+      expect(error.message).toStrictEqual('Site not supported!');
     });
   });
 
   context('When a story cannot be found at the target', () => {
-    beforeEach(() => {
+    it('returns an error', async () => {
       const homepage = fs.readFileSync(
         // TODO: readFixture helper function
-        `${__dirname}/../../tests/fixtures/ffn_homepage.html`,
+        `${__dirname}/../../__tests__/fixtures/ffn_homepage.html`,
       );
       nock('https://www.fanfiction.net')
         .get('/s/13120599/1/')
         .reply(200, homepage);
-    });
-
-    it('returns an error', async () => {
       const res = await mutate({
         mutation: CREATE_STORY,
         variables: { url: storyUrl },
       });
       const error = res.errors[0];
-      expect(error.extensions.code).toEqual('BAD_USER_INPUT');
-      expect(error.message).toEqual('Story not found!');
+      expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
+      expect(error.message).toStrictEqual('Story not found!');
     });
   });
 
   context('When story is new and can be parsed', () => {
-    let res;
-    beforeEach(async () => {
+    it('saves story to database and returns story with chapter index', async () => {
       const hpmor = fs.readFileSync(
         // TODO: readFixture helper function
-        `${__dirname}/../../tests/fixtures/ffn_hpmor_chapter_1.html`,
+        `${__dirname}/../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
       );
       nock('https://www.fanfiction.net')
         .get('/s/13120599/1/')
         .reply(200, hpmor);
-      res = await mutate({
+      const res = await mutate({
         mutation: CREATE_STORY,
         variables: { url: storyUrl },
       });
-    });
-
-    it('saves story to database', async () => {
       const story = await Story.query().findOne({});
-      expect(story.title).toEqual(
+      expect(story.title).toStrictEqual(
         'Harry Potter and the Methods of Rationality',
       );
-    });
-
-    it('returns the story with chapter index', async () => {
-      expect(res.data.createStory.title).toEqual(
+      expect(res.data.createStory.title).toStrictEqual(
         'Harry Potter and the Methods of Rationality',
       );
     });
@@ -149,5 +136,5 @@ describe('Mutation: createStory', () => {
 });
 
 describe('Mutation: deleteStory', () => {
-  //TODO
+  // TODO
 });

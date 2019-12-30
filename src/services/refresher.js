@@ -7,6 +7,5 @@ export const refreshStory = async story => {
     const savedChapter = await story.$relatedQuery('chapters').insert(chapter);
     story.chapters.push(savedChapter);
   }
-  console.log('returning from refresh');
   return story;
 };

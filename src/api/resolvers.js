@@ -19,7 +19,6 @@ export default {
       for (const story of stories) {
         await refreshStory(story);
       }
-      console.log('returning from resovler');
       return stories;
     },
 

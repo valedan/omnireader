@@ -1,3 +1,5 @@
+import fs from 'fs';
+import axios from 'axios';
 import {
   UnsupportedSiteError,
   NoStoryError,
@@ -5,10 +7,9 @@ import {
   fetchStory,
   fetchChapter,
 } from './scraper';
-import axios from 'axios';
-import fs from 'fs';
 import { setupTests } from '../../testHelper';
-setupTests();
+
+setupTests({ database: true });
 
 const expectedChapterData = {
   title: '1. A Day of Very Low Probability',
@@ -56,8 +57,8 @@ jest.mock('axios');
 
 describe('.fetchStory', () => {
   context('When site is unsupported', () => {
-    it('throws an error', () => {
-      expect(fetchStory('https://badurl.com')).rejects.toThrow(
+    it('throws an error', async () => {
+      await expect(fetchStory('https://badurl.com')).rejects.toThrow(
         UnsupportedSiteError,
       );
     });
@@ -67,40 +68,42 @@ describe('.fetchStory', () => {
     it('throws an error', async () => {
       const homepage = fs.readFileSync(
         // TODO: readFixture helper function
-        `${__dirname}/../../tests/fixtures/ffn_homepage.html`,
+        `${__dirname}/../../__tests__/fixtures/ffn_homepage.html`,
       );
       axios.get.mockImplementationOnce(() =>
         Promise.resolve({
           data: homepage,
         }),
       );
-      await expect(
-        fetchStory('https://www.fanfiction.net'),
-      ).rejects.toThrowError(NoStoryError);
+      await expect(fetchStory('https://www.fanfiction.net')).rejects.toThrow(
+        NoStoryError,
+      );
     });
   });
 
   context('When the story only has 1 chapter', () => {
     it('returns the parsed story data', async () => {
       const single = fs.readFileSync(
-        `${__dirname}/../../tests/fixtures/ffn_single_chapter.html`,
+        `${__dirname}/../../__tests__/fixtures/ffn_single_chapter.html`,
       );
-      //TODO: mockResolved helper
+      // TODO: mockResolved helper
       axios.get.mockImplementationOnce(() =>
         Promise.resolve({
           data: single,
         }),
       );
       const storyData = await fetchStory('https://www.fanfiction.net/s/123/1');
-      expect(storyData.chapters[0].title).toEqual('Instruments of Destruction');
+      expect(storyData.chapters[0].title).toStrictEqual(
+        'Instruments of Destruction',
+      );
     });
   });
 
   it('returns the parsed story data', async () => {
     const hpmor = fs.readFileSync(
-      `${__dirname}/../../tests/fixtures/ffn_hpmor_chapter_1.html`,
+      `${__dirname}/../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
     );
-    //TODO: mockResolved helper
+    // TODO: mockResolved helper
     axios.get.mockImplementationOnce(() =>
       Promise.resolve({
         data: hpmor,
@@ -110,14 +113,14 @@ describe('.fetchStory', () => {
       'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
     );
 
-    expect(storyData).toEqual(expectedStoryData);
+    expect(storyData).toStrictEqual(expectedStoryData);
   });
 });
 
 describe('.fetchChapter', () => {
   context('When the site is not supported', () => {
-    it('throws an unsupported site error', () => {
-      expect(fetchChapter('https://badurl.com')).rejects.toThrow(
+    it('throws an unsupported site error', async () => {
+      await expect(fetchChapter('https://badurl.com')).rejects.toThrow(
         UnsupportedSiteError,
       );
     });
@@ -126,7 +129,7 @@ describe('.fetchChapter', () => {
   context('When there is no chapter at the url', () => {
     it('throws a no chapter error', async () => {
       const homepage = fs.readFileSync(
-        `${__dirname}/../../tests/fixtures/ffn_homepage.html`,
+        `${__dirname}/../../__tests__/fixtures/ffn_homepage.html`,
       );
       axios.get.mockImplementationOnce(() =>
         Promise.resolve({
@@ -134,17 +137,17 @@ describe('.fetchChapter', () => {
         }),
       );
 
-      await expect(
-        fetchChapter('https://www.fanfiction.net'),
-      ).rejects.toThrowError(NoChapterError);
+      await expect(fetchChapter('https://www.fanfiction.net')).rejects.toThrow(
+        NoChapterError,
+      );
     });
   });
 
   it('returns the content of the chapter', async () => {
     const hpmor = fs.readFileSync(
-      `${__dirname}/../../tests/fixtures/ffn_hpmor_chapter_1.html`,
+      `${__dirname}/../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
     );
-    //TODO: mockResolved helper
+    // TODO: mockResolved helper
     axios.get.mockImplementationOnce(() =>
       Promise.resolve({
         data: hpmor,
@@ -154,6 +157,6 @@ describe('.fetchChapter', () => {
       'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
     );
 
-    expect(chapterData).toEqual(expectedChapterData);
+    expect(chapterData).toStrictEqual(expectedChapterData);
   });
 });

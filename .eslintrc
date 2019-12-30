@@ -11,9 +11,16 @@
     "plugin:jest/all",
     "prettier"
   ],
-  "rules": {},
+  "rules": {
+    "jest/prefer-expect-assertions": "off",
+    "jest/no-identical-title": "off",
+    "jest/lowercase-name": "off"
+  },
   "globals": {
-    "context": "readonly"
+    "context": "readonly",
+    "gql": "readonly",
+    "query": "readonly",
+    "mutate": "readonly"
   },
   "env": {
     "node": true,
