@@ -14,7 +14,12 @@
   "rules": {
     "jest/prefer-expect-assertions": "off",
     "jest/no-identical-title": "off",
-    "jest/lowercase-name": "off"
+    "jest/lowercase-name": "off",
+    "import/prefer-default-export": "off",
+    "no-use-before-define": [
+      "error",
+      { "variables": false, "functions": false }
+    ]
   },
   "globals": {
     "context": "readonly",

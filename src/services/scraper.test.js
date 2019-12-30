@@ -1,12 +1,7 @@
 import fs from 'fs';
 import axios from 'axios';
-import {
-  UnsupportedSiteError,
-  NoStoryError,
-  NoChapterError,
-  fetchStory,
-  fetchChapter,
-} from './scraper';
+import { UnsupportedSiteError, NoChapterError, NoStoryError } from '../errors';
+import { fetchStory, fetchChapter } from './scraper';
 import { setupTests } from '../../testHelper';
 
 setupTests({ database: true });

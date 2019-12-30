@@ -1,11 +1,8 @@
 import { URL } from 'url';
-import { HttpProxy } from '../models/http_proxy';
 import axios from 'axios';
 import * as Cheerio from 'cheerio';
-
-export class UnsupportedSiteError extends Error {}
-export class NoStoryError extends Error {}
-export class NoChapterError extends Error {}
+import { HttpProxy } from '../models/http_proxy';
+import { NoChapterError, NoStoryError, UnsupportedSiteError } from '../errors';
 
 export const fetchStory = async url => {
   validateUrl(url);
@@ -41,9 +38,9 @@ const getWithProxy = async url => {
         },
       },
     });
-  } else {
-    return axios.get(url);
   }
+
+  return axios.get(url);
 };
 
 const extractChapter = ($, url) => {
@@ -59,7 +56,7 @@ const extractChapter = ($, url) => {
       parts[parts.length - 1] = $(option).attr('value');
       return parts.join('/');
     }),
-    number: parseInt(option.text().split('.')[0]),
+    number: parseInt(option.text().split('.')[0], 10),
     content: $('#storytext')
       .html()
       .trim(),
@@ -99,7 +96,7 @@ const extractStoryInfo = ($, url) => {
 const extractAvatar = $ => {
   let url = $('#profile_top img').attr('src');
   if (!url) return null;
-  if (!url.startsWith('http')) url = 'https:' + url;
+  if (!url.startsWith('http')) url = `https:${url}`;
   return url;
 };
 
@@ -120,7 +117,7 @@ const extractSingleChapter = ($, url) => {
   return [
     {
       title: extractTitle($),
-      url: url,
+      url,
       number: 1,
     },
   ];

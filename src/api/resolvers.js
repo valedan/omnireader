@@ -1,11 +1,7 @@
-import {
-  fetchStory,
-  fetchChapter,
-  UnsupportedSiteError,
-  NoStoryError,
-} from '../services/scraper';
-import { refreshStory } from '../services/refresher';
 import { UserInputError } from 'apollo-server-express';
+import { UnsupportedSiteError, NoStoryError } from '../errors';
+import { fetchStory, fetchChapter } from '../services/scraper';
+import { refreshStory } from '../services/refresher';
 
 export default {
   Query: {
@@ -16,14 +12,14 @@ export default {
           builder.orderBy('id');
         });
       // TODO: This won't scale. Need to do this in a cron job.
-      for (const story of stories) {
+      stories.map(async story => {
         await refreshStory(story);
-      }
+      });
       return stories;
     },
 
     story: async (_, { id }, { models }) => {
-      return await models.Story.query()
+      return models.Story.query()
         .findById(id)
         .eager('chapters')
         .modifyEager('chapters', builder => {
@@ -47,7 +43,7 @@ export default {
       });
       return {
         ...chapter,
-        content: content,
+        content,
         nextId: nextChapter && nextChapter.id,
         prevId: prevChapter && prevChapter.id,
       };
@@ -60,7 +56,7 @@ export default {
 
       const chapter = await models.Chapter.query()
         .patchAndFetchById(chapterId, {
-          progress: progress,
+          progress,
           progressUpdatedAt: new Date().toISOString(),
         })
         .throwIfNotFound();
@@ -68,7 +64,6 @@ export default {
     },
 
     tocChecked: async (_, { storyId }, { models }) => {
-      console.log('toc checked');
       await models.Story.query().patchAndFetchById(storyId, {
         tocLastChecked: new Date(),
       });
@@ -95,12 +90,12 @@ export default {
         const savedStory = await models.Story.query().insert(storyData);
         savedStory.details = JSON.stringify(savedStory.details);
         savedStory.chapters = [];
-        for (const chapterData of chapters) {
+        chapters.map(async chapterData => {
           const savedChapter = await savedStory
             .$relatedQuery('chapters')
             .insert(chapterData);
           savedStory.chapters.push(savedChapter);
-        }
+        });
         return savedStory;
       } catch (err) {
         if (err instanceof UnsupportedSiteError) {

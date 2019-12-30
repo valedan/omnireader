@@ -1,4 +1,4 @@
-exports.up = function(knex) {
+exports.up = knex => {
   return knex.schema.createTable('proxies', table => {
     table.increments('id').primary();
     table.timestamps(null, true);
@@ -12,6 +12,6 @@ exports.up = function(knex) {
   });
 };
 
-exports.down = function(knex) {
+exports.down = knex => {
   return knex.schema.dropTableIfExists('proxies');
 };
