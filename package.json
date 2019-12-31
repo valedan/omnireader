@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node -r ./node_modules/esm/index.js ./src/server.js",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --coverage",
     "test:watch": "jest --watch --runInBand",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "dev": "DEBUG=express:* node-dev --respawn -r esm ./src/server.js",

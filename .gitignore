@@ -13,6 +13,7 @@ temp/
 
 # testing
 /*/coverage
+coverage
 
 # production
 
