@@ -6,48 +6,6 @@ import { setupTests } from '#/test_helper';
 
 setupTests({ database: true });
 
-const expectedChapterData = {
-  title: '1. A Day of Very Low Probability',
-  number: 1,
-  url:
-    'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
-  content: '<p>Chapter Content</p>',
-};
-
-const expectedStoryData = {
-  canonicalUrl:
-    'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
-  title: 'Harry Potter and the Methods of Rationality',
-  author: 'Less Wrong',
-  avatar: 'https://ff74.b-cdn.net/image/80871/75/',
-  details: {
-    description:
-      'Petunia married a biochemist, and Harry grew up reading science and science fiction. Then came the Hogwarts letter, and a world of intriguing new possibilities to exploit. And new friends, like Hermione Granger, and Professor McGonagall, and Professor Quirrell... COMPLETE.',
-    information:
-      'Rated: Fiction T - English - Drama/Humor - Harry P., Hermione G. - Chapters: 122 - Words: 661,619 - Reviews: 34,596 - Favs: 23,879 - Follows: 17,999 - Updated: 3/14/2015 - Published: 2/28/2010 - Status: Complete - id: 5782108',
-  },
-  chapters: [
-    {
-      title: '1. A Day of Very Low Probability',
-      number: 1,
-      url:
-        'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
-    },
-    {
-      title: '2. Everything I Believe Is False',
-      number: 2,
-      url:
-        'https://www.fanfiction.net/s/5782108/2/Harry-Potter-and-the-Methods-of-Rationality',
-    },
-    {
-      title: '3. Comparing Reality To Its Alternatives',
-      number: 3,
-      url:
-        'https://www.fanfiction.net/s/5782108/3/Harry-Potter-and-the-Methods-of-Rationality',
-    },
-  ],
-};
-
 jest.mock('axios');
 
 describe('.fetchStory', () => {
@@ -108,7 +66,35 @@ describe('.fetchStory', () => {
       'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
     );
 
-    expect(storyData).toStrictEqual(expectedStoryData);
+    expect(storyData).toMatchInlineSnapshot(`
+      Object {
+        "author": "Less Wrong",
+        "avatar": "https://ff74.b-cdn.net/image/80871/75/",
+        "canonicalUrl": "https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality",
+        "chapters": Array [
+          Object {
+            "number": 1,
+            "title": "1. A Day of Very Low Probability",
+            "url": "https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality",
+          },
+          Object {
+            "number": 2,
+            "title": "2. Everything I Believe Is False",
+            "url": "https://www.fanfiction.net/s/5782108/2/Harry-Potter-and-the-Methods-of-Rationality",
+          },
+          Object {
+            "number": 3,
+            "title": "3. Comparing Reality To Its Alternatives",
+            "url": "https://www.fanfiction.net/s/5782108/3/Harry-Potter-and-the-Methods-of-Rationality",
+          },
+        ],
+        "details": Object {
+          "description": "Petunia married a biochemist, and Harry grew up reading science and science fiction. Then came the Hogwarts letter, and a world of intriguing new possibilities to exploit. And new friends, like Hermione Granger, and Professor McGonagall, and Professor Quirrell... COMPLETE.",
+          "information": "Rated: Fiction T - English - Drama/Humor - Harry P., Hermione G. - Chapters: 122 - Words: 661,619 - Reviews: 34,596 - Favs: 23,879 - Follows: 17,999 - Updated: 3/14/2015 - Published: 2/28/2010 - Status: Complete - id: 5782108",
+        },
+        "title": "Harry Potter and the Methods of Rationality",
+      }
+    `);
   });
 });
 
@@ -152,6 +138,13 @@ describe('.fetchChapter', () => {
       'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
     );
 
-    expect(chapterData).toStrictEqual(expectedChapterData);
+    expect(chapterData).toMatchInlineSnapshot(`
+      Object {
+        "content": "<p>Chapter Content</p>",
+        "number": 1,
+        "title": "1. A Day of Very Low Probability",
+        "url": "https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality",
+      }
+    `);
   });
 });
