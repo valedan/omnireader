@@ -2,10 +2,9 @@ import fs from 'fs';
 import axios from 'axios';
 import { UnsupportedSiteError, NoChapterError, NoStoryError } from '/errors';
 import { fetchStory, fetchChapter } from './scraper';
-import { setupTests } from '#/test_helper';
+import { setupDatabase } from '#/helpers';
 
-setupTests({ database: true });
-
+setupDatabase();
 jest.mock('axios');
 
 describe('.fetchStory', () => {

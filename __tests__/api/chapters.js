@@ -1,12 +1,13 @@
 import fs from 'fs';
 import nock from 'nock';
-import { setupTests } from '#/test_helper';
+import { setupDatabase, setupApi } from '#/helpers';
 import { Story } from '/models/story';
 import { Chapter } from '/models/chapter';
 import { generateStory } from '#/factories/story';
 import { generateChapter } from '#/factories/chapter';
 
-setupTests({ database: true, api: { models: { Story, Chapter } } });
+setupDatabase();
+setupApi();
 
 const chapterUrl = 'https://www.fanfiction.net/s/13120599/1/';
 const story = generateStory();

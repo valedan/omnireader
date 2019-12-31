@@ -1,4 +1,4 @@
-import { setupTests } from '#/test_helper';
+import { setupDatabase } from '#/helpers';
 import { fetchStory } from '/services/scraper';
 import { refreshStory } from '/services/refresher';
 import { generateStory } from '#/factories/story';
@@ -6,7 +6,8 @@ import { generateChapter } from '#/factories/chapter';
 import { Story } from '/models/story';
 import { Chapter } from '/models/chapter';
 
-setupTests({ database: true });
+setupDatabase();
+
 jest.mock('./scraper');
 
 const story = generateStory();
