@@ -1,8 +1,8 @@
 import { URL } from 'url';
 import axios from 'axios';
 import * as Cheerio from 'cheerio';
-import { HttpProxy } from '../models/http_proxy';
-import { NoChapterError, NoStoryError, UnsupportedSiteError } from '../errors';
+import { HttpProxy } from '/models/http_proxy';
+import { NoChapterError, NoStoryError, UnsupportedSiteError } from '/errors';
 
 export const fetchStory = async url => {
   validateUrl(url);

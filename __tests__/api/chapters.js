@@ -1,10 +1,10 @@
 import fs from 'fs';
 import nock from 'nock';
-import { setupTests } from '../../testHelper';
-import { Story } from '../../src/models/story';
-import { Chapter } from '../../src/models/chapter';
-import { generateStory } from '../factories/story';
-import { generateChapter } from '../factories/chapter';
+import { setupTests } from '#/test_helper';
+import { Story } from '/models/story';
+import { Chapter } from '/models/chapter';
+import { generateStory } from '#/factories/story';
+import { generateChapter } from '#/factories/chapter';
 
 setupTests({ database: true, api: { models: { Story, Chapter } } });
 

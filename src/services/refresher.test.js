@@ -1,10 +1,10 @@
-import { setupTests } from '../../testHelper';
-import { fetchStory } from './scraper';
-import { refreshStory } from './refresher';
-import { generateStory } from '../../__tests__/factories/story';
-import { generateChapter } from '../../__tests__/factories/chapter';
-import { Story } from '../models/story';
-import { Chapter } from '../models/chapter';
+import { setupTests } from '#/test_helper';
+import { fetchStory } from '/services/scraper';
+import { refreshStory } from '/services/refresher';
+import { generateStory } from '#/factories/story';
+import { generateChapter } from '#/factories/chapter';
+import { Story } from '/models/story';
+import { Chapter } from '/models/chapter';
 
 setupTests({ database: true });
 jest.mock('./scraper');
@@ -55,8 +55,7 @@ describe('.refreshStory', () => {
         return { ...story, chapters: [chapter1, chapter2, newChapter] };
       });
       refreshStory(savedStory);
-      const storiesWithChapters = await Story.query().eager('chapters');
-      const chapters = storiesWithChapters[0].chapters;
+      const [{ chapters }] = await Story.query().eager('chapters');
       expect(chapters).toHaveLength(3);
       expect(chapters[0].title).toStrictEqual(newChapter.title);
       fetchStory.mockReset();

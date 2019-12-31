@@ -1,12 +1,13 @@
 import Knex from 'knex';
-import knexConfig from './knexfile';
+import knexConfig from '/knexfile';
 import knexCleaner from 'knex-cleaner';
 import gql from 'graphql-tag';
 import { ApolloServer } from 'apollo-server-express';
-import typeDefs from './src/api/schema';
-import resolvers from './src/api/resolvers';
+import typeDefs from '/api/schema';
+import resolvers from '/api/resolvers';
 import { Model } from 'objection';
 import nock from 'nock';
+import knexManager from 'knex-db-manager';
 
 const { createTestClient } = require('apollo-server-testing');
 
@@ -17,7 +18,7 @@ export const setupTests = ({ database, api } = {}) => {
   nock.disableNetConnect();
 
   if (database === true) {
-    const dbManager = require('knex-db-manager').databaseManagerFactory({
+    const dbManager = knexManager.databaseManagerFactory({
       knex: {
         client: 'pg',
         connection: {
@@ -34,7 +35,7 @@ export const setupTests = ({ database, api } = {}) => {
       },
     });
 
-    global.knex = Knex(knexConfig.test);
+    const knex = Knex(knexConfig.test);
     Model.knex(knex);
 
     global.beforeAll(async () => {
@@ -55,7 +56,7 @@ export const setupTests = ({ database, api } = {}) => {
   }
 
   if (api) {
-    global.server = new ApolloServer({
+    const server = new ApolloServer({
       typeDefs,
       resolvers,
       context: () => ({ models: api.models }),

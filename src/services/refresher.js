@@ -1,4 +1,4 @@
-import { fetchStory } from './scraper';
+import { fetchStory } from '/services/scraper';
 
 export const refreshStory = async story => {
   const currentStory = await fetchStory(story.canonicalUrl);

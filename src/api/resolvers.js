@@ -1,7 +1,7 @@
 import { UserInputError } from 'apollo-server-express';
-import { UnsupportedSiteError, NoStoryError } from '../errors';
-import { fetchStory, fetchChapter } from '../services/scraper';
-import { refreshStory } from '../services/refresher';
+import { UnsupportedSiteError, NoStoryError } from '/errors';
+import { fetchStory, fetchChapter } from '/services/scraper';
+import { refreshStory } from '/services/refresher';
 
 export default {
   Query: {
