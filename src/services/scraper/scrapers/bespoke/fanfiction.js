@@ -1,28 +1,19 @@
 import { URL } from 'url';
 import axios from 'axios';
+import { NoChapterError, NoStoryError } from '/errors';
 import * as Cheerio from 'cheerio';
 import { HttpProxy } from '/models/http_proxy';
-import { NoChapterError, NoStoryError, UnsupportedSiteError } from '/errors';
 
-export const fetchStory = async url => {
-  validateUrl(url);
-  const story = await getWithProxy(url);
-  const nodeSet = Cheerio.load(story.data);
+export const attemptScrape = async (url, getStory) => {
+  if (!isSupported(url)) return false;
 
-  return {
-    ...extractStoryInfo(nodeSet, url),
-    chapters:
-      extractChapterList(nodeSet, url) || extractSingleChapter(nodeSet, url),
-  };
+  const page = await getWithProxy(url);
+  const nodeset = Cheerio.load(page.data);
+
+  return getStory ? extractStory(nodeset) : extractChapter(nodeset);
 };
 
-export const fetchChapter = async url => {
-  validateUrl(url);
-  const chapter = await getWithProxy(url);
-  const nodeSet = Cheerio.load(chapter.data);
-
-  return extractChapter(nodeSet, url);
-};
+const isSupported = url => new URL(url).hostname === 'www.fanfiction.net';
 
 const getWithProxy = async url => {
   const count = await HttpProxy.query().count();
@@ -74,8 +65,16 @@ const validateStoryPresence = $ => {
   if (!title.length) throw new NoStoryError();
 };
 
-const extractStoryInfo = ($, url) => {
+const extractStory = ($, url) => {
   validateStoryPresence($);
+  return {
+    ...extractStoryInfo(nodeSet, url),
+    chapters:
+      extractChapterList(nodeSet, url) || extractSingleChapter(nodeSet, url),
+  };
+};
+
+const extractStoryInfo = ($, url) => {
   return {
     canonicalUrl: url,
     title: extractTitle($),
@@ -98,13 +97,6 @@ const extractAvatar = $ => {
   if (!url) return null;
   if (!url.startsWith('http')) url = `https:${url}`;
   return url;
-};
-
-const validateUrl = url => {
-  const uri = new URL(url);
-  if (uri.hostname !== 'www.fanfiction.net') {
-    throw new UnsupportedSiteError();
-  }
 };
 
 const extractTitle = $ => {

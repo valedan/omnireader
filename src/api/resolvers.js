@@ -1,6 +1,6 @@
 import { UserInputError } from 'apollo-server-express';
 import { UnsupportedSiteError, NoStoryError } from '/errors';
-import { fetchStory, fetchChapter } from '/services/scraper';
+import { scrape } from '/services/scraper';
 import { refreshStory } from '/services/refresher';
 
 export default {
@@ -32,7 +32,7 @@ export default {
         .findById(id)
         .eager('story');
       if (!chapter) throw new UserInputError('Chapter not found!');
-      const { content } = await fetchChapter(chapter.url);
+      const { content } = await scrape({ url: chapter.url, getStory: false });
       const nextChapter = await models.Chapter.query().findOne({
         storyId: chapter.storyId,
         number: chapter.number + 1,
@@ -85,7 +85,10 @@ export default {
         });
       }
       try {
-        const { chapters, ...storyData } = await fetchStory(url);
+        const { chapters, ...storyData } = await scrape({
+          url,
+          getStory: true,
+        });
 
         const savedStory = await models.Story.query().insert(storyData);
         savedStory.details = JSON.stringify(savedStory.details);

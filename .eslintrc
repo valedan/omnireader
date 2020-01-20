@@ -9,7 +9,7 @@
     "plugin:import/warnings",
     "airbnb",
     "plugin:jest/all",
-    "prettier"
+    "prettier"​​​​​​​​​​​​​​​​
   ],
   "rules": {
     "jest/prefer-expect-assertions": "off",
