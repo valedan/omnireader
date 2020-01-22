@@ -1,42 +1,43 @@
 import fs from 'fs';
 import axios from 'axios';
 import { UnsupportedSiteError, NoChapterError, NoStoryError } from '/errors';
-import { fetchStory, fetchChapter } from '.';
+import FanFiction from './fanfiction';
 import { setupDatabase } from '#/helpers';
 
 setupDatabase();
 jest.mock('axios');
 
-describe('.fetchStory', () => {
+describe('fetching the whole story', () => {
   context('When site is unsupported', () => {
-    it('throws an error', async () => {
-      await expect(fetchStory('https://badurl.com')).rejects.toThrow(
-        UnsupportedSiteError,
-      );
+    it('returns false', async () => {
+      const result = await FanFiction.attemptScrape('https://badurl.com', true);
+      expect(result).toStrictEqual(false);
     });
   });
 
   context('When there is no story at provided url', () => {
-    it('throws an error', async () => {
+    it('returns false', async () => {
       const homepage = fs.readFileSync(
         // TODO: readFixture helper function
-        `${__dirname}/../../__tests__/fixtures/ffn_homepage.html`,
+        `${__dirname}/../../../../../__tests__/fixtures/ffn_homepage.html`,
       );
       axios.get.mockImplementationOnce(() =>
         Promise.resolve({
           data: homepage,
         }),
       );
-      await expect(fetchStory('https://www.fanfiction.net')).rejects.toThrow(
-        NoStoryError,
+      const result = await FanFiction.attemptScrape(
+        'https://www.fanfiction.net',
+        true,
       );
+      expect(result).toStrictEqual(false);
     });
   });
 
   context('When the story only has 1 chapter', () => {
     it('returns the parsed story data', async () => {
       const single = fs.readFileSync(
-        `${__dirname}/../../__tests__/fixtures/ffn_single_chapter.html`,
+        `${__dirname}/../../../../../__tests__/fixtures/ffn_single_chapter.html`,
       );
       // TODO: mockResolved helper
       axios.get.mockImplementationOnce(() =>
@@ -44,7 +45,11 @@ describe('.fetchStory', () => {
           data: single,
         }),
       );
-      const storyData = await fetchStory('https://www.fanfiction.net/s/123/1');
+
+      const storyData = await FanFiction.attemptScrape(
+        'https://www.fanfiction.net/s/123/1',
+        true,
+      );
       expect(storyData.chapters[0].title).toStrictEqual(
         'Instruments of Destruction',
       );
@@ -53,7 +58,7 @@ describe('.fetchStory', () => {
 
   it('returns the parsed story data', async () => {
     const hpmor = fs.readFileSync(
-      `${__dirname}/../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
+      `${__dirname}/../../../../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
     );
     // TODO: mockResolved helper
     axios.get.mockImplementationOnce(() =>
@@ -61,8 +66,9 @@ describe('.fetchStory', () => {
         data: hpmor,
       }),
     );
-    const storyData = await fetchStory(
+    const storyData = await FanFiction.attemptScrape(
       'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
+      true,
     );
 
     expect(storyData).toMatchInlineSnapshot(`
@@ -97,19 +103,21 @@ describe('.fetchStory', () => {
   });
 });
 
-describe('.fetchChapter', () => {
+describe('fetching a single chapter', () => {
   context('When the site is not supported', () => {
-    it('throws an unsupported site error', async () => {
-      await expect(fetchChapter('https://badurl.com')).rejects.toThrow(
-        UnsupportedSiteError,
+    it('returns false', async () => {
+      const result = await FanFiction.attemptScrape(
+        'https://badurl.com',
+        false,
       );
+      expect(result).toStrictEqual(false);
     });
   });
 
   context('When there is no chapter at the url', () => {
-    it('throws a no chapter error', async () => {
+    it('returns false', async () => {
       const homepage = fs.readFileSync(
-        `${__dirname}/../../__tests__/fixtures/ffn_homepage.html`,
+        `${__dirname}/../../../../../__tests__/fixtures/ffn_homepage.html`,
       );
       axios.get.mockImplementationOnce(() =>
         Promise.resolve({
@@ -117,15 +125,17 @@ describe('.fetchChapter', () => {
         }),
       );
 
-      await expect(fetchChapter('https://www.fanfiction.net')).rejects.toThrow(
-        NoChapterError,
+      const chapterData = await FanFiction.attemptScrape(
+        'https://www.fanfiction.net',
+        false,
       );
+      expect(chapterData).toStrictEqual(false);
     });
   });
 
   it('returns the content of the chapter', async () => {
     const hpmor = fs.readFileSync(
-      `${__dirname}/../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
+      `${__dirname}/../../../../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
     );
     // TODO: mockResolved helper
     axios.get.mockImplementationOnce(() =>
@@ -133,8 +143,10 @@ describe('.fetchChapter', () => {
         data: hpmor,
       }),
     );
-    const chapterData = await fetchChapter(
+
+    const chapterData = await FanFiction.attemptScrape(
       'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
+      false,
     );
 
     expect(chapterData).toMatchInlineSnapshot(`

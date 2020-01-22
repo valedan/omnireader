@@ -7,10 +7,14 @@ import { HttpProxy } from '/models/http_proxy';
 const attemptScrape = async (url, getStory) => {
   if (!isSupported(url)) return false;
 
-  const page = await getWithProxy(url);
-  const nodeset = Cheerio.load(page.data);
+  try {
+    const page = await getWithProxy(url);
+    const $ = Cheerio.load(page.data);
 
-  return getStory ? extractStory(nodeset) : extractChapter(nodeset);
+    return getStory ? extractStory($, url) : extractChapter($, url);
+  } catch (err) {
+    return false;
+  }
 };
 
 export default { attemptScrape };
@@ -70,9 +74,8 @@ const validateStoryPresence = $ => {
 const extractStory = ($, url) => {
   validateStoryPresence($);
   return {
-    ...extractStoryInfo(nodeSet, url),
-    chapters:
-      extractChapterList(nodeSet, url) || extractSingleChapter(nodeSet, url),
+    ...extractStoryInfo($, url),
+    chapters: extractChapterList($, url) || extractSingleChapter($, url),
   };
 };
 
