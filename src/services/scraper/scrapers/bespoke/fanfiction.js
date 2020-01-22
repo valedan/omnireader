@@ -4,7 +4,7 @@ import { NoChapterError, NoStoryError } from '/errors';
 import * as Cheerio from 'cheerio';
 import { HttpProxy } from '/models/http_proxy';
 
-export const attemptScrape = async (url, getStory) => {
+const attemptScrape = async (url, getStory) => {
   if (!isSupported(url)) return false;
 
   const page = await getWithProxy(url);
@@ -12,6 +12,8 @@ export const attemptScrape = async (url, getStory) => {
 
   return getStory ? extractStory(nodeset) : extractChapter(nodeset);
 };
+
+export default { attemptScrape };
 
 const isSupported = url => new URL(url).hostname === 'www.fanfiction.net';
 
