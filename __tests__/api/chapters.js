@@ -1,6 +1,5 @@
-import fs from 'fs';
 import nock from 'nock';
-import { setupDatabase, setupApi } from '#/helpers';
+import { setupDatabase, setupApi, readFixture } from '#/helpers';
 import { Story } from '/models/story';
 import { Chapter } from '/models/chapter';
 import { generateStory } from '#/factories/story';
@@ -67,10 +66,7 @@ describe('Query: chapter', () => {
     });
 
     context('When chapter can be retrieved', () => {
-      const hpmor = fs.readFileSync(
-        // TODO: readFixture helper function
-        `${__dirname}/../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
-      );
+      const hpmor = readFixture('ffn_hpmor_chapter_1.html');
 
       it('returns chapter content', async () => {
         nock('https://www.fanfiction.net')

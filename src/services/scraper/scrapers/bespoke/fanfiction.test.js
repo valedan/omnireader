@@ -1,8 +1,6 @@
-import fs from 'fs';
 import axios from 'axios';
-import { UnsupportedSiteError, NoChapterError, NoStoryError } from '/errors';
 import FanFiction from './fanfiction';
-import { setupDatabase } from '#/helpers';
+import { setupDatabase, readFixture } from '#/helpers';
 
 setupDatabase();
 jest.mock('axios');
@@ -17,10 +15,8 @@ describe('fetching the whole story', () => {
 
   context('When there is no story at provided url', () => {
     it('returns false', async () => {
-      const homepage = fs.readFileSync(
-        // TODO: readFixture helper function
-        `${__dirname}/../../../../../__tests__/fixtures/ffn_homepage.html`,
-      );
+      const homepage = readFixture('ffn_homepage.html');
+
       axios.get.mockImplementationOnce(() =>
         Promise.resolve({
           data: homepage,
@@ -36,9 +32,8 @@ describe('fetching the whole story', () => {
 
   context('When the story only has 1 chapter', () => {
     it('returns the parsed story data', async () => {
-      const single = fs.readFileSync(
-        `${__dirname}/../../../../../__tests__/fixtures/ffn_single_chapter.html`,
-      );
+      const single = readFixture('ffn_single_chapter.html');
+
       // TODO: mockResolved helper
       axios.get.mockImplementationOnce(() =>
         Promise.resolve({
@@ -57,9 +52,7 @@ describe('fetching the whole story', () => {
   });
 
   it('returns the parsed story data', async () => {
-    const hpmor = fs.readFileSync(
-      `${__dirname}/../../../../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
-    );
+    const hpmor = readFixture('ffn_hpmor_chapter_1.html');
     // TODO: mockResolved helper
     axios.get.mockImplementationOnce(() =>
       Promise.resolve({
@@ -116,9 +109,7 @@ describe('fetching a single chapter', () => {
 
   context('When there is no chapter at the url', () => {
     it('returns false', async () => {
-      const homepage = fs.readFileSync(
-        `${__dirname}/../../../../../__tests__/fixtures/ffn_homepage.html`,
-      );
+      const homepage = readFixture('ffn_homepage.html');
       axios.get.mockImplementationOnce(() =>
         Promise.resolve({
           data: homepage,
@@ -134,9 +125,7 @@ describe('fetching a single chapter', () => {
   });
 
   it('returns the content of the chapter', async () => {
-    const hpmor = fs.readFileSync(
-      `${__dirname}/../../../../../__tests__/fixtures/ffn_hpmor_chapter_1.html`,
-    );
+    const hpmor = readFixture('ffn_hpmor_chapter_1.html');
     // TODO: mockResolved helper
     axios.get.mockImplementationOnce(() =>
       Promise.resolve({

@@ -8,8 +8,13 @@ import resolvers from '/api/resolvers';
 import { Model } from 'objection';
 import knexManager from 'knex-db-manager';
 import * as models from '/models';
+import fs from 'fs';
 
 const { createTestClient } = require('apollo-server-testing');
+
+export const readFixture = path => {
+  return fs.readFileSync(`${__dirname}/fixtures/${path}`);
+};
 
 export const setupDatabase = () => {
   const dbManager = knexManager.databaseManagerFactory({
