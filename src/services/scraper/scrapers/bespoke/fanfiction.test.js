@@ -16,12 +16,8 @@ describe('fetching the whole story', () => {
   context('When there is no story at provided url', () => {
     it('returns false', async () => {
       const homepage = readFixture('ffn_homepage.html');
+      axios.get.mockResolvedValueOnce({ data: homepage });
 
-      axios.get.mockImplementationOnce(() =>
-        Promise.resolve({
-          data: homepage,
-        }),
-      );
       const result = await FanFiction.attemptScrape(
         'https://www.fanfiction.net',
         true,
@@ -34,12 +30,7 @@ describe('fetching the whole story', () => {
     it('returns the parsed story data', async () => {
       const single = readFixture('ffn_single_chapter.html');
 
-      // TODO: mockResolved helper
-      axios.get.mockImplementationOnce(() =>
-        Promise.resolve({
-          data: single,
-        }),
-      );
+      axios.get.mockResolvedValueOnce({ data: single });
 
       const storyData = await FanFiction.attemptScrape(
         'https://www.fanfiction.net/s/123/1',
@@ -53,12 +44,8 @@ describe('fetching the whole story', () => {
 
   it('returns the parsed story data', async () => {
     const hpmor = readFixture('ffn_hpmor_chapter_1.html');
-    // TODO: mockResolved helper
-    axios.get.mockImplementationOnce(() =>
-      Promise.resolve({
-        data: hpmor,
-      }),
-    );
+    axios.get.mockResolvedValueOnce({ data: hpmor });
+
     const storyData = await FanFiction.attemptScrape(
       'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
       true,
@@ -110,11 +97,7 @@ describe('fetching a single chapter', () => {
   context('When there is no chapter at the url', () => {
     it('returns false', async () => {
       const homepage = readFixture('ffn_homepage.html');
-      axios.get.mockImplementationOnce(() =>
-        Promise.resolve({
-          data: homepage,
-        }),
-      );
+      axios.get.mockResolvedValueOnce({ data: homepage });
 
       const chapterData = await FanFiction.attemptScrape(
         'https://www.fanfiction.net',
@@ -126,12 +109,7 @@ describe('fetching a single chapter', () => {
 
   it('returns the content of the chapter', async () => {
     const hpmor = readFixture('ffn_hpmor_chapter_1.html');
-    // TODO: mockResolved helper
-    axios.get.mockImplementationOnce(() =>
-      Promise.resolve({
-        data: hpmor,
-      }),
-    );
+    axios.get.mockResolvedValueOnce({ data: hpmor });
 
     const chapterData = await FanFiction.attemptScrape(
       'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
