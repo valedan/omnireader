@@ -1,7 +1,7 @@
 import fs from 'fs';
 import axios from 'axios';
 import { UnsupportedSiteError, NoChapterError, NoStoryError } from '/errors';
-import { fetchStory, fetchChapter } from './scraper';
+import { fetchStory, fetchChapter } from '.';
 import { setupDatabase } from '#/helpers';
 
 setupDatabase();
