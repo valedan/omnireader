@@ -13,6 +13,6 @@ export const scrape = ({ url, getStory }) => {
     bespokeResult ||
     WordpressScraper.attemptScrape(url, getStory) ||
     ArticleScraper.attemptScrape(url, getStory) ||
-    BasicScraper.attemptScrape(url, getStory)
+    BasicScraper.attemptScrape(url)
   );
 };
