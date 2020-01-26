@@ -27,6 +27,11 @@ export default {
         });
     },
 
+    posts: async (_, { storyId }, { models }) => {
+      const posts = await models.Post.query().where({ storyId });
+      return posts;
+    },
+
     post: async (_, { id }, { models }) => {
       const post = await models.Post.query()
         .findById(id)
@@ -75,41 +80,44 @@ export default {
       return true;
     },
 
-    createStory: async (_, { url }, { models }) => {
-      const existingStory = await models.Story.query().findOne({
-        canonicalUrl: url,
-      });
-      if (existingStory) {
-        throw new UserInputError('Story already exists!', {
-          story: { id: existingStory.id },
+    deletePost: async (_, { id }, { models }) => {
+      const post = await models.Post.query().findById(id);
+      if (post.storyId) {
+        throw new UserInputError('Cannot delete a post belonging to a story!');
+      } else {
+        await models.Story.query().deleteById(id);
+        return true;
+      }
+    },
+
+    createPost: async (_, { url }, { models }) => {
+      const existingPost = await models.Post.query().findOne({ url });
+      if (existingPost) {
+        throw new UserInputError('Post is already in your library!', {
+          post: { id: existingPost.id },
         });
       }
-      try {
-        const { posts, ...storyData } = await scrape({
-          url,
-          getStory: true,
-        });
 
-        const savedStory = await models.Story.query().insert(storyData);
+      const scraperData = await scrape({ url, getStory: true });
+
+      if (!scraperData) {
+        throw new UserInputError('Could not parse site!');
+      } else if (scraperData.posts) {
+        // the scraper gave us a whole story
+        const savedStory = await models.Story.query().insert(scraperData);
         savedStory.details = JSON.stringify(savedStory.details);
         savedStory.posts = [];
-        posts.map(async postData => {
+        scraperData.posts.map(async postData => {
           const savedPost = await savedStory
             .$relatedQuery('posts')
             .insert(postData);
           savedStory.posts.push(savedPost);
         });
         return savedStory;
-      } catch (err) {
-        if (err instanceof UnsupportedSiteError) {
-          throw new UserInputError('Site not supported!');
-        }
-
-        if (err instanceof NoStoryError) {
-          throw new UserInputError('Story not found!');
-        }
-
-        throw err;
+      } else {
+        // this is a standalone post
+        const savedPost = await models.Post.query().insert(scraperData);
+        return savedPost;
       }
     },
   },
