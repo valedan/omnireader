@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import { NoChapterError, NoStoryError } from '/errors';
+import { NoPostError, NoStoryError } from '/errors';
 import Requester from '/services/requester';
 
 const attemptScrape = async (url, getStory) => {
@@ -7,9 +7,9 @@ const attemptScrape = async (url, getStory) => {
 
   try {
     const $ = await Requester.get(url);
-    return getStory ? extractStory($, url) : extractChapter($, url);
+    return getStory ? extractStory($, url) : extractPost($, url);
   } catch (err) {
-    const expectedErrors = ['NoStoryError', 'NoChapterError'];
+    const expectedErrors = ['NoStoryError', 'NoPostError'];
     if (!expectedErrors.includes(err.constructor.name)) {
       console.log(err);
     }
@@ -27,25 +27,25 @@ const extractStory = ($, url) => {
   validateStoryPresence($);
   return {
     ...extractStoryInfo($, url),
-    chapters: extractChapterList($, url),
+    posts: extractPostList($, url),
   };
 };
 
-const extractChapter = ($, url) => {
-  validateChapterPresence($);
+const extractPost = ($, url) => {
+  validatePostPresence($);
   const option = $('#chap_select')
     .first()
     .find('option[selected]')
     .first();
   return {
-    ...extractChapterDataFromListOption($, url, option),
+    ...extractPostDataFromListOption($, url, option),
     content: $('#storytext')
       .html()
       .trim(),
   };
 };
 
-const extractChapterList = ($, url) => {
+const extractPostList = ($, url) => {
   if ($('#chap_select').length === 0) {
     return [
       {
@@ -59,13 +59,13 @@ const extractChapterList = ($, url) => {
       .first()
       .find('option')
       .map((_, option) => {
-        return extractChapterDataFromListOption($, url, option);
+        return extractPostDataFromListOption($, url, option);
       })
       .get();
   }
 };
 
-const extractChapterDataFromListOption = ($, url, option) => {
+const extractPostDataFromListOption = ($, url, option) => {
   return {
     title: $(option).text(),
     url: url.replace(/\/s\/\d+\/\d+/, idMatch => {
@@ -82,8 +82,8 @@ const extractChapterDataFromListOption = ($, url, option) => {
   };
 };
 
-const validateChapterPresence = $ => {
-  if (!$('#storytext').text()) throw new NoChapterError();
+const validatePostPresence = $ => {
+  if (!$('#storytext').text()) throw new NoPostError();
 };
 
 const validateStoryPresence = $ => {

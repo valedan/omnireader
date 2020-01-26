@@ -2,22 +2,22 @@ import { setupDatabase } from '#/helpers';
 import { fetchStory } from '/services/scraper';
 import { refreshStory } from '/services/refresher';
 import { generateStory } from '#/factories/story';
-import { generateChapter } from '#/factories/chapter';
+import { generatePost } from '#/factories/post';
 import { Story } from '/models/story';
-import { Chapter } from '/models/chapter';
+import { Post } from '/models/post';
 
 setupDatabase();
 
 jest.mock('./scraper');
 
 const story = generateStory();
-const chapter1 = generateChapter();
-const chapter2 = generateChapter();
-const newChapter = generateChapter();
+const post1 = generatePost();
+const post2 = generatePost();
+const newPost = generatePost();
 
 const setupSavedStory = async () => {
   const savedStory = await Story.query().insert(story);
-  await savedStory.$relatedQuery('chapters').insert([chapter1, chapter2]);
+  await savedStory.$relatedQuery('posts').insert([post1, post2]);
   // await savedStory.$query().patch({ updated_at: new Date() - 60 * 1000 }); // 1 minute ago
   return savedStory;
 };
@@ -26,7 +26,7 @@ describe('.refreshStory', () => {
   it('fetches the story', async () => {
     const savedStory = await setupSavedStory();
     fetchStory.mockImplementationOnce(() => {
-      return { ...story, chapters: [chapter1, chapter2] };
+      return { ...story, posts: [post1, post2] };
     });
     refreshStory(savedStory);
     expect(fetchStory).toHaveBeenCalledWith(story.canonicalUrl);
@@ -36,36 +36,36 @@ describe('.refreshStory', () => {
   //   it('updates story');
   // });
 
-  context('when there are no new chapters', () => {
+  context('when there are no new posts', () => {
     it('does nothing', async () => {
       const savedStory = await setupSavedStory();
 
       fetchStory.mockImplementationOnce(() => {
-        return { ...story, chapters: [chapter1, chapter2] };
+        return { ...story, posts: [post1, post2] };
       });
       refreshStory(savedStory);
-      const chapterCount = await Chapter.query().count();
-      expect(chapterCount[0].count).toStrictEqual('2');
+      const postCount = await Post.query().count();
+      expect(postCount[0].count).toStrictEqual('2');
     });
   });
 
-  context('when there are new chapters', () => {
-    it('adds new chapter to the database', async () => {
+  context('when there are new posts', () => {
+    it('adds new post to the database', async () => {
       const savedStory = await setupSavedStory();
       fetchStory.mockImplementationOnce(() => {
-        return { ...story, chapters: [chapter1, chapter2, newChapter] };
+        return { ...story, posts: [post1, post2, newPost] };
       });
       refreshStory(savedStory);
-      const [{ chapters }] = await Story.query().eager('chapters');
-      expect(chapters).toHaveLength(3);
-      expect(chapters[0].title).toStrictEqual(newChapter.title);
+      const [{ posts }] = await Story.query().eager('posts');
+      expect(posts).toHaveLength(3);
+      expect(posts[0].title).toStrictEqual(newPost.title);
       fetchStory.mockReset();
     });
 
     it('touches the story', async () => {
       const savedStory = await setupSavedStory();
       fetchStory.mockImplementationOnce(() => {
-        return { ...story, chapters: [chapter1, chapter2, newChapter] };
+        return { ...story, posts: [post1, post2, newPost] };
       });
       refreshStory(savedStory);
       const times = await Story.query().select('updated_at');

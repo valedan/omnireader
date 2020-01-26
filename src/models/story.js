@@ -7,11 +7,11 @@ export class Story extends Model {
 
   static relationMappings() {
     return {
-      chapters: {
+      posts: {
         relation: Model.HasManyRelation,
-        modelClass: `${__dirname}/chapter`,
+        modelClass: `${__dirname}/post`,
         join: {
-          from: 'chapters.storyId',
+          from: 'posts.storyId',
           to: 'stories.id',
         },
       },

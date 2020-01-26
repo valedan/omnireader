@@ -1,12 +1,14 @@
 exports.up = knex => {
-  return knex.schema.createTable('chapters', table => {
+  return knex.schema.createTable('posts', table => {
     table.increments('id').primary();
     table.timestamps(null, true);
-    table.string('title');
-    table.string('url', 2000);
+    table.string('title').notNullable();
+    table.string('url', 2000).notNullable();
     table.timestamp('progressUpdatedAt');
+    // TODO: uniqueness constraint
     table
       .integer('number')
+      .default(1)
       .notNullable()
       .unsigned();
     table
@@ -17,7 +19,6 @@ exports.up = knex => {
     table
       .integer('storyId')
       .unsigned()
-      .notNullable()
       .references('id')
       .inTable('stories')
       .onDelete('cascade')
@@ -26,5 +27,5 @@ exports.up = knex => {
 };
 
 exports.down = knex => {
-  return knex.schema.dropTableIfExists('chapters');
+  return knex.schema.dropTableIfExists('posts');
 };

@@ -3,7 +3,7 @@ import Knex from 'knex';
 import { Model } from 'objection';
 import knexConfig from './knexfile';
 import { Story } from './src/models/story';
-import { Chapter } from './src/models/chapter';
+import { Post } from './src/models/post';
 import { HttpProxy } from './src/models/http_proxy';
 
 const knex =
@@ -16,5 +16,5 @@ Model.knex(knex);
 const replServer = repl.start('>');
 
 replServer.context.Story = Story;
-replServer.context.Chapter = Chapter;
+replServer.context.Post = Post;
 replServer.context.HttpProxy = HttpProxy;

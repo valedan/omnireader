@@ -15,7 +15,6 @@ test('it returns a standalone post with content equal to page body', async () =>
   expect(result).toMatchInlineSnapshot(`
     Object {
       "content": "BODY_CONTENT",
-      "number": 1,
       "title": "Beating the Averages",
       "url": "http://www.paulgraham.com/avg.html",
     }

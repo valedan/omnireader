@@ -1,8 +1,8 @@
 import { Model } from 'objection';
 
-export class Chapter extends Model {
+export class Post extends Model {
   static get tableName() {
-    return 'chapters';
+    return 'posts';
   }
 
   static get relationMappings() {
@@ -12,7 +12,7 @@ export class Chapter extends Model {
         modelClass: `${__dirname}/story`,
         join: {
           from: 'stories.id',
-          to: 'chapters.storyId',
+          to: 'posts.storyId',
         },
       },
     };

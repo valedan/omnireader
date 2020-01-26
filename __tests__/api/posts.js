@@ -1,59 +1,57 @@
 import nock from 'nock';
 import { setupDatabase, setupApi, readFixture } from '#/helpers';
 import { Story } from '/models/story';
-import { Chapter } from '/models/chapter';
+import { Post } from '/models/post';
 import { generateStory } from '#/factories/story';
-import { generateChapter } from '#/factories/chapter';
+import { generatePost } from '#/factories/post';
 
 setupDatabase();
 setupApi();
 
-const chapterUrl = 'https://www.fanfiction.net/s/13120599/1/';
+const postUrl = 'https://www.fanfiction.net/s/13120599/1/';
 const story = generateStory();
-const chapter = generateChapter({ url: chapterUrl });
+const post = generatePost({ url: postUrl });
 
-const setupSavedChapter = async () => {
+const setupSavedPost = async () => {
   const savedStory = await Story.query().insert(story);
-  const [savedChapter] = await savedStory
-    .$relatedQuery('chapters')
-    .insert([chapter]);
-  return savedChapter;
+  const [savedPost] = await savedStory.$relatedQuery('posts').insert([post]);
+  return savedPost;
 };
 
-describe('Query: chapter', () => {
-  const GET_CHAPTER = gql`
-    query getChapter($id: ID!) {
-      chapter(id: $id) {
+describe('Query: post', () => {
+  const GET_POST = gql`
+    query getPost($id: ID!) {
+      post(id: $id) {
         title
         content
       }
     }
   `;
 
-  context('When chapter does not exist', () => {
+  context('When post does not exist', () => {
     it('returns a not found error', async () => {
       const res = await query({
-        query: GET_CHAPTER,
+        query: GET_POST,
         variables: { id: 10 },
       });
 
       const error = res.errors[0];
       expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
-      expect(error.message).toStrictEqual('Chapter not found!');
+      expect(error.message).toStrictEqual('Post not found!');
     });
   });
 
-  context('When chapter exists', () => {
-    context('When chapter cannot be retrieved', () => {
+  context('When post exists', () => {
+    context('When post cannot be retrieved', () => {
       it('returns a server error', async () => {
         nock('https://www.fanfiction.net')
           .get('/s/13120599/1/')
           .reply(500);
 
-        const savedChapter = await setupSavedChapter();
+        const savedPost = await setupSavedPost();
         const res = await query({
-          query: GET_CHAPTER,
-          variables: { id: savedChapter.id },
+          query: GET_POST,
+          variables: { id: savedPost.id },
         });
 
         const error = res.errors[0];
@@ -65,22 +63,22 @@ describe('Query: chapter', () => {
       });
     });
 
-    context('When chapter can be retrieved', () => {
-      const hpmor = readFixture('ffn_hpmor_chapter_1.html');
+    context('When post can be retrieved', () => {
+      const hpmor = readFixture('ffn_hpmor_post_1.html');
 
-      it('returns chapter content', async () => {
+      it('returns post content', async () => {
         nock('https://www.fanfiction.net')
           .get('/s/13120599/1/')
           .reply(200, hpmor);
-        const savedChapter = await setupSavedChapter();
+        const savedPost = await setupSavedPost();
 
         const res = await query({
-          query: GET_CHAPTER,
-          variables: { id: savedChapter.id },
+          query: GET_POST,
+          variables: { id: savedPost.id },
         });
 
-        expect(res.data.chapter.title).toStrictEqual(savedChapter.title);
-        expect(res.data.chapter.content).toMatch(/Chapter Content/);
+        expect(res.data.post.title).toStrictEqual(savedPost.title);
+        expect(res.data.post.content).toMatch(/Post Content/);
       });
     });
   });
@@ -88,31 +86,31 @@ describe('Query: chapter', () => {
 
 describe('Mutation: updateProgress', () => {
   const UPDATE_PROGRESS = gql`
-    mutation updateProgress($chapterId: ID!, $progress: Float!) {
-      updateProgress(chapterId: $chapterId, progress: $progress) {
+    mutation updateProgress($postId: ID!, $progress: Float!) {
+      updateProgress(postId: $postId, progress: $progress) {
         id
         progress
       }
     }
   `;
-  context('When chapter does not exist', () => {
+  context('When post does not exist', () => {
     it('returns a not found error', async () => {
       const res = await mutate({
         mutation: UPDATE_PROGRESS,
-        variables: { chapterId: 1000, progress: 0 },
+        variables: { postId: 1000, progress: 0 },
       });
       expect(res.errors[0].message).toStrictEqual('NotFoundError');
     });
   });
 
-  context('When chapter exists', () => {
+  context('When post exists', () => {
     context('When given an invalid progress', () => {
       it('returns a user input error', async () => {
-        const savedChapter = await setupSavedChapter();
+        const savedPost = await setupSavedPost();
 
         const res = await mutate({
           mutation: UPDATE_PROGRESS,
-          variables: { chapterId: savedChapter.id, progress: -1 },
+          variables: { postId: savedPost.id, progress: -1 },
         });
         const error = res.errors[0];
         expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
@@ -121,16 +119,16 @@ describe('Mutation: updateProgress', () => {
 
     context('When given a valid progress', () => {
       it('updates progress and timestamp', async () => {
-        const savedChapter = await setupSavedChapter();
+        const savedPost = await setupSavedPost();
 
         const res = await mutate({
           mutation: UPDATE_PROGRESS,
-          variables: { chapterId: savedChapter.id, progress: 0.45 },
+          variables: { postId: savedPost.id, progress: 0.45 },
         });
-        const updatedChapter = await Chapter.query().findById(savedChapter.id);
+        const updatedPost = await Post.query().findById(savedPost.id);
         expect(res.errors).toBeUndefined(undefined);
-        expect(updatedChapter.progress).toStrictEqual(0.45);
-        expect(updatedChapter.progressUpdatedAt.toDateString()).toStrictEqual(
+        expect(updatedPost.progress).toStrictEqual(0.45);
+        expect(updatedPost.progressUpdatedAt.toDateString()).toStrictEqual(
           new Date().toDateString(),
         );
       });

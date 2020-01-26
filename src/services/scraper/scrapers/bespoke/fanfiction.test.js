@@ -20,16 +20,16 @@ test('when there is no story at the url, returns false', async () => {
   expect(result).toStrictEqual(false);
 });
 
-test('when fetching a chapter, returns the chapter content', async () => {
+test('when fetching a post, returns the post content', async () => {
   const hpmor = readFixture('ffn_hpmor_chapter_1.html');
-  const chapterUrl = 'https://www.fanfiction.net/s/123/1/HPMOR';
+  const postUrl = 'https://www.fanfiction.net/s/123/1/HPMOR';
   Requester.get.mockResolvedValueOnce(Cheerio.load(hpmor));
 
-  const chapterData = await FanFiction.attemptScrape(chapterUrl, false);
+  const postData = await FanFiction.attemptScrape(postUrl, false);
 
-  expect(chapterData).toMatchInlineSnapshot(`
+  expect(postData).toMatchInlineSnapshot(`
     Object {
-      "content": "<p>Chapter Content</p>",
+      "content": "<p>Post Content</p>",
       "number": 1,
       "title": "1. A Day of Very Low Probability",
       "url": "https://www.fanfiction.net/s/123/1/HPMOR",
@@ -37,7 +37,7 @@ test('when fetching a chapter, returns the chapter content', async () => {
   `);
 });
 
-test('when fetching a 1-chapter story, returns correct data', async () => {
+test('when fetching a 1-post story, returns correct data', async () => {
   const single = readFixture('ffn_single_chapter.html');
   const storyUrl = 'https://www.fanfiction.net/s/123/1/';
   Requester.get.mockResolvedValueOnce(Cheerio.load(single));
@@ -49,23 +49,23 @@ test('when fetching a 1-chapter story, returns correct data', async () => {
       "author": "alexanderwales",
       "avatar": "https://ff74.b-cdn.net/image/2954488/75/",
       "canonicalUrl": "https://www.fanfiction.net/s/123/1/",
-      "chapters": Array [
+      "details": Object {
+        "description": "INSTRUMENTS_OF_DESCTRUCTION_TEST_DESCRIPTION",
+        "information": "INSTRUMENTS_OF_DESCTRUCTION_TEST_INFO",
+      },
+      "posts": Array [
         Object {
           "number": 1,
           "title": "Instruments of Destruction",
           "url": "https://www.fanfiction.net/s/123/1/",
         },
       ],
-      "details": Object {
-        "description": "INSTRUMENTS_OF_DESCTRUCTION_TEST_DESCRIPTION",
-        "information": "INSTRUMENTS_OF_DESCTRUCTION_TEST_INFO",
-      },
       "title": "Instruments of Destruction",
     }
   `);
 });
 
-test('when fetching a multi-chapter story, returns correct data', async () => {
+test('when fetching a multi-post story, returns correct data', async () => {
   const hpmor = readFixture('ffn_hpmor_chapter_1.html');
   const storyUrl = 'https://www.fanfiction.net/s/123/1/HPMOR';
   Requester.get.mockResolvedValueOnce(Cheerio.load(hpmor));
@@ -77,7 +77,11 @@ test('when fetching a multi-chapter story, returns correct data', async () => {
       "author": "Less Wrong",
       "avatar": "https://ff74.b-cdn.net/image/80871/75/",
       "canonicalUrl": "https://www.fanfiction.net/s/123/1/HPMOR",
-      "chapters": Array [
+      "details": Object {
+        "description": "HPMOR_TEST_DESCRIPTION",
+        "information": "HPMOR_TEST_INFO",
+      },
+      "posts": Array [
         Object {
           "number": 1,
           "title": "1. A Day of Very Low Probability",
@@ -94,10 +98,6 @@ test('when fetching a multi-chapter story, returns correct data', async () => {
           "url": "https://www.fanfiction.net/s/123/3/HPMOR",
         },
       ],
-      "details": Object {
-        "description": "HPMOR_TEST_DESCRIPTION",
-        "information": "HPMOR_TEST_INFO",
-      },
       "title": "Harry Potter and the Methods of Rationality",
     }
   `);

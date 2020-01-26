@@ -2,7 +2,7 @@ import nock from 'nock';
 import { setupDatabase, setupApi, readFixture } from '#/helpers';
 import { Story } from '/models/story';
 import { generateStory } from '#/factories/story';
-import { generateChapter } from '#/factories/chapter';
+import { generatePost } from '#/factories/post';
 
 jest.mock('/services/refresher');
 
@@ -14,7 +14,7 @@ describe('Query: stories', () => {
     query getStories {
       stories {
         title
-        chapters {
+        posts {
           title
         }
       }
@@ -29,19 +29,17 @@ describe('Query: stories', () => {
   });
 
   context('When there are stories', () => {
-    it('returns all stories with associated chapters', async () => {
-      const storyWithChapters = generateStory();
-      const storyWithoutChapters = generateStory();
-      const chapters = [generateChapter(), generateChapter()];
-      const savedStory = await Story.query().insert(storyWithChapters);
-      await Story.query().insert(storyWithoutChapters);
-      await savedStory.$relatedQuery('chapters').insert(chapters);
+    it('returns all stories with associated posts', async () => {
+      const storyWithPosts = generateStory();
+      const storyWithoutPosts = generateStory();
+      const posts = [generatePost(), generatePost()];
+      const savedStory = await Story.query().insert(storyWithPosts);
+      await Story.query().insert(storyWithoutPosts);
+      await savedStory.$relatedQuery('posts').insert(posts);
       const res = await query({ query: GET_STORIES });
       expect(res.data.stories).toHaveLength(2);
-      expect(res.data.stories[0].chapters).toHaveLength(2);
-      expect(res.data.stories[0].chapters[0].title).toStrictEqual(
-        chapters[0].title,
-      );
+      expect(res.data.stories[0].posts).toHaveLength(2);
+      expect(res.data.stories[0].posts[0].title).toStrictEqual(posts[0].title);
     });
   });
 });
@@ -53,7 +51,7 @@ describe('Mutation: createStory', () => {
     mutation createStory($url: String!) {
       createStory(url: $url) {
         title
-        chapters {
+        posts {
           title
         }
       }
@@ -108,8 +106,8 @@ describe('Mutation: createStory', () => {
   });
 
   context('When story is new and can be parsed', () => {
-    it('saves story to database and returns story with chapter index', async () => {
-      const hpmor = readFixture('ffn_hpmor_chapter_1.html');
+    it('saves story to database and returns story with post index', async () => {
+      const hpmor = readFixture('ffn_hpmor_post_1.html');
       nock('https://www.fanfiction.net')
         .get('/s/13120599/1/')
         .reply(200, hpmor);

@@ -4,12 +4,12 @@ const typeDefs = gql`
   type Query {
     stories: [Story]!
     story(id: ID!): Story
-    chapter(id: ID!): Chapter
+    post(id: ID!): Post
   }
 
   type Mutation {
     createStory(url: String): Story
-    updateProgress(chapterId: ID!, progress: Float!): Chapter
+    updateProgress(postId: ID!, progress: Float!): Post
     tocChecked(storyId: ID!): Boolean
     deleteStory(id: ID!): Boolean
   }
@@ -24,10 +24,10 @@ const typeDefs = gql`
     tocLastChecked: String
     updated_at: String
     created_at: String
-    chapters: [Chapter]
+    posts: [Post]
   }
 
-  type Chapter {
+  type Post {
     id: ID!
     title: String
     url: String

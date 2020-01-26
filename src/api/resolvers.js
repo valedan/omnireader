@@ -7,8 +7,8 @@ export default {
   Query: {
     stories: async (_, __, { models }) => {
       const stories = await models.Story.query()
-        .eager('chapters')
-        .modifyEager('chapters', builder => {
+        .eager('posts')
+        .modifyEager('posts', builder => {
           builder.orderBy('id');
         });
       // TODO: This won't scale. Need to do this in a cron job.
@@ -21,46 +21,46 @@ export default {
     story: async (_, { id }, { models }) => {
       return models.Story.query()
         .findById(id)
-        .eager('chapters')
-        .modifyEager('chapters', builder => {
+        .eager('posts')
+        .modifyEager('posts', builder => {
           builder.orderBy('id');
         });
     },
 
-    chapter: async (_, { id }, { models }) => {
-      const chapter = await models.Chapter.query()
+    post: async (_, { id }, { models }) => {
+      const post = await models.Post.query()
         .findById(id)
         .eager('story');
-      if (!chapter) throw new UserInputError('Chapter not found!');
-      const { content } = await scrape({ url: chapter.url, getStory: false });
-      const nextChapter = await models.Chapter.query().findOne({
-        storyId: chapter.storyId,
-        number: chapter.number + 1,
+      if (!post) throw new UserInputError('Post not found!');
+      const { content } = await scrape({ url: post.url, getStory: false });
+      const nextPost = await models.Post.query().findOne({
+        storyId: post.storyId,
+        number: post.number + 1,
       });
-      const prevChapter = await models.Chapter.query().findOne({
-        storyId: chapter.storyId,
-        number: chapter.number - 1,
+      const prevPost = await models.Post.query().findOne({
+        storyId: post.storyId,
+        number: post.number - 1,
       });
       return {
-        ...chapter,
+        ...post,
         content,
-        nextId: nextChapter && nextChapter.id,
-        prevId: prevChapter && prevChapter.id,
+        nextId: nextPost && nextPost.id,
+        prevId: prevPost && prevPost.id,
       };
     },
   },
 
   Mutation: {
-    updateProgress: async (_, { chapterId, progress }, { models }) => {
+    updateProgress: async (_, { postId, progress }, { models }) => {
       if (progress < 0) throw new UserInputError('Invalid progress value!');
 
-      const chapter = await models.Chapter.query()
-        .patchAndFetchById(chapterId, {
+      const post = await models.Post.query()
+        .patchAndFetchById(postId, {
           progress,
           progressUpdatedAt: new Date().toISOString(),
         })
         .throwIfNotFound();
-      return chapter;
+      return post;
     },
 
     tocChecked: async (_, { storyId }, { models }) => {
@@ -85,19 +85,19 @@ export default {
         });
       }
       try {
-        const { chapters, ...storyData } = await scrape({
+        const { posts, ...storyData } = await scrape({
           url,
           getStory: true,
         });
 
         const savedStory = await models.Story.query().insert(storyData);
         savedStory.details = JSON.stringify(savedStory.details);
-        savedStory.chapters = [];
-        chapters.map(async chapterData => {
-          const savedChapter = await savedStory
-            .$relatedQuery('chapters')
-            .insert(chapterData);
-          savedStory.chapters.push(savedChapter);
+        savedStory.posts = [];
+        posts.map(async postData => {
+          const savedPost = await savedStory
+            .$relatedQuery('posts')
+            .insert(postData);
+          savedStory.posts.push(savedPost);
         });
         return savedStory;
       } catch (err) {

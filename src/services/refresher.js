@@ -5,10 +5,10 @@ export const refreshStory = async story => {
     url: story.canonicalUrl,
     getStory: true,
   });
-  const newChapters = currentStory.chapters.slice(story.chapters.length);
-  newChapters.map(async chapter => {
-    const savedChapter = await story.$relatedQuery('chapters').insert(chapter);
-    story.chapters.push(savedChapter);
+  const newPosts = currentStory.posts.slice(story.posts.length);
+  newPosts.map(async post => {
+    const savedPost = await story.$relatedQuery('posts').insert(post);
+    story.posts.push(savedPost);
   });
   return story;
 };
