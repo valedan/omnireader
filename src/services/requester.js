@@ -8,7 +8,7 @@ const getRaw = async (url, options = {}) => {
     options['proxy'] = await proxyConfig();
   }
 
-  return await axios.get(url, options);
+  return axios.get(url, options);
 };
 
 const get = async (url, options = {}) => {

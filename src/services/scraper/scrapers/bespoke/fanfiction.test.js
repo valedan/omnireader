@@ -1,10 +1,9 @@
-import axios from 'axios';
 import FanFiction from './fanfiction';
-import { readFixture, mockDBCountOnce } from '#/helpers';
-import { HttpProxy } from '/models/http_proxy';
+import { readFixture } from '#/helpers';
+import Requester from '/services/requester';
+import Cheerio from 'cheerio';
 
-jest.mock('axios');
-jest.mock('/models/http_proxy');
+jest.mock('/services/requester');
 
 test('when the site is unsupported, returns false', async () => {
   const result = await FanFiction.attemptScrape('https://wrongurl.com', true);
@@ -13,9 +12,8 @@ test('when the site is unsupported, returns false', async () => {
 
 test('when there is no story at the url, returns false', async () => {
   const homepage = readFixture('ffn_homepage.html');
-  axios.get.mockResolvedValueOnce({ data: homepage });
-  mockDBCountOnce(HttpProxy, 0);
   const homepageUrl = 'https://www.fanfiction.net';
+  Requester.get.mockResolvedValueOnce(Cheerio.load(homepage));
 
   const result = await FanFiction.attemptScrape(homepageUrl, true);
 
@@ -24,9 +22,8 @@ test('when there is no story at the url, returns false', async () => {
 
 test('when fetching a chapter, returns the chapter content', async () => {
   const hpmor = readFixture('ffn_hpmor_chapter_1.html');
-  axios.get.mockResolvedValueOnce({ data: hpmor });
-  mockDBCountOnce(HttpProxy, 0);
   const chapterUrl = 'https://www.fanfiction.net/s/123/1/HPMOR';
+  Requester.get.mockResolvedValueOnce(Cheerio.load(hpmor));
 
   const chapterData = await FanFiction.attemptScrape(chapterUrl, false);
 
@@ -42,9 +39,8 @@ test('when fetching a chapter, returns the chapter content', async () => {
 
 test('when fetching a 1-chapter story, returns correct data', async () => {
   const single = readFixture('ffn_single_chapter.html');
-  axios.get.mockResolvedValueOnce({ data: single });
-  mockDBCountOnce(HttpProxy, 0);
   const storyUrl = 'https://www.fanfiction.net/s/123/1/';
+  Requester.get.mockResolvedValueOnce(Cheerio.load(single));
 
   const storyData = await FanFiction.attemptScrape(storyUrl, true);
 
@@ -71,9 +67,8 @@ test('when fetching a 1-chapter story, returns correct data', async () => {
 
 test('when fetching a multi-chapter story, returns correct data', async () => {
   const hpmor = readFixture('ffn_hpmor_chapter_1.html');
-  axios.get.mockResolvedValueOnce({ data: hpmor });
-  mockDBCountOnce(HttpProxy, 0);
   const storyUrl = 'https://www.fanfiction.net/s/123/1/HPMOR';
+  Requester.get.mockResolvedValueOnce(Cheerio.load(hpmor));
 
   const storyData = await FanFiction.attemptScrape(storyUrl, true);
 

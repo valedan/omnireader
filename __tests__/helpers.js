@@ -10,6 +10,8 @@ import knexManager from 'knex-db-manager';
 import * as models from '/models';
 import fs from 'fs';
 
+jest.mock('/services/requester');
+
 const { createTestClient } = require('apollo-server-testing');
 
 export const readFixture = path => {
