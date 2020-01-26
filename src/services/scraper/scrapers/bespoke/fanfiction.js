@@ -1,19 +1,18 @@
 import { URL } from 'url';
-import axios from 'axios';
 import { NoChapterError, NoStoryError } from '/errors';
-import * as Cheerio from 'cheerio';
-import { HttpProxy } from '/models/http_proxy';
+import Requester from '/services/requester';
 
 const attemptScrape = async (url, getStory) => {
   if (!isSupported(url)) return false;
 
   try {
-    const page = await getWithProxy(url);
-    const $ = Cheerio.load(page.data);
-
+    const $ = await Requester.get(url);
     return getStory ? extractStory($, url) : extractChapter($, url);
   } catch (err) {
-    console.log(err);
+    const expectedErrors = ['NoStoryError', 'NoChapterError'];
+    if (!expectedErrors.includes(err.constructor.name)) {
+      console.log(err);
+    }
     return false;
   }
 };
@@ -24,22 +23,12 @@ const isSupported = url => {
   return new URL(url).hostname === 'www.fanfiction.net';
 };
 
-const getWithProxy = async url => {
-  const count = await HttpProxy.query().count();
-  if (count[0].count > 0) {
-    const proxy = await HttpProxy.query().first();
-    return axios.get(url, {
-      proxy: {
-        host: proxy.ip,
-        port: proxy.port,
-        auth: {
-          username: proxy.username,
-          password: proxy.password,
-        },
-      },
-    });
-  }
-  return axios.get(url);
+const extractStory = ($, url) => {
+  validateStoryPresence($);
+  return {
+    ...extractStoryInfo($, url),
+    chapters: extractChapterList($, url),
+  };
 };
 
 const extractChapter = ($, url) => {
@@ -49,16 +38,47 @@ const extractChapter = ($, url) => {
     .find('option[selected]')
     .first();
   return {
+    ...extractChapterDataFromListOption($, url, option),
+    content: $('#storytext')
+      .html()
+      .trim(),
+  };
+};
+
+const extractChapterList = ($, url) => {
+  if ($('#chap_select').length === 0) {
+    return [
+      {
+        title: extractTitle($),
+        url,
+        number: 1,
+      },
+    ];
+  } else {
+    return $('#chap_select')
+      .first()
+      .find('option')
+      .map((_, option) => {
+        return extractChapterDataFromListOption($, url, option);
+      })
+      .get();
+  }
+};
+
+const extractChapterDataFromListOption = ($, url, option) => {
+  return {
     title: $(option).text(),
     url: url.replace(/\/s\/\d+\/\d+/, idMatch => {
       const parts = idMatch.split('/');
       parts[parts.length - 1] = $(option).attr('value');
       return parts.join('/');
     }),
-    number: parseInt(option.text().split('.')[0], 10),
-    content: $('#storytext')
-      .html()
-      .trim(),
+    number: parseInt(
+      $(option)
+        .text()
+        .split('.')[0],
+      10,
+    ),
   };
 };
 
@@ -71,14 +91,6 @@ const validateStoryPresence = $ => {
     .first()
     .text();
   if (!title.length) throw new NoStoryError();
-};
-
-const extractStory = ($, url) => {
-  validateStoryPresence($);
-  return {
-    ...extractStoryInfo($, url),
-    chapters: extractChapterList($, url) || extractSingleChapter($, url),
-  };
 };
 
 const extractStoryInfo = ($, url) => {
@@ -110,33 +122,4 @@ const extractTitle = $ => {
   return $('#profile_top .xcontrast_txt')
     .first()
     .text();
-};
-
-const extractSingleChapter = ($, url) => {
-  return [
-    {
-      title: extractTitle($),
-      url,
-      number: 1,
-    },
-  ];
-};
-
-const extractChapterList = ($, url) => {
-  if ($('#chap_select').length === 0) return null;
-  return $('#chap_select')
-    .first()
-    .find('option')
-    .map((index, option) => {
-      return {
-        title: $(option).text(),
-        url: url.replace(/\/s\/\d+\/\d+/, idMatch => {
-          const parts = idMatch.split('/');
-          parts[parts.length - 1] = $(option).attr('value');
-          return parts.join('/');
-        }),
-        number: index + 1,
-      };
-    })
-    .get();
 };

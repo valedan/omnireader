@@ -6,134 +6,104 @@ import { HttpProxy } from '/models/http_proxy';
 jest.mock('axios');
 jest.mock('/models/http_proxy');
 
-describe('fetching the whole story', () => {
-  // context('When site is unsupported', () => {
-  //   it('returns false', async () => {
-  //     const result = await FanFiction.attemptScrape('https://badurl.com', true);
-  //     expect(result).toStrictEqual(false);
-  //   });
-  // });
-
-  context('When there is no story at provided url', () => {
-    it('returns false', async () => {
-      const homepage = readFixture('ffn_homepage.html');
-
-      axios.get.mockResolvedValueOnce({ data: homepage });
-
-      const result = await FanFiction.attemptScrape(
-        'https://www.fanfiction.net',
-        true,
-      );
-
-      expect(result).toStrictEqual(false);
-    });
-  });
-
-  context('When the story only has 1 chapter', () => {
-    it('returns the parsed story data', async () => {
-      const single = readFixture('ffn_single_chapter.html');
-
-      mockDBCountOnce(HttpProxy, 0);
-      axios.get.mockResolvedValueOnce({ data: single });
-
-      const storyData = await FanFiction.attemptScrape(
-        'https://www.fanfiction.net/s/123/1',
-        true,
-      );
-
-      expect(storyData.chapters[0].title).toStrictEqual(
-        'Instruments of Destruction',
-      );
-    });
-  });
-
-  // it('returns the parsed story data', async () => {
-  //   const hpmor = readFixture('ffn_hpmor_chapter_1.html');
-  //   mockDBCountOnce(HttpProxy, 0);
-
-  //   axios.get.mockResolvedValueOnce({ data: hpmor });
-
-  //   const storyData = await FanFiction.attemptScrape(
-  //     'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
-  //     true,
-  //   );
-
-  //   expect(storyData).toMatchInlineSnapshot(`
-  //     Object {
-  //       "author": "Less Wrong",
-  //       "avatar": "https://ff74.b-cdn.net/image/80871/75/",
-  //       "canonicalUrl": "https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality",
-  //       "chapters": Array [
-  //         Object {
-  //           "number": 1,
-  //           "title": "1. A Day of Very Low Probability",
-  //           "url": "https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality",
-  //         },
-  //         Object {
-  //           "number": 2,
-  //           "title": "2. Everything I Believe Is False",
-  //           "url": "https://www.fanfiction.net/s/5782108/2/Harry-Potter-and-the-Methods-of-Rationality",
-  //         },
-  //         Object {
-  //           "number": 3,
-  //           "title": "3. Comparing Reality To Its Alternatives",
-  //           "url": "https://www.fanfiction.net/s/5782108/3/Harry-Potter-and-the-Methods-of-Rationality",
-  //         },
-  //       ],
-  //       "details": Object {
-  //         "description": "Petunia married a biochemist, and Harry grew up reading science and science fiction. Then came the Hogwarts letter, and a world of intriguing new possibilities to exploit. And new friends, like Hermione Granger, and Professor McGonagall, and Professor Quirrell... COMPLETE.",
-  //         "information": "Rated: Fiction T - English - Drama/Humor - Harry P., Hermione G. - Chapters: 122 - Words: 661,619 - Reviews: 34,596 - Favs: 23,879 - Follows: 17,999 - Updated: 3/14/2015 - Published: 2/28/2010 - Status: Complete - id: 5782108",
-  //       },
-  //       "title": "Harry Potter and the Methods of Rationality",
-  //     }
-  //   `);
-  // });
+test('when the site is unsupported, returns false', async () => {
+  const result = await FanFiction.attemptScrape('https://wrongurl.com', true);
+  expect(result).toStrictEqual(false);
 });
 
-// describe('fetching a single chapter', () => {
-//   context('When the site is not supported', () => {
-//     it('returns false', async () => {
-//       const result = await FanFiction.attemptScrape(
-//         'https://badurl.com',
-//         false,
-//       );
-//       expect(result).toStrictEqual(false);
-//     });
-//   });
+test('when there is no story at the url, returns false', async () => {
+  const homepage = readFixture('ffn_homepage.html');
+  axios.get.mockResolvedValueOnce({ data: homepage });
+  mockDBCountOnce(HttpProxy, 0);
+  const homepageUrl = 'https://www.fanfiction.net';
 
-//   context('When there is no chapter at the url', () => {
-//     it('returns false', async () => {
-//       const homepage = readFixture('ffn_homepage.html');
-//       mockDBCountOnce(HttpProxy, 0);
+  const result = await FanFiction.attemptScrape(homepageUrl, true);
 
-//       axios.get.mockResolvedValueOnce({ data: homepage });
+  expect(result).toStrictEqual(false);
+});
 
-//       const chapterData = await FanFiction.attemptScrape(
-//         'https://www.fanfiction.net',
-//         false,
-//       );
-//       expect(chapterData).toStrictEqual(false);
-//     });
-//   });
+test('when fetching a chapter, returns the chapter content', async () => {
+  const hpmor = readFixture('ffn_hpmor_chapter_1.html');
+  axios.get.mockResolvedValueOnce({ data: hpmor });
+  mockDBCountOnce(HttpProxy, 0);
+  const chapterUrl = 'https://www.fanfiction.net/s/123/1/HPMOR';
 
-//   it('returns the content of the chapter', async () => {
-//     const hpmor = readFixture('ffn_hpmor_chapter_1.html');
-//     mockDBCountOnce(HttpProxy, 0);
+  const chapterData = await FanFiction.attemptScrape(chapterUrl, false);
 
-//     axios.get.mockResolvedValueOnce({ data: hpmor });
+  expect(chapterData).toMatchInlineSnapshot(`
+    Object {
+      "content": "<p>Chapter Content</p>",
+      "number": 1,
+      "title": "1. A Day of Very Low Probability",
+      "url": "https://www.fanfiction.net/s/123/1/HPMOR",
+    }
+  `);
+});
 
-//     const chapterData = await FanFiction.attemptScrape(
-//       'https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality',
-//       false,
-//     );
+test('when fetching a 1-chapter story, returns correct data', async () => {
+  const single = readFixture('ffn_single_chapter.html');
+  axios.get.mockResolvedValueOnce({ data: single });
+  mockDBCountOnce(HttpProxy, 0);
+  const storyUrl = 'https://www.fanfiction.net/s/123/1/';
 
-//     expect(chapterData).toMatchInlineSnapshot(`
-//       Object {
-//         "content": "<p>Chapter Content</p>",
-//         "number": 1,
-//         "title": "1. A Day of Very Low Probability",
-//         "url": "https://www.fanfiction.net/s/5782108/1/Harry-Potter-and-the-Methods-of-Rationality",
-//       }
-//     `);
-//   });
-// });
+  const storyData = await FanFiction.attemptScrape(storyUrl, true);
+
+  expect(storyData).toMatchInlineSnapshot(`
+    Object {
+      "author": "alexanderwales",
+      "avatar": "https://ff74.b-cdn.net/image/2954488/75/",
+      "canonicalUrl": "https://www.fanfiction.net/s/123/1/",
+      "chapters": Array [
+        Object {
+          "number": 1,
+          "title": "Instruments of Destruction",
+          "url": "https://www.fanfiction.net/s/123/1/",
+        },
+      ],
+      "details": Object {
+        "description": "INSTRUMENTS_OF_DESCTRUCTION_TEST_DESCRIPTION",
+        "information": "INSTRUMENTS_OF_DESCTRUCTION_TEST_INFO",
+      },
+      "title": "Instruments of Destruction",
+    }
+  `);
+});
+
+test('when fetching a multi-chapter story, returns correct data', async () => {
+  const hpmor = readFixture('ffn_hpmor_chapter_1.html');
+  axios.get.mockResolvedValueOnce({ data: hpmor });
+  mockDBCountOnce(HttpProxy, 0);
+  const storyUrl = 'https://www.fanfiction.net/s/123/1/HPMOR';
+
+  const storyData = await FanFiction.attemptScrape(storyUrl, true);
+
+  expect(storyData).toMatchInlineSnapshot(`
+    Object {
+      "author": "Less Wrong",
+      "avatar": "https://ff74.b-cdn.net/image/80871/75/",
+      "canonicalUrl": "https://www.fanfiction.net/s/123/1/HPMOR",
+      "chapters": Array [
+        Object {
+          "number": 1,
+          "title": "1. A Day of Very Low Probability",
+          "url": "https://www.fanfiction.net/s/123/1/HPMOR",
+        },
+        Object {
+          "number": 2,
+          "title": "2. Everything I Believe Is False",
+          "url": "https://www.fanfiction.net/s/123/2/HPMOR",
+        },
+        Object {
+          "number": 3,
+          "title": "3. Comparing Reality To Its Alternatives",
+          "url": "https://www.fanfiction.net/s/123/3/HPMOR",
+        },
+      ],
+      "details": Object {
+        "description": "HPMOR_TEST_DESCRIPTION",
+        "information": "HPMOR_TEST_INFO",
+      },
+      "title": "Harry Potter and the Methods of Rationality",
+    }
+  `);
+});
