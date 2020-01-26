@@ -16,6 +16,15 @@ export const readFixture = path => {
   return fs.readFileSync(`${__dirname}/fixtures/${path}`);
 };
 
+export const mockDBCountOnce = (model, value) => {
+  return model.query.mockImplementationOnce(() => {
+    return {
+      // The return value of count() is a bit weird http://knexjs.org/#Builder-count
+      count: async () => [{ count: value }],
+    };
+  });
+};
+
 export const setupDatabase = () => {
   const dbManager = knexManager.databaseManagerFactory({
     knex: {

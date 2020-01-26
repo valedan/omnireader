@@ -13,13 +13,16 @@ const attemptScrape = async (url, getStory) => {
 
     return getStory ? extractStory($, url) : extractChapter($, url);
   } catch (err) {
+    console.log(err);
     return false;
   }
 };
 
 export default { attemptScrape };
 
-const isSupported = url => new URL(url).hostname === 'www.fanfiction.net';
+const isSupported = url => {
+  return new URL(url).hostname === 'www.fanfiction.net';
+};
 
 const getWithProxy = async url => {
   const count = await HttpProxy.query().count();
@@ -36,7 +39,6 @@ const getWithProxy = async url => {
       },
     });
   }
-
   return axios.get(url);
 };
 
