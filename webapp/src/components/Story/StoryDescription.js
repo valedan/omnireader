@@ -1,23 +1,23 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import _ from "lodash";
-import LaunchIcon from "@material-ui/icons/Launch";
-import { Button, Menu, MenuItem } from "@material-ui/core";
-import { DELETE_STORY } from "../../queries/story";
-import { useMutation } from "@apollo/react-hooks";
-import { red } from "@material-ui/core/colors";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import _ from 'lodash';
+import LaunchIcon from '@material-ui/icons/Launch';
+import { Button, Menu, MenuItem } from '@material-ui/core';
+import { DELETE_STORY } from '../../queries/story';
+import { useMutation } from '@apollo/react-hooks';
+import { red } from '@material-ui/core/colors';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const createInfoChunks = story => {
-  const whitelist = ["Words", "Published", "Status"];
-  const items = story.details.information.split(" - ");
+  const whitelist = ['Words', 'Published', 'Status'];
+  const items = story.details.information.split(' - ');
   const elements = items
-    .filter(item => whitelist.includes(item.split(": ")[0]))
+    .filter(item => whitelist.includes(item.split(': ')[0]))
     .map(item => {
       return (
         <InfoItem>
-          <strong>{item.split(": ")[0]}: </strong>
-          {item.split(": ")[1]}
+          <strong>{item.split(': ')[0]}: </strong>
+          {item.split(': ')[1]}
         </InfoItem>
       );
     });
@@ -26,7 +26,7 @@ const createInfoChunks = story => {
       <a href={story.canonicalUrl}>
         Source <LaunchIcon fontSize="inherit" />
       </a>
-    </InfoItem>
+    </InfoItem>,
   );
   return elements;
 };
@@ -57,7 +57,7 @@ export const StoryDescription = ({ refetch, story }) => {
             <div>{chunk}</div>
           ))}
         </Information>
-        {error && <p>{error.message.split(":")[1]}</p>}
+        {error && <p>{error.message.split(':')[1]}</p>}
       </MainContent>
       <MenuWrapper>
         <MenuButton onClick={openMenu}>

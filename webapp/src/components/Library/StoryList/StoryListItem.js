@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { StoryContents } from './StoryContents';
+import { StoryContents } from '../../Story/StoryContents';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import { StorySummary } from './StorySummary';
-import { useMedScreen } from '../shared/breakpoints';
+import { StorySummary } from '../../Story/StorySummary';
+import { useMedScreen } from '../../shared/breakpoints';
 
 export const StoryListItem = ({
   refetch,

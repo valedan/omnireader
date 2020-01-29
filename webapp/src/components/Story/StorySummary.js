@@ -4,7 +4,7 @@ import grey from '@material-ui/core/colors/grey';
 import { Divider } from '@material-ui/core';
 import { StoryInfo } from './StoryInfo';
 import { Link } from 'react-router-dom';
-import { ReadButton } from './ReadButton';
+import { ReadButton } from '../Library/ReadButton';
 import { useMedScreen } from '../shared/breakpoints';
 import storyUtils from '../shared/storyUtils';
 

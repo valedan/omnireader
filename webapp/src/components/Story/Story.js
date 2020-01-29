@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
-import { useParams } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/react-hooks";
-import { GET_STORY, TOC_CHECKED } from "../../queries/story";
-import { StorySummary } from "./StorySummary";
-import { StoryContents } from "./StoryContents";
-import Paper from "@material-ui/core/Paper";
-import { Link } from "react-router-dom";
-import { grey } from "@material-ui/core/colors";
-import { Divider } from "@material-ui/core";
-import { ReadButton } from "./ReadButton";
-import { useMedScreen } from "../shared/breakpoints";
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import { GET_STORY, TOC_CHECKED } from '../../queries/story';
+import { StorySummary } from './StorySummary';
+import { StoryContents } from './StoryContents';
+import Paper from '@material-ui/core/Paper';
+import { Link } from 'react-router-dom';
+import { grey } from '@material-ui/core/colors';
+import { Divider } from '@material-ui/core';
+import { ReadButton } from '../Library/ReadButton';
+import { useMedScreen } from '../shared/breakpoints';
 
 export const Story = () => {
   const medScreen = useMedScreen();
@@ -20,7 +20,7 @@ export const Story = () => {
 
   useEffect(() => {
     sendTOCChecked({
-      variables: { storyId: id }
+      variables: { storyId: id },
     });
   }, []);
 
@@ -30,11 +30,11 @@ export const Story = () => {
   const story = data.story;
   return (
     <div>
-      {medScreen && <StyledLink to="/">{"<"} Library</StyledLink>}
+      {medScreen && <StyledLink to="/">{'<'} Library</StyledLink>}
       <Wrapper>
         {!medScreen && (
           <>
-            <StyledLink to="/">{"<"} Library</StyledLink>
+            <StyledLink to="/">{'<'} Library</StyledLink>
             <Divider />
           </>
         )}

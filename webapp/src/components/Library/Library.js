@@ -1,62 +1,28 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Paper from '@material-ui/core/Paper';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-import List from '@material-ui/core/List';
-import { StoryListItem } from './StoryListItem';
 import { AddPost } from './AddPost';
-import { GET_STORIES, TOC_CHECKED } from '../../queries/story';
-import { useMedScreen } from '../shared/breakpoints';
-import { SectionHeader } from '../shared/SectionHeader';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import { StoryList } from './StoryList/StoryList';
+import { useMedScreen } from '../shared/breakpoints';
 
 export const Library = () => {
-  const { loading, error, data, refetch } = useQuery(GET_STORIES);
-  const [open, setOpen] = useState(null);
-  const medScreen = useMedScreen();
-
-  const [tab, setTab] = React.useState(0);
-
+  const [tab, setTab] = useState(0);
   const changeTab = (event, newTab) => {
     setTab(newTab);
   };
-
-  const [sendTOCChecked] = useMutation(TOC_CHECKED);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
-  const handleChange = id => (event, isOpen) => {
-    setOpen(isOpen ? id : false);
-    if (isOpen) {
-      sendTOCChecked({
-        variables: { storyId: id },
-      });
-    }
-  };
+  const medScreen = useMedScreen();
 
   return (
     <Wrapper>
-      {medScreen && <AddPost onSuccess={() => refetch()} />}
+      {medScreen && <AddPost onSuccess={() => window.location.reload()} />}
       <ListWrapper>
         <Tabs value={tab} onChange={changeTab}>
           <Tab label="Stories" />
           <Tab label="Posts" />
         </Tabs>
-        <List hidden={tab !== 0}>
-          {data.stories.map((story, index) => {
-            return (
-              <StoryListItem
-                // TODO: passing refetch down here seems like a code smell
-                refetch={refetch}
-                open={open === story.id}
-                handleChange={handleChange(story.id)}
-                key={story.id}
-                story={story}
-              />
-            );
-          })}
-        </List>
+        <StoryList hidden={tab !== 0} />
       </ListWrapper>
     </Wrapper>
   );

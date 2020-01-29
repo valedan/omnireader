@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import List from '@material-ui/core/List';
-import { PostListItem } from './PostListItem';
+import { ChapterListItem } from './ChapterListItem';
 import { StoryDescription } from './StoryDescription';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import { Divider } from '@material-ui/core';
@@ -18,11 +18,11 @@ export const StoryContents = ({ refetch, story }) => {
       {!medScreen && <SectionHeader>Chapters</SectionHeader>}
 
       <StyledList>
-        {story.posts.map(post => {
+        {story.posts.map(chapter => {
           return (
             <>
               <Divider />
-              <PostListItem key={post.id} post={post} />
+              <ChapterListItem key={chapter.id} chapter={chapter} />
             </>
           );
         })}

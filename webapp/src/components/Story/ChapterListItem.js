@@ -6,18 +6,20 @@ import { grey } from '@material-ui/core/colors';
 import ProgressBar from '../shared/ProgressBar';
 import { OmniChip } from '../shared/OmniChip';
 
-export const PostListItem = ({ post }) => {
+export const ChapterListItem = ({ chapter }) => {
   return (
     <Wrapper>
-      <PostLink to={`/post/${post.id}`}>
+      <ChapterLink to={`/post/${chapter.id}`}>
         <TitleRow>
-          <PostTitle>{post.title}</PostTitle>
-          {post.new && <OmniChip label="New" color="secondary" size="small" />}
+          <ChapterTitle>{chapter.title}</ChapterTitle>
+          {chapter.new && (
+            <OmniChip label="New" color="secondary" size="small" />
+          )}
         </TitleRow>
-        {post.progress > 0 && (
-          <ProgressBar value={post.progress * 100} showPercent />
+        {chapter.progress > 0 && (
+          <ProgressBar value={chapter.progress * 100} showPercent />
         )}
-      </PostLink>
+      </ChapterLink>
     </Wrapper>
   );
 };
@@ -59,12 +61,12 @@ const TitleRow = styled.div`
   justify-content: space-between;
 `;
 
-const PostTitle = styled.h3`
+const ChapterTitle = styled.h3`
   margin: 0;
   font-family: 'Merriweather', serif;
 `;
 
-const PostLink = styled(Link)`
+const ChapterLink = styled(Link)`
   height: 100%;
   width: 100%;
   text-decoration: none;
