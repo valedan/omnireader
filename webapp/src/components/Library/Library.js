@@ -5,6 +5,7 @@ import { AddPost } from './AddPost';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { StoryList } from './StoryList/StoryList';
+import { PostList } from './PostList/PostList';
 import { useMedScreen } from '../shared/breakpoints';
 
 export const Library = () => {
@@ -23,6 +24,7 @@ export const Library = () => {
           <Tab label="Posts" />
         </Tabs>
         <StoryList hidden={tab !== 0} />
+        <PostList hidden={tab !== 1} />
       </ListWrapper>
     </Wrapper>
   );

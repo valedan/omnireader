@@ -28,6 +28,9 @@ export default {
     },
 
     posts: async (_, { storyId }, { models }) => {
+      if (storyId === undefined) {
+        storyId = null;
+      }
       const posts = await models.Post.query().where({ storyId });
       return posts;
     },

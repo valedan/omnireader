@@ -5,7 +5,7 @@ const typeDefs = gql`
     stories: [Story]!
     story(id: ID!): Story
     post(id: ID!): Post
-    posts(storyId: ID!): [Post]!
+    posts(storyId: ID): [Post]!
   }
 
   type Mutation {

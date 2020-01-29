@@ -17,7 +17,7 @@ const extractContent = ($, url) => {
     title: $('title').text(),
     url: url,
     content: $('body')
-      .text()
+      .html()
       .trim(),
   };
 };

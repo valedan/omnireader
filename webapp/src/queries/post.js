@@ -28,7 +28,7 @@ export const UPDATE_PROGRESS = gql`
 `;
 
 export const GET_POSTS = gql`
-  query GetPosts($storyId: ID!) {
+  query GetPosts($storyId: ID) {
     posts(storyId: $storyId) {
       id
       title
@@ -47,8 +47,11 @@ export const CREATE_POST = gql`
     createPost(url: $url) {
       id
       title
-      author
-      canonicalUrl
+      story {
+        id
+        author
+        canonicalUrl
+      }
     }
   }
 `;

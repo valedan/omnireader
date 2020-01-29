@@ -10,6 +10,7 @@ export const StoryList = ({ hidden }) => {
   const [open, setOpen] = useState(null);
   const [sendTOCChecked] = useMutation(TOC_CHECKED);
 
+  if (hidden) return null;
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
   const handleChange = id => (event, isOpen) => {
@@ -22,7 +23,7 @@ export const StoryList = ({ hidden }) => {
   };
 
   return (
-    <List hidden={hidden}>
+    <List>
       {data.stories.map((story, index) => {
         return (
           <StoryListItem
