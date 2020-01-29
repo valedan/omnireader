@@ -9,7 +9,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createPost(url: String): Story
+    createPost(url: String): Post
     updateProgress(postId: ID!, progress: Float!): Post
     tocChecked(storyId: ID!): Boolean
     deleteStory(id: ID!): Boolean
@@ -42,6 +42,7 @@ const typeDefs = gql`
     prevId: Int
     updated_at: String
     created_at: String
+    story: Story
   }
 
   type StoryDetails {

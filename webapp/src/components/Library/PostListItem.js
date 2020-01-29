@@ -1,25 +1,23 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { Button } from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
-import ProgressBar from "../shared/ProgressBar";
-import { OmniChip } from "../shared/OmniChip";
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { Button } from '@material-ui/core';
+import { grey } from '@material-ui/core/colors';
+import ProgressBar from '../shared/ProgressBar';
+import { OmniChip } from '../shared/OmniChip';
 
-export const ChapterListItem = ({ chapter }) => {
+export const PostListItem = ({ post }) => {
   return (
     <Wrapper>
-      <ChapterLink to={`/chapter/${chapter.id}`}>
+      <PostLink to={`/post/${post.id}`}>
         <TitleRow>
-          <ChapterTitle>{chapter.title}</ChapterTitle>
-          {chapter.new && (
-            <OmniChip label="New" color="secondary" size="small" />
-          )}
+          <PostTitle>{post.title}</PostTitle>
+          {post.new && <OmniChip label="New" color="secondary" size="small" />}
         </TitleRow>
-        {chapter.progress > 0 && (
-          <ProgressBar value={chapter.progress * 100} showPercent />
+        {post.progress > 0 && (
+          <ProgressBar value={post.progress * 100} showPercent />
         )}
-      </ChapterLink>
+      </PostLink>
     </Wrapper>
   );
 };
@@ -61,12 +59,12 @@ const TitleRow = styled.div`
   justify-content: space-between;
 `;
 
-const ChapterTitle = styled.h3`
+const PostTitle = styled.h3`
   margin: 0;
-  font-family: "Merriweather", serif;
+  font-family: 'Merriweather', serif;
 `;
 
-const ChapterLink = styled(Link)`
+const PostLink = styled(Link)`
   height: 100%;
   width: 100%;
   text-decoration: none;

@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useParams } from "react-router-dom";
-import { useQuery } from "@apollo/react-hooks";
-import { GET_CHAPTER } from "../../queries/chapter";
-import { ReaderContent } from "./ReaderContent";
-import { useInterval } from "../../hooks/useInterval";
-import { useMutation } from "@apollo/react-hooks";
-import { UPDATE_PROGRESS } from "../../queries/chapter";
-import ProgressBar from "../shared/ProgressBar";
-import { Divider, Paper } from "@material-ui/core";
-import { ChapterNavBar } from "./ChapterNavBar";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/react-hooks';
+import { GET_POST } from '../../queries/post';
+import { ReaderContent } from './ReaderContent';
+import { useInterval } from '../../hooks/useInterval';
+import { useMutation } from '@apollo/react-hooks';
+import { UPDATE_PROGRESS } from '../../queries/post';
+import ProgressBar from '../shared/ProgressBar';
+import { Divider, Paper } from '@material-ui/core';
+import { PostNavBar } from './PostNavBar';
 
 export const Reader = () => {
   const { id } = useParams();
   const [progress, setProgress] = useState(null);
 
-  const { loading, error, data } = useQuery(GET_CHAPTER, { variables: { id } });
+  const { loading, error, data } = useQuery(GET_POST, { variables: { id } });
   const [sendProgress] = useMutation(UPDATE_PROGRESS);
 
   const updateProgress = progress => {
@@ -23,27 +23,27 @@ export const Reader = () => {
   };
 
   useInterval(() => {
-    if (!data || progress === data.chapter.progress) return;
+    if (!data || progress === data.post.progress) return;
     sendProgress({
-      variables: { chapterId: data.chapter.id, progress: progress }
+      variables: { postId: data.post.id, progress: progress },
     });
   }, 1000);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
-  const chapter = data.chapter;
+  const post = data.post;
 
-  const content = `<h1>${chapter.title}</h1>` + chapter.content;
+  const content = `<h1>${post.title}</h1>` + post.content;
 
   return (
     <Wrapper>
-      {chapter && (
+      {post && (
         <Inner>
-          <TopNav>{<ChapterNavBar chapter={chapter} />}</TopNav>
-          <Divider style={{ alignSelf: "stretch" }} />
+          <TopNav>{<PostNavBar post={post} />}</TopNav>
+          <Divider style={{ alignSelf: 'stretch' }} />
           <ReaderContent
             updateProgress={updateProgress}
-            chapter={chapter}
+            post={post}
             content={content}
           />
           <ProgressWrapper>

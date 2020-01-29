@@ -16,7 +16,7 @@ export const App = () => {
       <Router>
         <ThemeProvider theme={theme}>
           <Switch>
-            <Route path="/chapter/:id">
+            <Route path="/post/:id">
               <Reader />
             </Route>
             <Route path="/story/:id">

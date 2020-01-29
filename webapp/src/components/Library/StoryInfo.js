@@ -1,25 +1,25 @@
-import React from "react";
-import styled from "styled-components";
-import ProgressBar from "../shared/ProgressBar";
-import { lighten } from "polished";
-import grey from "@material-ui/core/colors/grey";
-import { Link } from "react-router-dom";
-import { useMedScreen } from "../shared/breakpoints";
-import storyUtils from "../shared/storyUtils";
-import { OmniChip } from "../shared/OmniChip";
+import React from 'react';
+import styled from 'styled-components';
+import ProgressBar from '../shared/ProgressBar';
+import { lighten } from 'polished';
+import grey from '@material-ui/core/colors/grey';
+import { Link } from 'react-router-dom';
+import { useMedScreen } from '../shared/breakpoints';
+import storyUtils from '../shared/storyUtils';
+import { OmniChip } from '../shared/OmniChip';
 
 export const StoryInfo = ({ story, noLink }) => {
   const medScreen = useMedScreen();
   const getValueFromInfo = (info, key) =>
     info
-      .split(" - ")
+      .split(' - ')
       .find(item => item.includes(key))
-      .split(": ")[1];
+      .split(': ')[1];
 
   // Use the updated info if it's there, otherwise use published. We're calling it updated in our view anyway.
-  const timeKey = story.details.information.includes("Updated")
-    ? "Updated"
-    : "Published";
+  const timeKey = story.details.information.includes('Updated')
+    ? 'Updated'
+    : 'Published';
   const updated = getValueFromInfo(story.details.information, timeKey);
 
   const storyProgress = storyUtils.calculateStoryProgress(story);
@@ -33,9 +33,8 @@ export const StoryInfo = ({ story, noLink }) => {
       </MainInfo>
       <ExtraInfo>
         <span>
-          {story.chapters.length}{" "}
-          {story.chapters.length === 1 ? "chapter" : "chapters"}
-          {story.newChapters && (
+          {story.posts.length} {story.posts.length === 1 ? 'post' : 'posts'}
+          {story.newPosts && (
             <OmniChip label="New" color="secondary" size="small" />
           )}
         </span>
@@ -105,6 +104,6 @@ const ExtraInfo = styled.div`
     margin-top: 4px;
   }
   justify-content: space-around;
-  font-family: "Merriweather Sans", sans-serif;
+  font-family: 'Merriweather Sans', sans-serif;
   color: ${lighten(0.3, grey[900])};
 `;

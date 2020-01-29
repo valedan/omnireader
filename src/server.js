@@ -24,16 +24,17 @@ let port = process.env.PORT;
 if (port == null || port === '') {
   port = 3000;
 }
-app.use(express.static(path.join(__dirname, '../webapp/build')));
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../webapp/build', 'index.html'));
-});
+// app.use(express.static(path.join(__dirname, '../webapp/build')));
+// app.get('/*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../webapp/build', 'index.html'));
+// });
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   introspection: true,
   playground: true,
+  debug: true,
   engine: {
     rewriteError(err) {
       console.log(err);

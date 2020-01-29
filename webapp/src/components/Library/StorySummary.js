@@ -1,23 +1,23 @@
-import React from "react";
-import styled from "styled-components";
-import grey from "@material-ui/core/colors/grey";
-import { Divider } from "@material-ui/core";
-import { StoryInfo } from "./StoryInfo";
-import { Link } from "react-router-dom";
-import { ReadButton } from "./ReadButton";
-import { useMedScreen } from "../shared/breakpoints";
-import storyUtils from "../shared/storyUtils";
+import React from 'react';
+import styled from 'styled-components';
+import grey from '@material-ui/core/colors/grey';
+import { Divider } from '@material-ui/core';
+import { StoryInfo } from './StoryInfo';
+import { Link } from 'react-router-dom';
+import { ReadButton } from './ReadButton';
+import { useMedScreen } from '../shared/breakpoints';
+import storyUtils from '../shared/storyUtils';
 
 export const StorySummary = ({ story, noLink }) => {
-  const currentChapter = storyUtils.findCurrentChapter(story);
+  const currentPost = storyUtils.findCurrentPost(story);
   const medScreen = useMedScreen();
   let image = null;
   if (medScreen || noLink) {
-    image = <Image src={story.avatar || "/ffn_anon.webp"} />;
+    image = <Image src={story.avatar || '/ffn_anon.webp'} />;
   } else {
     image = (
-      <ImageReadLink to={`/chapter/${currentChapter.id}`}>
-        <Image src={story.avatar || "/ffn_anon.webp"} />
+      <ImageReadLink to={`/post/${currentPost.id}`}>
+        <Image src={story.avatar || '/ffn_anon.webp'} />
       </ImageReadLink>
     );
   }
@@ -46,9 +46,9 @@ const Summary = styled.div`
   @media (max-width: 700px) {
     height: 11rem;
     text-align: left;
-    cursor: ${props => (props.noLink ? "default" : "pointer")};
+    cursor: ${props => (props.noLink ? 'default' : 'pointer')};
     :hover {
-      background-color: ${props => (props.noLink ? "inherit" : grey[50])};
+      background-color: ${props => (props.noLink ? 'inherit' : grey[50])};
     }
   }
   display: flex;

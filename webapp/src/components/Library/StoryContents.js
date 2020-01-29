@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
-import List from "@material-ui/core/List";
-import { ChapterListItem } from "./ChapterListItem";
-import { StoryDescription } from "./StoryDescription";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import { Divider } from "@material-ui/core";
-import { useMedScreen } from "../shared/breakpoints";
-import { SectionHeader } from "../shared/SectionHeader";
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
+import List from '@material-ui/core/List';
+import { PostListItem } from './PostListItem';
+import { StoryDescription } from './StoryDescription';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import { Divider } from '@material-ui/core';
+import { useMedScreen } from '../shared/breakpoints';
+import { SectionHeader } from '../shared/SectionHeader';
 
 export const StoryContents = ({ refetch, story }) => {
   const medScreen = useMedScreen();
@@ -18,11 +18,11 @@ export const StoryContents = ({ refetch, story }) => {
       {!medScreen && <SectionHeader>Chapters</SectionHeader>}
 
       <StyledList>
-        {story.chapters.map(chapter => {
+        {story.posts.map(post => {
           return (
             <>
               <Divider />
-              <ChapterListItem key={chapter.id} chapter={chapter} />
+              <PostListItem key={post.id} post={post} />
             </>
           );
         })}

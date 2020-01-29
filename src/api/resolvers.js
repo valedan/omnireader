@@ -98,7 +98,7 @@ export default {
         });
       }
 
-      const scraperData = await scrape({ url, getStory: true });
+      const { content, ...scraperData } = await scrape({ url, getStory: true });
 
       if (!scraperData) {
         throw new UserInputError('Could not parse site!');
@@ -113,11 +113,11 @@ export default {
             .insert(postData);
           savedStory.posts.push(savedPost);
         });
-        return savedStory;
+        return { ...scraperData, story: savedStory };
       } else {
         // this is a standalone post
         const savedPost = await models.Post.query().insert(scraperData);
-        return savedPost;
+        return { content, ...savedPost };
       }
     },
   },

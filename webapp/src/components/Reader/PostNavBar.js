@@ -1,37 +1,37 @@
-import React from "react";
-import styled from "styled-components";
-import { ChevronLeft, ChevronRight } from "@material-ui/icons";
-import { Link } from "react-router-dom";
-import { grey } from "@material-ui/core/colors";
+import React from 'react';
+import styled from 'styled-components';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
+import { grey } from '@material-ui/core/colors';
 
-const ChapterNav = ({ target, children }) => {
+const PostNav = ({ target, children }) => {
   return (
     <Nav
       disabled={!target}
       onClick={e => !target && e.preventDefault()}
-      to={`/chapter/${target}`}
+      to={`/post/${target}`}
     >
       {children}
     </Nav>
   );
 };
 
-export const ChapterNavBar = ({ chapter }) => {
+export const PostNavBar = ({ post }) => {
   return (
     <Wrapper>
-      <ChapterNav target={chapter.prevId}>
+      <PostNav target={post.prevId}>
         <>
           <ChevronLeft />
-          {"Prev"}
+          {'Prev'}
         </>
-      </ChapterNav>
+      </PostNav>
       <Nav to="/">Library</Nav>
-      <ChapterNav target={chapter.nextId}>
+      <PostNav target={post.nextId}>
         <>
-          {"Next"}
+          {'Next'}
           <ChevronRight />
         </>
-      </ChapterNav>
+      </PostNav>
     </Wrapper>
   );
 };
@@ -48,10 +48,10 @@ const Nav = styled(Link)`
   && {
     text-decoration: none;
     :hover {
-      text-decoration: ${props => (props.disabled ? "none" : "underline")};
+      text-decoration: ${props => (props.disabled ? 'none' : 'underline')};
     }
     user-select: none;
-    cursor: ${props => (props.disabled ? "default" : "pointer")};
+    cursor: ${props => (props.disabled ? 'default' : 'pointer')};
     font-size: 1.2em;
     display: flex;
     align-items: center;

@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { StoryContents } from "./StoryContents";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import { StorySummary } from "./StorySummary";
-import { useMedScreen } from "../shared/breakpoints";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { StoryContents } from './StoryContents';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import { StorySummary } from './StorySummary';
+import { useMedScreen } from '../shared/breakpoints';
 
 export const StoryListItem = ({
   refetch,
   story,
   first,
   open,
-  handleChange
+  handleChange,
 }) => {
   const medScreen = useMedScreen();
   const processedStory = processStory(story);
@@ -29,13 +29,13 @@ export const StoryListItem = ({
 };
 
 const processStory = story => {
-  story.newChapters = false;
-  story.chapters.forEach(chapter => {
-    if (!story.tocLastChecked || chapter.created_at > story.tocLastChecked) {
-      chapter.new = true;
-      story.newChapters = true;
+  story.newPosts = false;
+  story.posts.forEach(post => {
+    if (!story.tocLastChecked || post.created_at > story.tocLastChecked) {
+      post.new = true;
+      story.newPosts = true;
     } else {
-      chapter.new = false;
+      post.new = false;
     }
   });
   return story;

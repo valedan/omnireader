@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
-export const ReaderContent = ({ chapter, content, updateProgress }) => {
+export const ReaderContent = ({ post, content, updateProgress }) => {
   const ref = useRef(null);
   const scrollableHeight = () =>
     ref.current.scrollHeight - ref.current.clientHeight;
@@ -12,12 +12,12 @@ export const ReaderContent = ({ chapter, content, updateProgress }) => {
   };
 
   useEffect(() => {
-    updateProgress(chapter.progress);
+    updateProgress(post.progress);
     const current = ref.current;
-    current.scrollTo(0, chapter.progress * scrollableHeight());
+    current.scrollTo(0, post.progress * scrollableHeight());
     current.onscroll = scroll;
     return () => (current.onscroll = null);
-  }, [chapter.id]);
+  }, [post.id]);
 
   return (
     <Wrapper ref={ref}>

@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import TextField from "@material-ui/core/TextField";
-import { useMutation } from "@apollo/react-hooks";
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import TextField from '@material-ui/core/TextField';
+import { useMutation } from '@apollo/react-hooks';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 
-import { CREATE_STORY } from "../../queries/story";
+import { CREATE_POST } from '../../queries/post';
 
-export const AddStory = ({ onSuccess }) => {
-  const [input, setInput] = useState("");
-  const [createStory, { error }] = useMutation(CREATE_STORY);
+export const AddPost = ({ onSuccess }) => {
+  const [input, setInput] = useState('');
+  const [createPost, { error }] = useMutation(CREATE_POST);
 
   const submitForm = async e => {
     e.preventDefault();
-    await createStory({ variables: { url: input } });
+    await createPost({ variables: { url: input } });
     onSuccess();
-    setInput("");
+    setInput('');
   };
 
   return (
@@ -23,16 +23,16 @@ export const AddStory = ({ onSuccess }) => {
       <Form onSubmit={submitForm}>
         <StyledTextField
           color="secondary"
-          label="Add Story"
+          label="Add Post"
           placeholder="Enter URL..."
           value={input}
           onChange={e => setInput(e.target.value)}
         ></StyledTextField>
         <StyledButton type="submit" variant="contained" color="secondary">
-          Add Story
+          Add Post
         </StyledButton>
       </Form>
-      {error && <p>{error.message.split(":")[1]}</p>}
+      {error && <p>{error.message.split(':')[1]}</p>}
     </Wrapper>
   );
 };

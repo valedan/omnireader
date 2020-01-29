@@ -3,16 +3,16 @@ import ArticleScraper from './scrapers/basic';
 import WordpressScraper from './scrapers/wordpress';
 import BespokeScrapers from './scrapers/bespoke';
 
-export const scrape = ({ url, getStory }) => {
+export const scrape = async ({ url, getStory }) => {
   let bespokeResult = null;
   for (const scraper of Object.values(BespokeScrapers)) {
     bespokeResult = scraper.attemptScrape(url, getStory);
     if (bespokeResult) break;
   }
   return (
-    bespokeResult ||
-    WordpressScraper.attemptScrape(url, getStory) ||
-    ArticleScraper.attemptScrape(url, getStory) ||
-    BasicScraper.attemptScrape(url)
+    (await bespokeResult) ||
+    (await WordpressScraper.attemptScrape(url, getStory)) ||
+    (await ArticleScraper.attemptScrape(url, getStory)) ||
+    (await BasicScraper.attemptScrape(url))
   );
 };

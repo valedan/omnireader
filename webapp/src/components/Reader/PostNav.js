@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "@material-ui/icons";
-import { grey } from "@material-ui/core/colors";
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { grey } from '@material-ui/core/colors';
 
-export const ChapterNav = ({ chapterId, type }) => {
-  const Chevron = type === "left" ? ChevronLeft : ChevronRight;
+export const PostNav = ({ postId, type }) => {
+  const Chevron = type === 'left' ? ChevronLeft : ChevronRight;
 
-  if (!chapterId)
+  if (!postId)
     return (
       <DummyNav>
         <Chevron fontSize="inherit" />
@@ -15,7 +15,7 @@ export const ChapterNav = ({ chapterId, type }) => {
     );
 
   return (
-    <Nav to={`/chapter/${chapterId}`}>
+    <Nav to={`/post/${postId}`}>
       <Chevron fontSize="inherit" />
     </Nav>
   );
@@ -33,8 +33,7 @@ const NavBase = `
 `;
 
 const Nav = styled(Link)`
-  ${NavBase}
-  :hover {
+  ${NavBase} :hover {
     color: ${grey[800]};
   }
 `;

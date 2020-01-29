@@ -1,33 +1,4 @@
-import { gql } from "apollo-boost";
-
-export const GET_STORIES = gql`
-  {
-    stories {
-      id
-      title
-      author
-      avatar
-      canonicalUrl
-      tocLastChecked
-      updated_at
-      created_at
-      details {
-        description
-        information
-      }
-      chapters {
-        id
-        title
-        number
-        progress
-        progressUpdatedAt
-        url
-        updated_at
-        created_at
-      }
-    }
-  }
-`;
+import { gql } from 'apollo-boost';
 
 export const GET_STORY = gql`
   query GetStory($id: ID!) {
@@ -44,7 +15,7 @@ export const GET_STORY = gql`
         description
         information
       }
-      chapters {
+      posts {
         id
         title
         number
@@ -53,23 +24,6 @@ export const GET_STORY = gql`
         url
         updated_at
         created_at
-      }
-    }
-  }
-`;
-
-export const CREATE_STORY = gql`
-  mutation CreateStory($url: String!) {
-    createStory(url: $url) {
-      id
-      title
-      author
-      canonicalUrl
-      chapters {
-        id
-        title
-        number
-        url
       }
     }
   }
@@ -84,5 +38,34 @@ export const DELETE_STORY = gql`
 export const TOC_CHECKED = gql`
   mutation TOCChecked($storyId: ID!) {
     tocChecked(storyId: $storyId)
+  }
+`;
+
+export const GET_STORIES = gql`
+  {
+    stories {
+      id
+      title
+      author
+      avatar
+      canonicalUrl
+      tocLastChecked
+      updated_at
+      created_at
+      details {
+        description
+        information
+      }
+      posts {
+        id
+        title
+        number
+        progress
+        progressUpdatedAt
+        url
+        updated_at
+        created_at
+      }
+    }
   }
 `;

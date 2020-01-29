@@ -1,19 +1,16 @@
-import _ from "lodash";
+import _ from 'lodash';
 
-const findCurrentChapter = story =>
-  _.maxBy(story.chapters, chapter => chapter.progressUpdatedAt) ||
-  story.chapters[0];
+const findCurrentPost = story =>
+  _.maxBy(story.posts, post => post.progressUpdatedAt) || story.posts[0];
 
 const calculateStoryProgress = story => {
-  if (story.chapters.length === 0) return 0;
-  const currentChapter = findCurrentChapter(story);
-  if (!currentChapter) return 0;
+  if (story.posts.length === 0) return 0;
+  const currentPost = findCurrentPost(story);
+  if (!currentPost) return 0;
 
-  const totalChapters = story.chapters.length;
-  const completedChapters = currentChapter.number - 1;
-  return (
-    ((completedChapters + 1 * currentChapter.progress) / totalChapters) * 100
-  );
+  const totalPosts = story.posts.length;
+  const completedPosts = currentPost.number - 1;
+  return ((completedPosts + 1 * currentPost.progress) / totalPosts) * 100;
 };
 
-export default { findCurrentChapter, calculateStoryProgress };
+export default { findCurrentPost, calculateStoryProgress };

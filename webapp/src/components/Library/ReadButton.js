@@ -1,20 +1,20 @@
-import React from "react";
-import styled from "styled-components";
-import ChevronRight from "@material-ui/icons/ChevronRight";
-import { Link } from "react-router-dom";
-import { Button } from "@material-ui/core";
-import lightBlue from "@material-ui/core/colors/lightBlue";
-import grey from "@material-ui/core/colors/grey";
-import storyUtils from "../shared/storyUtils";
+import React from 'react';
+import styled from 'styled-components';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import { Link } from 'react-router-dom';
+import { Button } from '@material-ui/core';
+import lightBlue from '@material-ui/core/colors/lightBlue';
+import grey from '@material-ui/core/colors/grey';
+import storyUtils from '../shared/storyUtils';
 
 export const ReadButton = ({ story }) => {
   const storyProgress = storyUtils.calculateStoryProgress(story);
-  const currentChapter = storyUtils.findCurrentChapter(story);
+  const currentPost = storyUtils.findCurrentPost(story);
 
   return (
     <StyledButton color="secondary">
-      <ReadLink to={`/chapter/${currentChapter.id}`}>
-        {storyProgress === 0 ? "Start" : "Continue"}
+      <ReadLink to={`/post/${currentPost.id}`}>
+        {storyProgress === 0 ? 'Start' : 'Continue'}
         <ChevronRight />
       </ReadLink>
     </StyledButton>
