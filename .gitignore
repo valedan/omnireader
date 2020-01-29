@@ -5,6 +5,7 @@
 node_modules
 tmp/
 temp/
+build/
 
 # dependencies
 /*/node_modules

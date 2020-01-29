@@ -150,6 +150,7 @@ module.exports = {
     '/fixtures/',
     'helpers',
     'config',
+    '/build/',
   ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files

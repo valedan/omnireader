@@ -32,6 +32,8 @@ app.get('/*', (req, res) => {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true,
+  playground: true,
   engine: {
     rewriteError(err) {
       console.log(err);

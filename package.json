@@ -2,16 +2,15 @@
   "name": "backend",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "engines": {
     "node": "12.x"
   },
   "scripts": {
-    "start": "node -r ./node_modules/esm/index.js ./src/server.js",
+    "start": "npx babel src --out-dir build && node -r esm build/server.js",
     "test": "jest --runInBand --coverage",
     "test:watch": "jest --watch --runInBand",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
-    "dev": "DEBUG=express:* node-dev --respawn -r esm ./src/server.js",
+    "dev": "DEBUG=express:* npx babel src --out-dir build && node-dev --respawn -r esm build/server.js",
     "console": "node -r esm --experimental-repl-await console",
     "lint": "eslint  ."
   },
@@ -46,13 +45,12 @@
     "reflect-metadata": "^0.1.10"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.3",
     "@babel/core": "^7.8.3",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
-    "babel-cli": "^6.26.0",
     "babel-jest": "^24.9.0",
     "babel-plugin-module-resolver": "^4.0.0",
-    "babel-preset-env": "^1.7.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.9.0",

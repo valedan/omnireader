@@ -5,13 +5,15 @@ const typeDefs = gql`
     stories: [Story]!
     story(id: ID!): Story
     post(id: ID!): Post
+    posts(storyId: ID!): [Post]!
   }
 
   type Mutation {
-    createStory(url: String): Story
+    createPost(url: String): Story
     updateProgress(postId: ID!, progress: Float!): Post
     tocChecked(storyId: ID!): Boolean
     deleteStory(id: ID!): Boolean
+    deletePost(id: ID!): Boolean
   }
 
   type Story {
