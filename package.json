@@ -42,7 +42,8 @@
     "pg-escape": "^0.2.0",
     "pug": "2.0.0-beta11",
     "qs-middleware": "^1.0.3",
-    "reflect-metadata": "^0.1.10"
+    "reflect-metadata": "^0.1.10",
+    "sanitize-html": "^1.21.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.3",

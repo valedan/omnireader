@@ -6,11 +6,11 @@ import BespokeScrapers from './scrapers/bespoke';
 export const scrape = async ({ url, getStory }) => {
   let bespokeResult = null;
   for (const scraper of Object.values(BespokeScrapers)) {
-    bespokeResult = scraper.attemptScrape(url, getStory);
+    bespokeResult = await scraper.attemptScrape(url, getStory);
     if (bespokeResult) break;
   }
   return (
-    (await bespokeResult) ||
+    bespokeResult ||
     (await WordpressScraper.attemptScrape(url, getStory)) ||
     (await ArticleScraper.attemptScrape(url, getStory)) ||
     (await BasicScraper.attemptScrape(url))

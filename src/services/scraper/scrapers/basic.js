@@ -5,7 +5,7 @@ const attemptScrape = async url => {
     const $ = await Requester.get(url);
     return extractContent($, url);
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return false;
   }
 };

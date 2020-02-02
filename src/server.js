@@ -5,7 +5,7 @@ import path from 'path';
 import typeDefs from './api/schema';
 import resolvers from './api/resolvers';
 import Knex from 'knex';
-import knexConfig from '/knexfile';
+import knexConfig from '../knexfile';
 import { Model } from 'objection';
 import { Story } from '/models/story';
 import { Post } from '/models/post';

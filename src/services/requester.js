@@ -1,20 +1,22 @@
 import axios from 'axios';
 import * as Cheerio from 'cheerio';
 import { HttpProxy } from '/models/http_proxy';
+import sanitizeHtml from 'sanitize-html';
 
 const getRaw = async (url, options = {}) => {
   // Can save having to count here by just handling the null .first() case
   if (await proxiesDefined()) {
     options['proxy'] = await proxyConfig();
   }
-
   return axios.get(url, options);
 };
 
 const get = async (url, options = {}) => {
   const page = await getRaw(url, options);
-
-  return Cheerio.load(page.data);
+  const sanitized = sanitizeHtml(page.data, {
+    allowedAttributes: false,
+  });
+  return Cheerio.load(sanitized);
 };
 
 export default { get, getRaw };

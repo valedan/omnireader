@@ -11,10 +11,10 @@ jest.mock('./scrapers/bespoke');
 
 describe('.scrape', () => {
   context('When there is a matching bespoke scraper', () => {
-    it('returns the first matching scraper', () => {
+    it('returns the first matching scraper', async () => {
       const expected = { story: 'foo' };
-      const incompatibleScraper = jest.fn().mockReturnValue(false);
-      const compatibleScraper = jest.fn().mockReturnValue(expected);
+      const incompatibleScraper = jest.fn().mockResolvedValue(false);
+      const compatibleScraper = jest.fn().mockResolvedValue(expected);
 
       // TODO: Is this leaking to other tests??
       BespokeScrapers.default = {
@@ -26,7 +26,7 @@ describe('.scrape', () => {
         },
       };
 
-      const result = scrape({ url: 'www.some.url', getStory: true });
+      const result = await scrape({ url: 'www.some.url', getStory: true });
 
       expect(result).toStrictEqual(expected);
       expect(incompatibleScraper).toHaveBeenCalled();
@@ -38,10 +38,10 @@ describe('.scrape', () => {
   });
 
   context('When there is a matching generic scraper', () => {
-    it('returns the first matching scraper', () => {
+    it('returns the first matching scraper', async () => {
       const expected = { story: 'foo' };
-      const incompatibleScraper = jest.fn().mockReturnValue(false);
-      WordpressScraper.attemptScrape.mockReturnValueOnce(expected);
+      const incompatibleScraper = jest.fn().mockResolvedValue(false);
+      WordpressScraper.attemptScrape.mockResolvedValue(expected);
 
       BespokeScrapers.default = {
         incompatibleBespoke: {
@@ -49,7 +49,7 @@ describe('.scrape', () => {
         },
       };
 
-      const result = scrape({ url: 'www.some.url', getStory: true });
+      const result = await scrape({ url: 'www.some.url', getStory: true });
 
       expect(result).toStrictEqual(expected);
       expect(incompatibleScraper).toHaveBeenCalled();
@@ -60,19 +60,19 @@ describe('.scrape', () => {
   });
 
   context('When there are no matching scrapers', () => {
-    it('returns false', () => {
-      const incompatibleScraper = jest.fn().mockReturnValue(false);
+    it('returns false', async () => {
+      const incompatibleScraper = jest.fn().mockResolvedValue(false);
       BespokeScrapers.default = {
         incompatibleBespoke: {
           attemptScrape: incompatibleScraper,
         },
       };
 
-      WordpressScraper.attemptScrape.mockReturnValueOnce(false);
-      ArticleScraper.attemptScrape.mockReturnValueOnce(false);
-      BasicScraper.attemptScrape.mockReturnValueOnce(false);
+      WordpressScraper.attemptScrape.mockResolvedValueOnce(false);
+      ArticleScraper.attemptScrape.mockResolvedValueOnce(false);
+      BasicScraper.attemptScrape.mockResolvedValueOnce(false);
 
-      const result = scrape({ url: 'www.some.url', getStory: true });
+      const result = await scrape({ url: 'www.some.url', getStory: true });
 
       expect(result).toStrictEqual(false);
     });

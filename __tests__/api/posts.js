@@ -53,18 +53,17 @@ describe('Query: post', () => {
           query: GET_POST,
           variables: { id: savedPost.id },
         });
-
         const error = res.errors[0];
         expect(error.extensions.code).toStrictEqual('INTERNAL_SERVER_ERROR');
         // TODO: I don't want to leak internal errors through the api like this. Need to figure out how to provide error messages for server errors.
-        expect(error.message).toStrictEqual(
-          'Request failed with status code 500',
+        expect(error.message).toMatchInlineSnapshot(
+          `"Unable to retrieve post!"`,
         );
       });
     });
 
     context('When post can be retrieved', () => {
-      const hpmor = readFixture('ffn_hpmor_post_1.html');
+      const hpmor = readFixture('ffn_hpmor_chapter_1.html');
 
       it('returns post content', async () => {
         nock('https://www.fanfiction.net')
@@ -76,7 +75,6 @@ describe('Query: post', () => {
           query: GET_POST,
           variables: { id: savedPost.id },
         });
-
         expect(res.data.post.title).toStrictEqual(savedPost.title);
         expect(res.data.post.content).toMatch(/Post Content/);
       });
@@ -130,6 +128,82 @@ describe('Mutation: updateProgress', () => {
         expect(updatedPost.progress).toStrictEqual(0.45);
         expect(updatedPost.progressUpdatedAt.toDateString()).toStrictEqual(
           new Date().toDateString(),
+        );
+      });
+    });
+  });
+});
+
+describe('Mutation: createPost', () => {
+  context('when creating a standalone post', () => {
+    //TODO
+  });
+  context('when creating a post that is part of a story', () => {
+    const postUrl = 'https://www.fanfiction.net/s/13120599/1/';
+
+    const CREATE_POST = gql`
+      mutation createPost($url: String!) {
+        createPost(url: $url) {
+          title
+          story {
+            title
+          }
+        }
+      }
+    `;
+
+    context('When a post exists with the same canonicalUrl', () => {
+      it("returns an error including the existing post's id", async () => {
+        const existingPost = await Post.query().insert(
+          generatePost({ url: postUrl }),
+        );
+        const res = await mutate({
+          mutation: CREATE_POST,
+          variables: { url: postUrl },
+        });
+        const error = res.errors[0];
+        expect(error.extensions.exception.post.id).toStrictEqual(
+          existingPost.id,
+        );
+        expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
+        expect(error.message).toMatchInlineSnapshot(
+          `"Post is already in your library!"`,
+        );
+      });
+    });
+
+    context('When a site cannot be scraped', () => {
+      it('returns an error', async () => {
+        nock('http://foo.com')
+          .get('/')
+          .reply(500);
+        const res = await mutate({
+          mutation: CREATE_POST,
+          variables: { url: 'http://foo.com' },
+        });
+
+        const error = res.errors[0];
+        expect(error.extensions.code).toStrictEqual('INTERNAL_SERVER_ERROR');
+        expect(error.message).toStrictEqual('Could not parse site!');
+      });
+    });
+
+    context('When post is new and can be parsed', () => {
+      it('saves post to database and returns post with post index', async () => {
+        const hpmor = readFixture('ffn_hpmor_chapter_1.html');
+        nock('https://www.fanfiction.net')
+          .get('/s/13120599/1/')
+          .reply(200, hpmor);
+        const res = await mutate({
+          mutation: CREATE_POST,
+          variables: { url: postUrl },
+        });
+        const savedStory = await Story.query().findOne({});
+        expect(savedStory.title).toMatchInlineSnapshot(
+          `"Harry Potter and the Methods of Rationality"`,
+        );
+        expect(res.data.createPost.title).toMatchInlineSnapshot(
+          `"Harry Potter and the Methods of Rationality"`,
         );
       });
     });

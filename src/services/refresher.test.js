@@ -1,5 +1,5 @@
 import { setupDatabase } from '#/helpers';
-import { fetchStory } from '/services/scraper';
+import { scrape } from '/services/scraper';
 import { refreshStory } from '/services/refresher';
 import { generateStory } from '#/factories/story';
 import { generatePost } from '#/factories/post';
@@ -18,29 +18,27 @@ const newPost = generatePost();
 const setupSavedStory = async () => {
   const savedStory = await Story.query().insert(story);
   await savedStory.$relatedQuery('posts').insert([post1, post2]);
-  // await savedStory.$query().patch({ updated_at: new Date() - 60 * 1000 }); // 1 minute ago
   return savedStory;
 };
 
 describe('.refreshStory', () => {
   it('fetches the story', async () => {
     const savedStory = await setupSavedStory();
-    fetchStory.mockImplementationOnce(() => {
+    scrape.mockImplementationOnce(() => {
       return { ...story, posts: [post1, post2] };
     });
     refreshStory(savedStory);
-    expect(fetchStory).toHaveBeenCalledWith(story.canonicalUrl);
+    expect(scrape).toHaveBeenCalledWith({
+      url: story.canonicalUrl,
+      getStory: true,
+    });
   });
-
-  // context('description or title or information has changed', () => {
-  //   it('updates story');
-  // });
 
   context('when there are no new posts', () => {
     it('does nothing', async () => {
       const savedStory = await setupSavedStory();
 
-      fetchStory.mockImplementationOnce(() => {
+      scrape.mockImplementationOnce(() => {
         return { ...story, posts: [post1, post2] };
       });
       refreshStory(savedStory);
@@ -52,19 +50,18 @@ describe('.refreshStory', () => {
   context('when there are new posts', () => {
     it('adds new post to the database', async () => {
       const savedStory = await setupSavedStory();
-      fetchStory.mockImplementationOnce(() => {
+      scrape.mockImplementationOnce(() => {
         return { ...story, posts: [post1, post2, newPost] };
       });
       refreshStory(savedStory);
       const [{ posts }] = await Story.query().eager('posts');
       expect(posts).toHaveLength(3);
-      expect(posts[0].title).toStrictEqual(newPost.title);
-      fetchStory.mockReset();
+      expect(posts[2].title).toStrictEqual(newPost.title);
     });
 
     it('touches the story', async () => {
       const savedStory = await setupSavedStory();
-      fetchStory.mockImplementationOnce(() => {
+      scrape.mockImplementationOnce(() => {
         return { ...story, posts: [post1, post2, newPost] };
       });
       refreshStory(savedStory);
@@ -72,7 +69,6 @@ describe('.refreshStory', () => {
       const storyUpdated = times[0].updated_at;
 
       expect(storyUpdated.getTime()).toBeGreaterThan(new Date() - 1000); // 1 second ago
-      fetchStory.mockReset();
     });
   });
 });

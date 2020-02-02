@@ -41,6 +41,7 @@ export default {
         .eager('story');
       if (!post) throw new UserInputError('Post not found!');
       const { content } = await scrape({ url: post.url, getStory: false });
+      if (!content) throw new Error('Unable to retrieve post!');
       const nextPost = await models.Post.query().findOne({
         storyId: post.storyId,
         number: post.number + 1,
@@ -102,9 +103,8 @@ export default {
       }
 
       const { content, ...scraperData } = await scrape({ url, getStory: true });
-
-      if (!scraperData) {
-        throw new UserInputError('Could not parse site!');
+      if (!Object.keys(scraperData).length) {
+        throw new Error('Could not parse site!');
       } else if (scraperData.posts) {
         // the scraper gave us a whole story
         const savedStory = await models.Story.query().insert(scraperData);

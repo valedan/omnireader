@@ -1,5 +1,5 @@
 import Knex from 'knex';
-import knexConfig from '/knexfile';
+import knexConfig from '../knexfile';
 import knexCleaner from 'knex-cleaner';
 import gql from 'graphql-tag';
 import { ApolloServer } from 'apollo-server-express';
@@ -10,7 +10,7 @@ import knexManager from 'knex-db-manager';
 import * as models from '/models';
 import fs from 'fs';
 
-jest.mock('/services/requester');
+// jest.mock('/services/requester');
 
 const { createTestClient } = require('apollo-server-testing');
 

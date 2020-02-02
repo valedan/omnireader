@@ -4,14 +4,13 @@ import Requester from '/services/requester';
 
 const attemptScrape = async (url, getStory) => {
   if (!isSupported(url)) return false;
-
   try {
     const $ = await Requester.get(url);
     return getStory ? extractStory($, url) : extractPost($, url);
   } catch (err) {
     const expectedErrors = ['NoStoryError', 'NoPostError'];
     if (!expectedErrors.includes(err.constructor.name)) {
-      console.log(err);
+      // console.log(err);
     }
     return false;
   }
@@ -24,7 +23,7 @@ const isSupported = url => {
 };
 
 const extractStory = ($, url) => {
-  validateStoryPresence($);
+  validatePostPresence($);
   return {
     ...extractStoryInfo($, url),
     posts: extractPostList($, url),
@@ -84,13 +83,6 @@ const extractPostDataFromListOption = ($, url, option) => {
 
 const validatePostPresence = $ => {
   if (!$('#storytext').text()) throw new NoPostError();
-};
-
-const validateStoryPresence = $ => {
-  const title = $('#profile_top .xcontrast_txt')
-    .first()
-    .text();
-  if (!title.length) throw new NoStoryError();
 };
 
 const extractStoryInfo = ($, url) => {
