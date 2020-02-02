@@ -30,7 +30,7 @@ const typeDefs = gql`
   }
 
   type Post {
-    id: ID!
+    id: ID
     title: String
     url: String
     number: Int

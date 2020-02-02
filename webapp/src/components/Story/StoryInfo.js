@@ -29,7 +29,7 @@ export const StoryInfo = ({ story, noLink }) => {
     <Wrapper to={`/story/${story.id}`}>
       <MainInfo>
         <Title>{story.title}</Title>
-        <Author>{story.author}</Author>
+        <Author>by {story.author}</Author>
       </MainInfo>
       <ExtraInfo>
         <span>
