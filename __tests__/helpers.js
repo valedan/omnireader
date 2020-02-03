@@ -1,6 +1,5 @@
 import Knex from 'knex';
 import knexCleaner from 'knex-cleaner';
-import gql from 'graphql-tag';
 import { ApolloServer } from 'apollo-server-express';
 import typeDefs from '/api/schema';
 import resolvers from '/api/resolvers';
@@ -73,7 +72,8 @@ export const setupApi = () => {
     context: () => ({ models }),
   });
   const { query, mutate } = createTestClient(server);
-  global.query = query;
-  global.mutate = mutate;
-  global.gql = gql;
+  return {
+    query,
+    mutate,
+  };
 };

@@ -1,4 +1,6 @@
 import nock from 'nock';
+import gql from 'graphql-tag';
+
 import { setupDatabase, setupApi, readFixture } from '#/helpers';
 import { Story } from '/models';
 import { StoryFactory, PostFactory } from '#/factories/';
@@ -6,7 +8,7 @@ import { StoryFactory, PostFactory } from '#/factories/';
 jest.mock('/services/refresher');
 
 setupDatabase();
-setupApi();
+const server = setupApi();
 
 describe('Query: stories', () => {
   const GET_STORIES = gql`
@@ -22,7 +24,7 @@ describe('Query: stories', () => {
 
   context('When there are no stories', () => {
     it('returns empty results', async () => {
-      const res = await query({ query: GET_STORIES });
+      const res = await server.query({ query: GET_STORIES });
       expect(res.data.stories).toHaveLength(0);
     });
   });
@@ -35,7 +37,7 @@ describe('Query: stories', () => {
       const savedStory = await Story.query().insert(storyWithPosts);
       await Story.query().insert(storyWithoutPosts);
       await savedStory.$relatedQuery('posts').insert(posts);
-      const res = await query({ query: GET_STORIES });
+      const res = await server.query({ query: GET_STORIES });
       expect(res.data.stories).toHaveLength(2);
       expect(res.data.stories[0].posts).toHaveLength(2);
       expect(res.data.stories[0].posts[0].title).toStrictEqual(posts[0].title);

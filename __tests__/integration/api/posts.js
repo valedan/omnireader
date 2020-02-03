@@ -1,10 +1,11 @@
 import nock from 'nock';
+import gql from 'graphql-tag';
 import { setupDatabase, setupApi, readFixture } from '#/helpers';
 import { Story, Post } from '/models';
 import { StoryFactory, PostFactory } from '#/factories/';
 
 setupDatabase();
-setupApi();
+const server = setupApi();
 
 const postUrl = 'https://www.fanfiction.net/s/13120599/1/';
 const story = StoryFactory.build();
@@ -28,7 +29,7 @@ describe('Query: post', () => {
 
   context('When post does not exist', () => {
     it('returns a not found error', async () => {
-      const res = await query({
+      const res = await server.query({
         query: GET_POST,
         variables: { id: 10 },
       });
@@ -47,7 +48,7 @@ describe('Query: post', () => {
           .reply(500);
 
         const savedPost = await setupSavedPost();
-        const res = await query({
+        const res = await server.query({
           query: GET_POST,
           variables: { id: savedPost.id },
         });
@@ -69,7 +70,7 @@ describe('Query: post', () => {
           .reply(200, hpmor);
         const savedPost = await setupSavedPost();
 
-        const res = await query({
+        const res = await server.query({
           query: GET_POST,
           variables: { id: savedPost.id },
         });
@@ -91,7 +92,7 @@ describe('Mutation: updateProgress', () => {
   `;
   context('When post does not exist', () => {
     it('returns a not found error', async () => {
-      const res = await mutate({
+      const res = await server.mutate({
         mutation: UPDATE_PROGRESS,
         variables: { postId: 1000, progress: 0 },
       });
@@ -104,7 +105,7 @@ describe('Mutation: updateProgress', () => {
       it('returns a user input error', async () => {
         const savedPost = await setupSavedPost();
 
-        const res = await mutate({
+        const res = await server.mutate({
           mutation: UPDATE_PROGRESS,
           variables: { postId: savedPost.id, progress: -1 },
         });
@@ -117,7 +118,7 @@ describe('Mutation: updateProgress', () => {
       it('updates progress and timestamp', async () => {
         const savedPost = await setupSavedPost();
 
-        const res = await mutate({
+        const res = await server.mutate({
           mutation: UPDATE_PROGRESS,
           variables: { postId: savedPost.id, progress: 0.45 },
         });
@@ -155,7 +156,7 @@ describe('Mutation: createPost', () => {
         const existingPost = await Post.query().insert(
           PostFactory.build({ url: postUrl }),
         );
-        const res = await mutate({
+        const res = await server.mutate({
           mutation: CREATE_POST,
           variables: { url: postUrl },
         });
@@ -175,7 +176,7 @@ describe('Mutation: createPost', () => {
         nock('http://foo.com')
           .get('/')
           .reply(500);
-        const res = await mutate({
+        const res = await server.mutate({
           mutation: CREATE_POST,
           variables: { url: 'http://foo.com' },
         });
@@ -192,7 +193,7 @@ describe('Mutation: createPost', () => {
         nock('https://www.fanfiction.net')
           .get('/s/13120599/1/')
           .reply(200, hpmor);
-        const res = await mutate({
+        const res = await server.mutate({
           mutation: CREATE_POST,
           variables: { url: postUrl },
         });
