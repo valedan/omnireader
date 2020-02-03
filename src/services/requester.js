@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as Cheerio from 'cheerio';
-import { HttpProxy } from '/models/http_proxy';
+import { HttpProxy } from '/models';
 import sanitizeHtml from 'sanitize-html';
 
 const getRaw = async (url, options = {}) => {

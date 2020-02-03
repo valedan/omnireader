@@ -1,6 +1,6 @@
 import nock from 'nock';
 import { setupDatabase, setupApi, readFixture } from '#/helpers';
-import { Story } from '/models/story';
+import { Story } from '/models';
 import { StoryFactory, PostFactory } from '#/factories/';
 
 jest.mock('/services/refresher');

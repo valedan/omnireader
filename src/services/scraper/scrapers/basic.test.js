@@ -1,9 +1,9 @@
 import Basic from './basic';
 import { readFixture } from '#/helpers';
 import nock from 'nock';
-import { HttpProxy } from '/models/http_proxy';
+import { HttpProxy } from '/models';
 
-jest.mock('/models/http_proxy');
+jest.mock('/models');
 
 test('it returns a standalone post with content equal to page body', async () => {
   const page = readFixture('paul_graham.html');

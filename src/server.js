@@ -7,9 +7,7 @@ import resolvers from './api/resolvers';
 import Knex from 'knex';
 import knexConfig from '../knexfile';
 import { Model } from 'objection';
-import { Story } from '/models/story';
-import { Post } from '/models/post';
-import { HttpProxy } from '/models/http_proxy';
+import { Story, Post, HttpProxy } from '/models';
 
 const knex =
   process.env.NODE_ENV === 'production'

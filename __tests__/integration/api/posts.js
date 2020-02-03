@@ -1,7 +1,6 @@
 import nock from 'nock';
 import { setupDatabase, setupApi, readFixture } from '#/helpers';
-import { Story } from '/models/story';
-import { Post } from '/models/post';
+import { Story, Post } from '/models';
 import { StoryFactory, PostFactory } from '#/factories/';
 
 setupDatabase();

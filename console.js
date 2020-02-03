@@ -2,9 +2,7 @@ import repl from 'repl';
 import Knex from 'knex';
 import { Model } from 'objection';
 import knexConfig from './knexfile';
-import { Story } from './src/models/story';
-import { Post } from './src/models/post';
-import { HttpProxy } from './src/models/http_proxy';
+import * as Models from './src/models';
 
 const knex =
   process.env.NODE_ENV === 'production'
@@ -15,6 +13,6 @@ Model.knex(knex);
 
 const replServer = repl.start('>');
 
-replServer.context.Story = Story;
-replServer.context.Post = Post;
-replServer.context.HttpProxy = HttpProxy;
+Object.keys(Models).forEach(modelName => {
+  replServer.context[modelName] = Models[modelName];
+});

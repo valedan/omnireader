@@ -2,8 +2,7 @@ import { setupDatabase } from '#/helpers';
 import { scrape } from '/services/scraper';
 import { refreshStory } from '/services/refresher';
 import { StoryFactory, PostFactory } from '#/factories/';
-import { Story } from '/models/story';
-import { Post } from '/models/post';
+import { Story, Post } from '/models';
 
 setupDatabase();
 
