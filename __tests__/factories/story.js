@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-export const generateStory = attributes => {
+export const build = attributes => {
   return {
     canonicalUrl: faker.internet.url(),
     title: faker.commerce.productName(),

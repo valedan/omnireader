@@ -2,15 +2,14 @@ import nock from 'nock';
 import { setupDatabase, setupApi, readFixture } from '#/helpers';
 import { Story } from '/models/story';
 import { Post } from '/models/post';
-import { generateStory } from '#/factories/story';
-import { generatePost } from '#/factories/post';
+import { StoryFactory, PostFactory } from '#/factories/';
 
 setupDatabase();
 setupApi();
 
 const postUrl = 'https://www.fanfiction.net/s/13120599/1/';
-const story = generateStory();
-const post = generatePost({ url: postUrl });
+const story = StoryFactory.build();
+const post = PostFactory.build({ url: postUrl });
 
 const setupSavedPost = async () => {
   const savedStory = await Story.query().insert(story);
@@ -155,7 +154,7 @@ describe('Mutation: createPost', () => {
     context('When a post exists with the same canonicalUrl', () => {
       it("returns an error including the existing post's id", async () => {
         const existingPost = await Post.query().insert(
-          generatePost({ url: postUrl }),
+          PostFactory.build({ url: postUrl }),
         );
         const res = await mutate({
           mutation: CREATE_POST,

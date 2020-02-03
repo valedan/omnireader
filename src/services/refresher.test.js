@@ -1,8 +1,7 @@
 import { setupDatabase } from '#/helpers';
 import { scrape } from '/services/scraper';
 import { refreshStory } from '/services/refresher';
-import { generateStory } from '#/factories/story';
-import { generatePost } from '#/factories/post';
+import { StoryFactory, PostFactory } from '#/factories/';
 import { Story } from '/models/story';
 import { Post } from '/models/post';
 
@@ -10,10 +9,10 @@ setupDatabase();
 
 jest.mock('./scraper');
 
-const story = generateStory();
-const post1 = generatePost();
-const post2 = generatePost();
-const newPost = generatePost();
+const story = StoryFactory.build();
+const post1 = PostFactory.build();
+const post2 = PostFactory.build();
+const newPost = PostFactory.build();
 
 const setupSavedStory = async () => {
   const savedStory = await Story.query().insert(story);

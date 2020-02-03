@@ -1,8 +1,7 @@
 import nock from 'nock';
 import { setupDatabase, setupApi, readFixture } from '#/helpers';
 import { Story } from '/models/story';
-import { generateStory } from '#/factories/story';
-import { generatePost } from '#/factories/post';
+import { StoryFactory, PostFactory } from '#/factories/';
 
 jest.mock('/services/refresher');
 
@@ -30,9 +29,9 @@ describe('Query: stories', () => {
 
   context('When there are stories', () => {
     it('returns all stories with associated posts', async () => {
-      const storyWithPosts = generateStory();
-      const storyWithoutPosts = generateStory();
-      const posts = [generatePost(), generatePost()];
+      const storyWithPosts = StoryFactory.build();
+      const storyWithoutPosts = StoryFactory.build();
+      const posts = [PostFactory.build(), PostFactory.build()];
       const savedStory = await Story.query().insert(storyWithPosts);
       await Story.query().insert(storyWithoutPosts);
       await savedStory.$relatedQuery('posts').insert(posts);
