@@ -13,6 +13,7 @@ test('when the site is unsupported, returns false', async () => {
 test('when there is no story at the url, returns false', async () => {
   const homepage = readFixture('ffn_homepage.html');
   const homepageUrl = 'https://www.fanfiction.net';
+  // TODO: Should nock this? Requester also sanitizes now!
   Requester.get.mockResolvedValueOnce(Cheerio.load(homepage));
 
   const result = await FanFiction.attemptScrape(homepageUrl, true);

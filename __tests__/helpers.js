@@ -1,5 +1,4 @@
 import Knex from 'knex';
-import knexConfig from '../knexfile';
 import knexCleaner from 'knex-cleaner';
 import gql from 'graphql-tag';
 import { ApolloServer } from 'apollo-server-express';
@@ -26,39 +25,41 @@ export const mockDBCountOnce = (model, value) => {
     };
   });
 };
-
 export const setupDatabase = () => {
-  const dbManager = knexManager.databaseManagerFactory({
-    knex: {
-      client: 'pg',
-      connection: {
-        host: 'localhost',
-        port: 5432,
-        user: 'dan',
-        password: '',
-        database: 'omnireader_test',
-      },
+  const dbId = Math.floor(Math.random() * 100000 + 1);
+
+  const knexConfig = {
+    client: 'pg',
+    connection: {
+      host: 'localhost',
+      port: 5432,
+      user: 'dan',
+      password: '',
+      database: `omnireader_test_${dbId}`,
     },
+  };
+  const dbManager = knexManager.databaseManagerFactory({
+    knex: knexConfig,
     dbManager: {
       superUser: 'dan',
       superPassword: '',
     },
   });
 
-  const knex = Knex(knexConfig.test);
+  const knex = Knex(knexConfig);
   Model.knex(knex);
 
-  global.beforeAll(async () => {
+  beforeAll(async () => {
     await dbManager.dropDb();
     await dbManager.createDb();
     await knex.migrate.latest();
   });
 
-  global.beforeEach(async () => {
+  beforeEach(async () => {
     await knexCleaner.clean(knex);
   });
 
-  global.afterAll(async () => {
+  afterAll(async () => {
     knex.destroy();
     await dbManager.dropDb();
     dbManager.close();

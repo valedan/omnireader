@@ -7,9 +7,9 @@
   },
   "scripts": {
     "start": "npx babel src --out-dir build && node -r esm build/server.js",
-    "test": "jest --runInBand --coverage",
-    "test:watch": "jest --watch --runInBand",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --watch",
     "dev": "DEBUG=express:* npx babel src --out-dir build && node-dev --respawn -r esm build/server.js",
     "console": "node -r esm --experimental-repl-await console",
     "lint": "eslint  ."
