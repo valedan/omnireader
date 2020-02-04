@@ -7,10 +7,21 @@ import { Model } from 'objection';
 import knexManager from 'knex-db-manager';
 import * as models from '/models';
 import fs from 'fs';
+import nock from 'nock';
+import { URL } from 'url';
 
 // jest.mock('/services/requester');
 
 const { createTestClient } = require('apollo-server-testing');
+
+export const reloadRecord = async record => {
+  return record.$set(await record.$query());
+};
+
+export const nockGet = target => {
+  const parsedTarget = new URL(target);
+  return nock(parsedTarget.origin).get(parsedTarget.pathname);
+};
 
 export const readFixture = path => {
   return fs.readFileSync(`${__dirname}/fixtures/${path}`);

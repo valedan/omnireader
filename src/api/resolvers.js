@@ -110,6 +110,7 @@ export default {
         const savedStory = await models.Story.query().insert(scraperData);
         savedStory.details = JSON.stringify(savedStory.details);
         savedStory.posts = [];
+        console.log(scraperData.posts);
         scraperData.posts.map(async postData => {
           const savedPost = await savedStory
             .$relatedQuery('posts')

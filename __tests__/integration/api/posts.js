@@ -1,19 +1,27 @@
 import nock from 'nock';
 import gql from 'graphql-tag';
-import { setupDatabase, setupApi, readFixture } from '#/helpers';
+import { setupDatabase, setupApi, readFixture, nockGet } from '#/helpers';
 import { Story, Post } from '/models';
 import { StoryFactory, PostFactory } from '#/factories/';
+import { reloadRecord } from '../../helpers';
 
 setupDatabase();
 const server = setupApi();
 
-const postUrl = 'https://www.fanfiction.net/s/13120599/1/';
-const story = StoryFactory.build();
-const post = PostFactory.build({ url: postUrl });
+const createStoryWithPost = async () => {
+  const postUrl = 'https://www.fanfiction.net/s/13120599/1/';
+  const post = PostFactory.build({ url: postUrl });
 
-const setupSavedPost = async () => {
-  const savedStory = await Story.query().insert(story);
+  const savedStory = await Story.query().insert(StoryFactory.build());
   const [savedPost] = await savedStory.$relatedQuery('posts').insert([post]);
+  return { savedStory, savedPost };
+};
+
+const createPost = async () => {
+  const postUrl = 'http://www.paulgraham.com/avg.html';
+  const savedPost = await Post.query().insert(
+    PostFactory.build({ url: postUrl }),
+  );
   return savedPost;
 };
 
@@ -27,57 +35,43 @@ describe('Query: post', () => {
     }
   `;
 
-  context('When post does not exist', () => {
-    it('returns a not found error', async () => {
-      const res = await server.query({
-        query: GET_POST,
-        variables: { id: 10 },
-      });
-
-      const error = res.errors[0];
-      expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
-      expect(error.message).toStrictEqual('Post not found!');
+  const getPostQuery = ({ postId }) => {
+    return server.query({
+      query: GET_POST,
+      variables: { id: postId },
     });
+  };
+
+  test('returns a not found error if post does not exist', async () => {
+    const res = await getPostQuery({ postId: 10 });
+
+    const error = res.errors[0];
+    expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
+    expect(error.message).toMatchInlineSnapshot(`"Post not found!"`);
   });
 
-  context('When post exists', () => {
-    context('When post cannot be retrieved', () => {
-      it('returns a server error', async () => {
-        nock('https://www.fanfiction.net')
-          .get('/s/13120599/1/')
-          .reply(500);
+  test('returns a server error when post cannot be scraped', async () => {
+    const { savedPost } = await createStoryWithPost();
+    nockGet(savedPost.url).reply(500);
 
-        const savedPost = await setupSavedPost();
-        const res = await server.query({
-          query: GET_POST,
-          variables: { id: savedPost.id },
-        });
-        const error = res.errors[0];
-        expect(error.extensions.code).toStrictEqual('INTERNAL_SERVER_ERROR');
-        // TODO: I don't want to leak internal errors through the api like this. Need to figure out how to provide error messages for server errors.
-        expect(error.message).toMatchInlineSnapshot(
-          `"Unable to retrieve post!"`,
-        );
-      });
-    });
+    const res = await getPostQuery({ postId: savedPost.id });
 
-    context('When post can be retrieved', () => {
-      const hpmor = readFixture('ffn_hpmor_chapter_1.html');
+    const error = res.errors[0];
+    expect(error.extensions.code).toStrictEqual('INTERNAL_SERVER_ERROR');
+    expect(error.message).toMatchInlineSnapshot(`"Unable to retrieve post!"`);
+  });
 
-      it('returns post content', async () => {
-        nock('https://www.fanfiction.net')
-          .get('/s/13120599/1/')
-          .reply(200, hpmor);
-        const savedPost = await setupSavedPost();
+  test('returns the scraped post content', async () => {
+    const hpmor = readFixture('ffn_hpmor_chapter_1.html');
+    const { savedPost } = await createStoryWithPost();
+    nockGet(savedPost.url).reply(200, hpmor);
 
-        const res = await server.query({
-          query: GET_POST,
-          variables: { id: savedPost.id },
-        });
-        expect(res.data.post.title).toStrictEqual(savedPost.title);
-        expect(res.data.post.content).toMatch(/Post Content/);
-      });
-    });
+    const res = await getPostQuery({ postId: savedPost.id });
+
+    expect(res.data.post.title).toStrictEqual(savedPost.title);
+    expect(res.data.post.content).toMatchInlineSnapshot(
+      `"<p>Post Content</p>"`,
+    );
   });
 });
 
@@ -90,121 +84,115 @@ describe('Mutation: updateProgress', () => {
       }
     }
   `;
-  context('When post does not exist', () => {
-    it('returns a not found error', async () => {
-      const res = await server.mutate({
-        mutation: UPDATE_PROGRESS,
-        variables: { postId: 1000, progress: 0 },
-      });
-      expect(res.errors[0].message).toStrictEqual('NotFoundError');
+
+  test('returns a not found error when post does not exist', async () => {
+    const res = await server.mutate({
+      mutation: UPDATE_PROGRESS,
+      variables: { postId: 10, progress: 0 },
     });
+
+    expect(res.errors[0].message).toStrictEqual('NotFoundError');
   });
 
-  context('When post exists', () => {
-    context('When given an invalid progress', () => {
-      it('returns a user input error', async () => {
-        const savedPost = await setupSavedPost();
+  test('returns a user input error when progress is invalid', async () => {
+    const { savedPost } = await createStoryWithPost();
 
-        const res = await server.mutate({
-          mutation: UPDATE_PROGRESS,
-          variables: { postId: savedPost.id, progress: -1 },
-        });
-        const error = res.errors[0];
-        expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
-      });
+    const res = await server.mutate({
+      mutation: UPDATE_PROGRESS,
+      variables: { postId: savedPost.id, progress: -1 },
     });
 
-    context('When given a valid progress', () => {
-      it('updates progress and timestamp', async () => {
-        const savedPost = await setupSavedPost();
+    const error = res.errors[0];
+    expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
+    expect(error.message).toMatchInlineSnapshot(`"Invalid progress value!"`);
+  });
 
-        const res = await server.mutate({
-          mutation: UPDATE_PROGRESS,
-          variables: { postId: savedPost.id, progress: 0.45 },
-        });
-        const updatedPost = await Post.query().findById(savedPost.id);
-        expect(res.errors).toBeUndefined(undefined);
-        expect(updatedPost.progress).toStrictEqual(0.45);
-        expect(updatedPost.progressUpdatedAt.toDateString()).toStrictEqual(
-          new Date().toDateString(),
-        );
-      });
+  test('updates progress and related timestamp', async () => {
+    const { savedPost } = await createStoryWithPost();
+
+    const res = await server.mutate({
+      mutation: UPDATE_PROGRESS,
+      variables: { postId: savedPost.id, progress: 0.45 },
     });
+
+    await reloadRecord(savedPost);
+    expect(res.errors).toBeUndefined();
+    expect(savedPost.progress).toStrictEqual(0.45);
+    expect(Math.floor(savedPost.progressUpdatedAt / 1000)).toStrictEqual(
+      Math.floor(new Date() / 1000), // times within 1 second
+    );
   });
 });
 
 describe('Mutation: createPost', () => {
-  context('when creating a standalone post', () => {
-    //TODO
-  });
-  context('when creating a post that is part of a story', () => {
-    const postUrl = 'https://www.fanfiction.net/s/13120599/1/';
-
-    const CREATE_POST = gql`
-      mutation createPost($url: String!) {
-        createPost(url: $url) {
+  const CREATE_POST = gql`
+    mutation createPost($url: String!) {
+      createPost(url: $url) {
+        title
+        story {
           title
-          story {
-            title
-          }
         }
       }
-    `;
+    }
+  `;
 
-    context('When a post exists with the same canonicalUrl', () => {
-      it("returns an error including the existing post's id", async () => {
-        const existingPost = await Post.query().insert(
-          PostFactory.build({ url: postUrl }),
-        );
-        const res = await server.mutate({
-          mutation: CREATE_POST,
-          variables: { url: postUrl },
-        });
-        const error = res.errors[0];
-        expect(error.extensions.exception.post.id).toStrictEqual(
-          existingPost.id,
-        );
-        expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
-        expect(error.message).toMatchInlineSnapshot(
-          `"Post is already in your library!"`,
-        );
-      });
+  test('when post is already in library ', async () => {
+    const savedPost = await createPost();
+    const res = await server.mutate({
+      mutation: CREATE_POST,
+      variables: { url: savedPost.url },
     });
 
-    context('When a site cannot be scraped', () => {
-      it('returns an error', async () => {
-        nock('http://foo.com')
-          .get('/')
-          .reply(500);
-        const res = await server.mutate({
-          mutation: CREATE_POST,
-          variables: { url: 'http://foo.com' },
-        });
+    const error = res.errors[0];
+    expect(error.extensions.exception.post.id).toStrictEqual(savedPost.id);
+    expect(error.extensions.code).toStrictEqual('BAD_USER_INPUT');
+    expect(error.message).toMatchInlineSnapshot(
+      `"Post is already in your library!"`,
+    );
+  });
 
-        const error = res.errors[0];
-        expect(error.extensions.code).toStrictEqual('INTERNAL_SERVER_ERROR');
-        expect(error.message).toStrictEqual('Could not parse site!');
-      });
+  test('returns an error when site cannot be scraped', async () => {
+    const targetUrl = 'http://foo.com';
+    nockGet(targetUrl).reply(500);
+
+    const res = await server.mutate({
+      mutation: CREATE_POST,
+      variables: { url: targetUrl },
     });
 
-    context('When post is new and can be parsed', () => {
-      it('saves post to database and returns post with post index', async () => {
-        const hpmor = readFixture('ffn_hpmor_chapter_1.html');
-        nock('https://www.fanfiction.net')
-          .get('/s/13120599/1/')
-          .reply(200, hpmor);
-        const res = await server.mutate({
-          mutation: CREATE_POST,
-          variables: { url: postUrl },
-        });
-        const savedStory = await Story.query().findOne({});
-        expect(savedStory.title).toMatchInlineSnapshot(
-          `"Harry Potter and the Methods of Rationality"`,
-        );
-        expect(res.data.createPost.title).toMatchInlineSnapshot(
-          `"Harry Potter and the Methods of Rationality"`,
-        );
-      });
+    const error = res.errors[0];
+    expect(error.extensions.code).toStrictEqual('INTERNAL_SERVER_ERROR');
+    expect(error.message).toMatchInlineSnapshot(`"Could not parse site!"`);
+  });
+
+  test('scrapes a story', async () => {
+    const targetUrl = 'https://www.fanfiction.net/s/13120599/1/';
+    const hpmor = readFixture('ffn_hpmor_chapter_1.html');
+    nockGet(targetUrl).reply(200, hpmor);
+
+    const res = await server.mutate({
+      mutation: CREATE_POST,
+      variables: { url: targetUrl },
     });
+
+    const savedStory = await Story.query()
+      .findOne({ canonicalUrl: targetUrl })
+      .eager('posts');
+
+    expect(savedStory.title).toMatchInlineSnapshot(
+      `"Harry Potter and the Methods of Rationality"`,
+    );
+    expect(res.data.createPost.title).toMatchInlineSnapshot(
+      `"Harry Potter and the Methods of Rationality"`,
+    );
+    expect(savedStory.posts.map(post => post.title)).toMatchInlineSnapshot(`
+      Array [
+        "Harry Potter and the Methods of Rationality",
+      ]
+    `);
+  });
+
+  test('scrapes a standalone post', async () => {
+    //TODO
   });
 });
