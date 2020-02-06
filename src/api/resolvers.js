@@ -28,10 +28,9 @@ export default {
     },
 
     posts: async (_, { storyId }, { models }) => {
-      if (storyId === undefined) {
-        storyId = null;
-      }
-      const posts = await models.Post.query().where({ storyId });
+      const posts = await models.Post.query().where({
+        storyId: storyId || null,
+      });
       return posts;
     },
 
@@ -40,22 +39,29 @@ export default {
         .findById(id)
         .eager('story');
       if (!post) throw new UserInputError('Post not found!');
-      const { content } = await scrape({ url: post.url, getStory: false });
+      return post;
+    },
+  },
+
+  Post: {
+    content: async parent => {
+      const { content } = await scrape({ url: parent.url, getStory: false });
       if (!content) throw new Error('Unable to retrieve post!');
-      const nextPost = await models.Post.query().findOne({
-        storyId: post.storyId,
-        number: post.number + 1,
+      return content;
+    },
+    nextId: async parent => {
+      const { id } = await models.Post.query().findOne({
+        storyId: parent.storyId,
+        number: parent.number + 1,
       });
-      const prevPost = await models.Post.query().findOne({
-        storyId: post.storyId,
-        number: post.number - 1,
+      return id;
+    },
+    prevId: async parent => {
+      const { id } = await models.Post.query().findOne({
+        storyId: parent.storyId,
+        number: parent.number - 1,
       });
-      return {
-        ...post,
-        content,
-        nextId: nextPost && nextPost.id,
-        prevId: prevPost && prevPost.id,
-      };
+      return id;
     },
   },
 
@@ -110,7 +116,6 @@ export default {
         const savedStory = await models.Story.query().insert(scraperData);
         savedStory.details = JSON.stringify(savedStory.details);
         savedStory.posts = [];
-        console.log(scraperData.posts);
         scraperData.posts.map(async postData => {
           const savedPost = await savedStory
             .$relatedQuery('posts')

@@ -1,29 +1,11 @@
-import nock from 'nock';
 import gql from 'graphql-tag';
 import { setupDatabase, setupApi, readFixture, nockGet } from '#/helpers';
-import { Story, Post } from '/models';
-import { StoryFactory, PostFactory } from '#/factories/';
+import { Story } from '/models';
+import { PostFactory } from '#/factories/';
 import { reloadRecord } from '../../helpers';
 
 setupDatabase();
 const server = setupApi();
-
-const createStoryWithPost = async () => {
-  const postUrl = 'https://www.fanfiction.net/s/13120599/1/';
-  const post = PostFactory.build({ url: postUrl });
-
-  const savedStory = await Story.query().insert(StoryFactory.build());
-  const [savedPost] = await savedStory.$relatedQuery('posts').insert([post]);
-  return { savedStory, savedPost };
-};
-
-const createPost = async () => {
-  const postUrl = 'http://www.paulgraham.com/avg.html';
-  const savedPost = await Post.query().insert(
-    PostFactory.build({ url: postUrl }),
-  );
-  return savedPost;
-};
 
 describe('Query: post', () => {
   const GET_POST = gql`
@@ -51,7 +33,7 @@ describe('Query: post', () => {
   });
 
   test('returns a server error when post cannot be scraped', async () => {
-    const { savedPost } = await createStoryWithPost();
+    const savedPost = await PostFactory.create();
     nockGet(savedPost.url).reply(500);
 
     const res = await getPostQuery({ postId: savedPost.id });
@@ -63,7 +45,9 @@ describe('Query: post', () => {
 
   test('returns the scraped post content', async () => {
     const hpmor = readFixture('ffn_hpmor_chapter_1.html');
-    const { savedPost } = await createStoryWithPost();
+    const savedPost = await PostFactory.create({
+      url: 'https://www.fanfiction.net/s/1',
+    });
     nockGet(savedPost.url).reply(200, hpmor);
 
     const res = await getPostQuery({ postId: savedPost.id });
@@ -95,7 +79,7 @@ describe('Mutation: updateProgress', () => {
   });
 
   test('returns a user input error when progress is invalid', async () => {
-    const { savedPost } = await createStoryWithPost();
+    const savedPost = await PostFactory.create();
 
     const res = await server.mutate({
       mutation: UPDATE_PROGRESS,
@@ -108,7 +92,7 @@ describe('Mutation: updateProgress', () => {
   });
 
   test('updates progress and related timestamp', async () => {
-    const { savedPost } = await createStoryWithPost();
+    const savedPost = await PostFactory.create();
 
     const res = await server.mutate({
       mutation: UPDATE_PROGRESS,
@@ -137,7 +121,8 @@ describe('Mutation: createPost', () => {
   `;
 
   test('when post is already in library ', async () => {
-    const savedPost = await createPost();
+    const savedPost = await PostFactory.create();
+
     const res = await server.mutate({
       mutation: CREATE_POST,
       variables: { url: savedPost.url },
@@ -166,7 +151,7 @@ describe('Mutation: createPost', () => {
   });
 
   test('scrapes a story', async () => {
-    const targetUrl = 'https://www.fanfiction.net/s/13120599/1/';
+    const targetUrl = 'https://www.fanfiction.net/s/1';
     const hpmor = readFixture('ffn_hpmor_chapter_1.html');
     nockGet(targetUrl).reply(200, hpmor);
 

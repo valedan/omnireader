@@ -45,7 +45,6 @@ const extractPost = ($, url) => {
 };
 
 const extractPostList = ($, url) => {
-  console.log($('#chap_select').text());
   if ($('#chap_select').length === 0) {
     return [
       {

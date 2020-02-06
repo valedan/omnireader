@@ -2,22 +2,22 @@ import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
   type Query {
+    story(id: ID!): Story!
     stories: [Story]!
-    story(id: ID!): Story
-    post(id: ID!): Post
+    post(id: ID!): Post!
     posts(storyId: ID): [Post]!
   }
 
   type Mutation {
-    createPost(url: String): Post
-    updateProgress(postId: ID!, progress: Float!): Post
-    tocChecked(storyId: ID!): Boolean
-    deleteStory(id: ID!): Boolean
-    deletePost(id: ID!): Boolean
+    createPost(url: String!): Post!
+    updateProgress(postId: ID!, progress: Float!): Post!
+    tocChecked(storyId: ID!): Story!
+    deleteStory(id: ID!): Story!
+    deletePost(id: ID!): Post!
   }
 
   type Story {
-    id: ID!
+    id: ID
     canonicalUrl: String
     title: String
     author: String
